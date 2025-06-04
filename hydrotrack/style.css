@@ -192,13 +192,6 @@ h1, h2, h3, h4 {
     width: calc(100% - 2rem);
 }
 
-@media (min-screen: 870px) {
-    .container {
-        position: relative !important;
-        transform: translateX(-50%) !important;
-    }
-}
-
 .goal-section {
     margin-bottom: 1rem;
     margin-top: 1rem;
@@ -345,72 +338,6 @@ h1, h2, h3, h4 {
     100% {
         opacity: 0;
         transform: translate(-50%, -350px);
-    }
-}
-
-@media (max-width: 630px) {
-    .navbar-links {
-        display: none;
-    }
-
-    .navbar {
-        padding: 10px;
-    }
-}
-
-@media (max-width: 720px) {
-    .goal-section {
-        flex-direction: column !important;
-    }
-
-    .controls {
-        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)) !important;
-    }
-
-    #goalInput {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    #amount, #removeAmount {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .add-btn {
-        width: 100% !important;
-    }
-
-    #goal-flex {
-        display: block !important;
-        gap: 1rem !important;
-        align-items: center !important;
-    }
-
-    .borderOnSmall {
-        border-top: 1px solid var(--borderOnTop) !important;
-        padding-top: 1rem !important;
-    }
-
-    .history-section {
-        background: var(--background);
-        padding: 1.5rem;
-        border-radius: 15px;
-    }
-
-    #historyOpener {
-        font-size: 25px;
-        padding: 1.5rem 2rem;
-    }
-
-    .controlsPlaceholder {
-        display: none;
-    }
-}
-
-@media (max-width: 961px) {
-    .controlsPlaceholder {
-        display: none;
     }
 }
 
@@ -562,12 +489,6 @@ h1, h2, h3, h4 {
     padding: 4px;
     text-align: center;
     width: calc(100% - 8px);
-}
-
-@media (min-width: 425px) {
-    .app-container {
-        display: none !important;
-    }
 }
 
 /* Setup */
@@ -812,21 +733,6 @@ input[readonly] {
     z-index: 1;
 }
 
-@media (max-width: 530px) {
-    .history-list, .version-information {
-        border-radius: 0px;
-        border: none;
-        height: 100% !important;
-        width: 100% !important;
-    }
-}
-
-@media (max-width: 490px) {
-    #goalUpdaterHeader {
-        font-size: 29px !important;
-    }
-}
-
 .history-section {
     width: 100%;
 }
@@ -879,4 +785,92 @@ th, td {
     padding: 10px;
     text-align: center;
     border: 1px solid #ddd;
+}
+
+@media (min-width: 425px) {
+    .app-container {
+        display: none !important;
+    }
+}
+
+@media (max-width: 490px) {
+    #goalUpdaterHeader {
+        font-size: 29px !important;
+    }
+}
+
+@media (max-width: 530px) {
+    .history-list, .version-information {
+        border-radius: 0px;
+        border: none;
+        height: 100% !important;
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 630px) {
+    .navbar-links {
+        display: none;
+    }
+
+    .navbar {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 720px) {
+    .goal-section {
+        flex-direction: column !important;
+    }
+
+    .controls {
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)) !important;
+    }
+
+    #goalInput {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    #amount, #removeAmount {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .add-btn {
+        width: 100% !important;
+    }
+
+    #goal-flex {
+        display: block !important;
+        gap: 1rem !important;
+        align-items: center !important;
+    }
+
+    .borderOnSmall {
+        border-top: 1px solid var(--borderOnTop) !important;
+        padding-top: 1rem !important;
+    }
+
+    .history-section {
+        background: var(--background);
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+
+    #historyOpener {
+        font-size: 25px;
+        padding: 1.5rem 2rem;
+    }
+
+    .controlsPlaceholder, #containerMainHeaderNT {
+        display: none !important;
+    }
+
+}
+
+@media (max-width: 961px) {
+    .controlsPlaceholder {
+        display: none;
+    }
 }
