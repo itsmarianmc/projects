@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/header.css">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <header class="header-frame">
+        <div class="header">
+            <div class="header-left">
+                <img src="/assets/logos/Skin.png" alt="Minecraft Skin from itsmarian" class="header-image">
+                <span class="header-text">itsmarian</span>
+            </div>
+            <div class="mobile-hr"></div>
+            <nav class="header-nav">
+                <ul class="header-ul">
+                    <li>
+                        <a class="header-a" href="/?ref=navbar_header_home">Home</a>
+                    </li>
+                    <li>
+                        <a class="header-a" href="https://discord.com/users/860122608682795028" target="_blank">Contact</a>
+                    </li>
+                    <li>
+                        <a class="header-a" href="https://bit.ly/ProjektCityImprint" target="_blank">Imprint</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="mobile-hr"></div>
+            <div class="header-right">
+                <div class="symbol" onclick="location.reload()">
+                    <svg id="reload-header" xmlns="http://www.w3.org/2000/svg" height="50" viewBox="0 -960 960 960" width="50" fill="#000">
+                        <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
+                    </svg>
+                </div>
+                <div class="symbol hidden" id="changetolightmode">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 -960 960 960" width="40" style="margin: 5px;" fill="#fff">
+                        <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"/>
+                    </svg>
+                </div>
+                <div class="symbol hidden" id="changetodarkmode" style="visibility: hidden;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 -960 960 960" width="40" style="margin: 5px;" fill="#000">
+                        <path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+            <div class="container">
+                <div class="stopwatch-card">
+                    <div class="segmented-control" data-active-index="1">
+                        <button class="tab-button" data-tab="world-clock">World Clock</button>
+                        <button class="tab-button active" data-tab="stopwatch">Stopwatch</button>
+                        <button class="tab-button" data-tab="timer">Timer</button>
+                    </div>
+                    <div class="tab-content world-clock" id="world-clock">
+                        <ul id="world-clock-list">
+                            <li data-timezone="Europe/Berlin">
+                                <div class="region-div">
+                                    <span class="region">Berlin</span>
+                                </div>
+                                <span>+0 hr</span>
+                                <span class="time">Loading...</span>
+                            </li>
+                            <li data-timezone="America/New_York">
+                                <div class="region-div">
+                                    <span class="region">New York</span>
+                                </div>
+                                <span>-6 hr</span>
+                                <span class="time">Loading...</span>
+                            </li>
+                            <li data-timezone="Europe/London">
+                                <div class="region-div">
+                                    <span class="region">London</span>
+                                </div>
+                                <span>-1 hr</span>
+                                <span class="time">Loading...</span>
+                            </li>
+                            <li data-timezone="Asia/Tokyo">
+                                <div class="region-div">
+                                    <span class="region">Tokyo</span>
+                                </div>
+                                <span>+7 hr</span>
+                                <span class="time">Loading...</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content stopwatch active" id="stopwatch">
+                        <div class="top-box">
+                            <svg class="progress-ring">
+                                <circle class="progress-ring__circle" stroke="#6366f1" stroke-width="4" fill="transparent" r="148" cx="150" cy="150"/>
+                            </svg>
+                            <div class="ring-items">
+                                <div class="time-display">00:00:00.00</div>
+                                <div class="placeholder" style="height: 10px; width: 100%;"></div>
+                                <div class="controls">
+                                    <button class="btn btn-primary" id="startStop" onclick="startStop()">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn" id="lap" onclick="addLap()">
+                                        <i class="fas fa-flag"></i>
+                                    </button>
+                                    <button class="btn btn-danger" id="reset" onclick="reset()">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="laps-header">
+                            <h3 id="rounds-header">Rounds</h3>
+                            <div class="sort-buttons">
+                                <h3 id="sortby-header">Sort by</h3>
+                                <button onclick="sortLaps('number')">
+                                    <div class="sort-button">
+                                        <i class="fas fa-sort-numeric-down"></i>
+                                        <p style="font-size: 10px;">Number</p>
+                                    </div>
+                                </button>
+                                <button onclick="sortLaps('time')">
+                                    <div class="sort-button">
+                                        <i class="fas fa-clock"></i>
+                                        <p style="font-size: 10px;">Time</p>
+                                    </div>
+                                </button>
+                                <button onclick="sortLaps('duration')">
+                                    <div class="sort-button">
+                                        <i class="fas fa-stopwatch"></i>
+                                        <p style="font-size: 10px;">Duration</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="laps-container" id="laps"></div>
+                    </div>
+                    <div class="tab-content timer" id="timer">
+                        <div class="time-display" id="timer-display">00:00:00.00</div>
+                        <div class="placeholder" style="height: 20px; width: 100%;"></div>
+                        <div class="timer-inputs">
+                            <input class="input-field" type="number" id="timer-hours" placeholder="Hours">
+                            <input class="input-field" type="number" id="timer-minutes" placeholder="Minutes">
+                            <input class="input-field" type="number" id="timer-seconds" placeholder="Seconds">
+                        </div>
+                        <div class="controls" style="margin-bottom: 10px; margin-top: 10px;">
+                            <button id="start-timer" style="background: rgba(255, 255, 255, 0.1);">Start Timer</button>
+                            <button id="reset-timer" style="background: rgba(255, 255, 255, 0.1);" class="secondary">Reset Timer</button>
+                        </div>
+                        <div style="margin-bottom: 10px; margin-top: 10px;">
+                            <a id="timer-error"></a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+    </main>
+    <footer>
+        <div class="footer-lines">
+            <div class="footer-special-information">
+                <a>All trademarks and their logos, names, content and files shown on these websites are the content and property of their respective owners. Itsmarian and Projekt City Ltd. are not affiliated with and do not cooperate with them and have no rights to these trademarks. These projects are for demonstration purposes only and are not intended to compete in any way with these brands. For questions regarding these games/brands or to request removal if you are the owner, please contact</a>
+                <a class="linkout" href="mailto:projektcityofficial@gmail.com" target="_blank">projektcityofficial@gmail.com</a>
+                <a>or</a>
+                <a class="linkout" href="mailto:business.itsmarian@gmail.com" target="_blank">business.itsmarian@gmail.com</a>
+                <a>(responses may take up to 7 business days).</a>
+                <br>
+                <a>All projects, games and pages under the domain “itsmarianmc.github.io” and “projektcity.github.io” are owned by Projekt City Ltd. through itsmarian. Use of this code or redistribution without permission is prohibited!</a>
+            </div>
+            <div class="placeholder w300 h20"></div>
+            <div class="footer-line">
+                <a>This site is related to Projekt City and is managed, operated and created by Projekt City Ltd. and its services. The same terms and conditions and associated policies apply and might be subject to change!</a>
+            </div>
+            <div class="placeholder w300 h20"></div>
+            <div class="footer-line">
+                <div class="footer-line">
+                <a class="nodecoration" href="https://projektcity.github.io/legal/github-privacy?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=githubprivacypolicy" target="_blank">GitHub Privacy Policy</a>
+                <a>&nbsp;•&nbsp;</a>
+                <a class="nodecoration" href="https://projektcity.github.io/legal/imprint?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=imprint" target="_blank">Imprint</a>
+                <a>&nbsp;•&nbsp;</a>
+                <a class="nodecoration" href="https://projektcity.github.io/legal/privacy?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=privacypolicy" target="_blank">Privacy Policy</a>
+                <a>&nbsp;•&nbsp;</a>
+                <a class="nodecoration" href="https://projektcity.github.io/legal/terms?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=termsofuse" target="_blank">Terms of use</a>
+            </div>
+            <div class="placeholder w300 h10"></div>
+            <div class="footer-copy">
+                <a>&copy; 2025 itsmarian / Projekt City Ltd. | All rights reserved!</a>
+            </div>
+            <div style="font-size: 20px;">
+                <a>Made with ❤️ in</a>
+                <a style="color: #000000;">GE</a><a style="color: #DD0000;">RMA</a><a style="color: #FFCE00;">NY</a>
+            </div>
+            <div class="placeholder w300 h20"></div>
+        </div>
+    </footer>
+    <div class="cookie-notice">
+        <div class="cookie-notice-inner">
+            <div>
+                <a>This site uses cookies, including from Google LLC and Fonticons Inc, to provide you with fonts, symbols, emojis and other scripts and technologies and to save your game and other progress on the site. Anything beyond these cookies is not collected, stored or visible. By using the site, you agree to the</a>
+                <a class="linkout nodecoration-light" href="/legal/privacy" target="_blank">Privacy Policy</a>
+                <a>and</a>
+                <a class="linkout nodecoration-light" href="/legal/terms" target="_blank">Terms of Use!</a>
+            </div>
+            <div class="cookie-notice-button">
+                <a>✔&nbsp;Understand</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="/assets/script.js"></script>
+    <script src="/assets/header.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') {
+                localStorage.setItem('theme', 'dark');
+                location.reload();
+            } else if (theme === 'dark') {
+                changeToDarkMode();
+            } else {
+                localStorage.setItem('theme', 'dark');
+                changeToDarkMode();
+            }
+        });
+    </script>
+</body>
+</html>

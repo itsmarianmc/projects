@@ -1,0 +1,22 @@
+body {
+    font-family: sans-serif;
+}
+
+canvas {
+    border: 1px solid #7f7f7f;
+}
+
+#game-container {
+    display: flex;
+}
+
+#board-canvas {
+    color: #7f7f7f;
+    margin-right: 20px;
+}
+
+.piece-canvas {
+    border: 1px solid #7f7f7f;
+    cursor: grab;
+    margin: 5px;
+}

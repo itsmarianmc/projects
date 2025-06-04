@@ -1,0 +1,79 @@
+body {
+	font-family: sans-serif;
+	background: #f2f2f2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	margin-top: 20px;
+}
+
+/* Spielbrett als Grid */
+#gameBoard {
+	display: grid;
+	grid-template-columns: repeat(8, 50px);
+	grid-template-rows: repeat(8, 50px);
+	gap: 2px;
+	background: #333;
+	padding: 5px;
+	margin-bottom: 20px;
+	position: relative;
+}
+
+.tile {
+	width: 50px;
+	height: 50px;
+	border-radius: 5px;
+	cursor: grab;
+	user-select: none;
+	transition: background-color 0.3s, opacity 0.3s;
+}
+
+.tile.dragging {
+	cursor: grabbing;
+	opacity: 0.8;
+}
+
+/* Farben der Spielsteine */
+.red {
+	background-color: #e74c3c;
+}
+
+.blue {
+	background-color: #3498db;
+}
+
+.green {
+	background-color: #2ecc71;
+}
+
+.yellow {
+	background-color: #f1c40f;
+}
+
+.purple {
+	background-color: #9b59b6;
+}
+
+.orange {
+	background-color: #e67e22;
+}
+
+/* Falling-Animation per Keyframes (nur für neue Steine) */
+@keyframes fall {
+	from {
+		transform: translateY(-60px);
+	}
+
+	to {
+		transform: translateY(0);
+	}
+}
+
+.tile.fall {
+	animation: fall 0.4s ease forwards;
+}

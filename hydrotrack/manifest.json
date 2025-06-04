@@ -1,0 +1,13 @@
+{
+  "name": "HydroTrack",
+  "short_name": "HydroTrack",
+  "start_url": "/projects/hydrotrack/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/projects/hydrotrack/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

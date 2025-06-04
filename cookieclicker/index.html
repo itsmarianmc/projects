@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" initial-scale="1.0", maximum-scale="1.0", user-scalable="no">
+    <title>Cookie Clicker by itsmarian</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="/assets/style.css">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
+    <meta property="og:type" content="website">
+</head>
+<body id="body" class="scroll">
+    <div id="desktop" style="display: none;">
+        <div class="overlay" id="overlay">
+            <div class="overlay-content" id="overlayabout" style="display: none">
+                <div class="overlay-head">
+                    <h1>How to play</h1>
+                </div>
+                <div class="overlay-main">
+                    <a>Cookie Clicker is a popular and well-known game in which you receive a cookie when you press a cookie. With the cookies you earn, you can buy upgrades and automatic production buildings such as grannies or robots to generate cookies even faster.</a>
+                    <br>
+                    <a>
+                        <strong>What do the respective upgrades do?</strong>
+                    </a>
+                    <ul>
+                        <li>
+                            <a><strong>Handschuhe:</strong>&nbsp;Your collected cookies, upgrades and other game progress are saved in your browser. This means that the next time you load the page, you can continue where you left off without losing your progress.</a>
+                        </li>
+                        <li>
+                            <a><strong>Cookie Robot:</strong>&nbsp;A cookie robot gives you 1 automatic cookie per second</a>
+                        </li>
+                        <li>
+                            <a><strong>Granny:</strong>&nbsp;A granny gives you 5 automatic cookies per second, i.e. 4 more than a robot and is therefore more expensive. The more grannies you have, the more automatic income you have!</a>
+                        </li>
+                        <li>
+                            <a><strong>Prestige:</strong>&nbsp;Prestige resets your current progress and gives you a prestige star. However, it increases your global income by 1.5. The higher the number of prestige stars, the better your cookie. When you have 20 prestige stars, the game is over.</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="overlay-foot">
+                    <div class="btn" id="closeAbout" style="background-color: #ccc; margin: 0 auto;">
+                        <div class="btn-inner">
+                            <div class="btn-svg">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                                </svg>
+                            </div>
+                            <div class="btntext">
+                                <a>Understood</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay-content" id="cookieConsent" style="display: none;">
+                <div class="overlay-head">
+                    <h1>Information</h1>
+                </div>
+                <div class="overlay-main">
+                    <a>
+                        <strong>This site uses cookies,</strong>
+                    </a>
+                    <a>to save your progress in the game, to offer this game, to offer the services of GitHub and to make this site work correctly.</a>
+                    <br>
+                    <a>
+                        <i>What exactly do the cookies do?</i>
+                    </a>
+                    <ul>
+                        <li><strong>Saving the game progress:</strong>&nbsp;Your collected cookies, upgrades and other game progress are saved in your browser cache. This allows you to pick up where you left off the next time you load the page without losing your progress (automatic saving every 10 seconds).</li>
+                        <li><strong>Saving your settings:</strong>&nbsp;Cookies enable us to save your game preferences and settings so that you can always use the site according to your wishes.</li>
+                        <li><strong>Performance of the site:</strong>&nbsp;The cache files allow the page to load faster so that the page does not have to retrieve the data from the server each time it is loaded.</li>
+                        <li><strong>Fonts:</strong>&nbsp;This site may connect to the Google Font API via “https://fonts.googleapis.com/” to provide fonts and icons for this site. Google may collect, use and analyze some non-sensitive data, such as your IP address, visit time and time spent on this site</li>
+                    </ul>
+                    <a><strong>Data protection and security:</strong>&nbsp;This site is hosted via the provider “GitHub”, which may collect, use and analyze data on this site. I cannot and will not store any data that goes beyond your progress. You can delete the stored cookies at any time via your browser settings if you wish. However, this will delete your current progress unless you have downloaded it as a file.</a>
+                    <a>By playing this site, you agree to the use of cookies to save your score and settings and to provide the services of GitHub in accordance with the </a><a class="nodecoration" href="https://projektcity.github.io/legal/privacy" target="_blank">privacy policy</a>* of Projekt City Ltd.</a>
+                </div>
+                <div class="overlay-foot">
+                    <div class="btn" id="acceptCookiesBtn" style="background-color: #ccc; margin: 0 auto;">
+                        <div class="btn-inner">
+                            <div class="btn-svg">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                                </svg>
+                            </div>
+                            <div class="btntext">
+                                <a>Understood</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar -->
+        <top class="top">
+            <div class="navbar">
+                <div class="navigation">
+                    <div class="element" id="home">
+                        <div class="element-inner">
+                            <a>Cookie Clicker</a>
+                        </div>
+                    </div>
+                    <div class="element" id="about">
+                        <div class="element-inner">
+                            <a>How to play</a>
+                        </div>
+                    </div>
+                    <div class="element" id="cookiecache">
+                        <div class="element-inner">
+                            <a>Cookies and Cache</a>
+                        </div>
+                    </div>
+                    <div class="element" id="github">
+                        <div class="element-inner">
+                            <a>GitHub</a>
+                        </div>
+                    </div>
+                    <div class="element" id="changelog">
+                        <div class="element-inner">
+                            <a>ChangeLog</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </top>
+        <content id="content">
+            <h1>Simple Cookie Clicker v1.4</h1>
+            <a>by itsmarian</a>
+            <div class="stats">
+                <h2>Cookies: <span id="cookies">0</span></h2>
+                <hr>
+                <h3>🍪 Per click: <span id="clickValue">1</span></h3>
+                <h3>⚡ Per second: <span id="cps">0</span></h3>
+                <h3>📈 Prestige: <span id="prestige">0</span></h3>
+                <div style="margin: 0 auto; width: 300px;">
+                    <hr>
+                </div>
+                <h3>🤖 Robots: <span id="autoCount">0</span></h3>
+                <h3>👵 Grannys: <span id="grandmaCount">0</span></h3>
+            </div>
+            <img alt="Cookie" draggable="false" id="cookie" src="https://cdn-icons-png.flaticon.com/512/1047/1047711.png">
+            <div class="container">
+                <div class="stats">
+                    <h2>🏭 Upgrades</h2>
+                    <button class="shop-button" onclick="buyUpgrade('click')">
+                        <a>🧤 Better gloves (+2/Klick)</a>
+                        <br>
+                        <a>🏷️ Costs: <span id="clickCost">10</span> Cookies</a>
+                    </button>
+                    <button class="shop-button" onclick="buyUpgrade('auto')">
+                        <a>🤖 Cookie-Roboter (+1/Second)</a>
+                        <br>
+                        <a>🏷️ Costs: <span id="autoCost">50</span> Cookies</a>
+                    </button>
+                    <button class="shop-button" onclick="buyUpgrade('grandma')">
+                        <a>👵 Granny (+5/Second)</a>
+                        <br>
+                        <a>🏷️ Costs: <span id="grandmaCost">200</span> Cookies</a>
+                    </button>
+                    <button class="shop-button" onclick="buyPrestige()">
+                        <a>📈 Prestige (+1 Prestige-Star)</a>
+                        <br>
+                        <a>🏷️ Costs: <span id="prestigeCost">25000</span> Cookies</a>
+                    </button>
+                </div>
+            </div>
+            <div class="container">
+                <div class="stats">
+                    <div class="save-info">
+                        <div id="save" style="display: none; margin-bottom: 20px;">
+                            <div id="gamesave" style="height: 13.6px;">
+                                <span>Game saved!</span>
+                            </div>
+                        </div>
+                        <div class="btn" style="background-color: #8bbe51; margin: 0 auto;" onclick="saveGame()">
+                            <div class="btn-inner">
+                                <div class="btn-svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                                        <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                                    </svg>
+                                </div>
+                                <div class="btntext">
+                                    <a>Save manually</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="height: 20px; width: 280px;"></div>
+                        <div class="btn" id="loadbtn" style="background-color: #8bbe51; margin: 0 auto;" onclick="openLoader()">
+                            <div class="btn-inner">
+                                <div class="btn-svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                                        <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                                    </svg>
+                                </div>
+                                <div class="btntext">
+                                    <a>Load progress</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="fileLoader" style="display: none;">
+                            <div class="loadInput">
+                                <input type="file" id="fileInput" accept=".json" style="width: 230px;">
+                            </div>
+                            <div class="loadCancel" onclick="stopLoad()" style="margin: 5px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                                    <path d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div style="height: 20px; width: 280px;"></div>
+                        <div id="loadButton">
+                            <div class="btn" style="background-color: #8bbe51; margin: 0 auto;">
+                                <div class="btn-inner">
+                                    <div class="btn-svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                                            <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="btntext">
+                                        <a>Confirm override</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="height: 20px; width: 280px;"></div>
+                        </div>
+                        <div class="btn" onclick="resetGame()" style="margin: 0 auto;">
+                            <div class="btn-inner">
+                                <div class="btn-svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                                        <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
+                                    </svg>
+                                </div>
+                                <div class="btntext">
+                                    <a>Reset game</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </content>
+    </div>
+    <footer>
+        <div class="footer-lines">
+            <div class="footer-line">
+                <a>*The collected data mentioned in the privacy policy created by Projekt City may differ, as some services are not included on this page. If you have any further questions, please contact </a><a class="nodecoration" href="mailto:" target="_blank">projektcityofficial@gmail.com</a>&nbsp;or&nbsp;<a class="nodecoration" href="mailto:" target="_blank">business.itsmarian@gmail.com</a>.</a>
+                <br>
+                <a>This site is related to Projekt City and is managed, operated and created by Projekt City Ltd. and its services. The same terms and conditions and associated policies apply and might be subject to change!</a>
+            </div>
+            <div class="placeholder w300 h20"></div>
+            <div class="footer-line">
+                <div class="footer-line">
+                <a class="nodecoration" href="https://projektcity.github.io/legal/github-privacy?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=githubprivacypolicy" target="_blank">GitHub Privacy Policy</a>
+                <a>&nbsp;•&nbsp;</a>
+                <a class="nodecoration" href="https://projektcity.github.io/legal/imprint?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=imprint" target="_blank">Imprint</a>
+                <a>&nbsp;•&nbsp;</a>
+                <a class="nodecoration" href="https://projektcity.github.io/legal/privacy?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=privacypolicy" target="_blank">Privacy Policy</a>
+                <a>&nbsp;•&nbsp;</a>
+                <a class="nodecoration" href="https://projektcity.github.io/legal/terms?utm_src=itsmarian_githubpages_footer&utm_medium=itsmariany&utm_content=termsofuse" target="_blank">Terms of use</a>
+            </div>
+            <div class="placeholder w300 h10"></div>
+            <div class="footer-copy">
+                <a>&copy; 2025 itsmarian / Projekt City Ltd. | All rights reserved!</a>
+            </div>
+            <div style="font-size: 20px;">
+                <a>Made with ❤️ in</a>
+                <a style="color: #000000;">GE</a><a style="color: #DD0000;">RMA</a><a style="color: #FFCE00;">NY</a>
+            </div>
+            <div class="placeholder w300 h20"></div>
+        </div>
+    </footer>
+    <div class="cookie-notice">
+        <div class="cookie-notice-inner">
+            <div>
+                <a>This site uses cookies, including from Google LLC and Fonticons Inc, to provide you with fonts, symbols, emojis and other scripts and technologies and to save your game and other progress on the site. Anything beyond these cookies is not collected, stored or visible. By using the site, you agree to the</a>
+                <a class="linkout nodecoration-light" href="/legal/privacy" target="_blank">Privacy Policy</a>
+                <a>and</a>
+                <a class="linkout nodecoration-light" href="/legal/terms" target="_blank">Terms of Use!</a>
+            </div>
+            <div class="cookie-notice-button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                </svg>
+                <a>Understand</a>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/script.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Get user device
+        function detectDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobile = /iphone|ipod|android.*mobile|windows phone/.test(userAgent);
+            
+            if (isMobile) {
+                return "mobile";
+            } else {
+                return "desktop";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deviceType = detectDevice();
+            
+            if (deviceType === "desktop") {
+                document.getElementById("desktop").style.display = deviceType === "desktop" ? "block" : "none";
+            } else {
+                window.location.href = "/projects/cookieclicker/mobile.html";
+            }
+        });
+
+        console.log("set-userdevice=" + detectDevice());
+    </script>
+</body>
+</html>

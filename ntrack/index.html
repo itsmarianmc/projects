@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>N'Track - A simple and reliable grade tracker</title>
+    <link rel="icon" type="image/png" href="favicon-light.png">
+    <link rel="stylesheet" href="styles.css?v=1.0">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="itsmarian">
+    <meta name="description" content="N'Track is a simple, modern, reliable and completely free grade tracker to give you a better overview of your grades and show you which subjects you should try harder in.">
+    <meta name="keywords" content="grade tracker, mark tracker, free grade tracker, free mark tracker, N'Track, modern grade tracker, modern mark tracker, grades, marks">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="N'Track - Grade Tracker">
+    <meta property="og:description" content="N'Track is a simple, modern, reliable and completely free grade tracker to give you a better overview of your grades and show you which subjects you should try harder in.">
+    <meta property="og:image" content="http://itsmarianmc.github.io/projects/ntrack/favicon.png">
+    <meta property="og:url" content="http://itsmarianmc.github.io/projects/ntrack/">
+    <meta property="og:type" content="website">
+    <!-- App -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e2e8f0" />
+    <link rel="apple-touch-icon" href="favicon-light.png" />
+</head>
+<body>
+    <div id="setupScreen">
+        <div class="card">
+            <div style="display: flex; align-items: center; text-align: center;">
+                <img alt="Vector graphic logo consisting of a black, stylized letter 'N' and an orange circle on top of it, which contains a centered checkmark symbol." draggable="false" src="favicon-dark.png" height="30px">
+                <div style="text-align: center; width: 100%;">
+                    <h2>Welcome to N'Track</h2>
+                </div>
+            </div>
+            <div style="background-color: var(--hr-line); height: 1px; margin: 10px 0px; width: 100%;"></div>
+            <h3>Set up subjects</h3>
+            <form id="setupForm">
+                <div class="field">
+                    <input type="text" id="setupSubjectInput" placeholder="Subject name" required />
+                    <button type="submit">Add subject</button>
+                </div>
+            </form>
+            <ul id="setupSubjectList"></ul>
+            <h3>Set up weights and types</h3>
+            <form id="setupTypeForm">
+                <div class="field">
+                    <input type="text" id="setupTypeInput" placeholder="Type (e.g.: Test, Exam, Participation Grade, Homework Check)" required />
+                    <input type="number" id="setupTypeWeight" placeholder="Default weighting" min="1"max="6" step=".1" required />
+                    <button type="submit">Add type</button>
+                </div>
+            </form>
+            <ul id="setupTypeList"></ul>
+            <button id="startBtn" disabled>Start tracking</button>
+            <div id="setup-action-tooltip"></div>
+            <div style="display: flex;">
+                <div style="background-color: var(--hr-line); height: 1px; margin: 20px 0px; width: calc(50% - 10px);"></div>
+                <div style="height: 20px; transform: translateY(10px); margin: 0px 5px;">
+                    <a>or</a>
+                </div>
+                <div style="background-color: var(--hr-line); height: 1px; margin: 20px 0px; width: calc(50% - 10px);"></div>
+            </div>
+            <button id="importBtn">Import from another memory</button>
+            <input type="file" id="importInput" style="display: none" />
+        </div>
+    </div>
+    <aside id="sidebar" class="hidden">
+        <div style="display: flex; height: auto">
+            <img alt="Vector graphic logo consisting of a black, stylized letter 'N' and an orange circle on top of it, which contains a centered checkmark symbol." draggable="false" src="favicon-dark.png" height="30px">
+            <div style="text-align: right; width: 100%;">
+                <h2>Your Subjects</h2>
+            </div>
+        </div>
+        <ul id="subjectList"></ul>
+        <div id="overallAverage" class="average"></div>
+        <button class="action-button" id="openSettingsBtn" style="margin: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                <path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t20 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/>
+            </svg>
+            <a>Settings</a>
+        </button>
+    </aside>
+    <main id="main" class="hidden">
+        <div id="welcome" class="card" style="display: flex; flex-direction: column; gap: 25px; text-align: center;">
+            <div>
+                <h3>Welcome to N'Track</h3>
+                <p>Start by selecting a subject from the menu or adding a new subject or a new weighting.</p>
+            </div>
+            <div>
+                <h4>What is N'Track?</h4>
+                <a>N'Track is a simple, modern, reliable and completely free grade tracker to give you a better overview of your grades and show you which subjects you should try harder in. </a>
+                <br>
+                <a>All this, without ads and without premium features, because the app is already ✨PREMIUM ✨ enough and we think that everyone should be able to monitor their grades well and easily without having to spend money on it. Since we also have no server or other costs, we are not dependent on money and do not want to earn any.</a>
+                <br>
+                <a>A little feedback is enough for us...</a>
+            </div>
+            <div>
+                <h4>What can you do better than "Notan" or "Notenapp."</h4>
+                <a>We are quite honest: NOTHING</a>
+                <br>
+                <a>There is nothing that distinguishes us from other grade trackers, except our design and some functionalities. That's why it's a "simple" grade tracker!</a>
+            </div>
+            <div>
+                <h4>How does this site/app work?</h4>
+                <div style="margin-top: 10px;">
+                    <a style="font-weight: bold;">First of you have to setup the app</a>
+                    <br>
+                    <a>Tutorial coming soon...</a>
+                </div>
+            </div>
+        </div>
+        <div id="notesCard" class="card hidden">
+            <h3 id="currentSubject"></h3>
+            <form id="addNoteForm">
+                <div class="field">
+                    <select id="noteTypeSelect" required>
+                        <option value="" disabled selected>Select type</option>
+                    </select>
+                    <select id="halfyearSelect" required>
+                        <option value="" disabled selected>Select year</option>
+                        <option value="Y1">First half year</option>
+                        <option value="Y2">Second half year</option>
+                    </select>
+                    <input id="dateInput" onfocus="(this.type='date', this.style.padding='calc(0.75rem + 1px)')" onblur="(this.type='text', this.style.padding='calc(0.75rem + 2px)')" style="padding: calc(0.75rem + 2px);" placeholder="tt-mm-yyyy" type="text" />
+                    <input type="number" id="gradeInput" placeholder="Grade" min="1" max="6" step="0.1" required />
+                    <button type="submit">Add</button>
+                </div>
+            </form>
+            <table style="margin: 0.5rem 0rem;">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Grade</th>
+                        <th>Weighting</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="notesTable"></tbody>
+            </table>
+            <div class="average" id="subjectAverage"></div>
+        </div>
+    </main>
+    <section id="settingsScreen" class="hidden" style="padding: 1rem;">
+        <div class="card">
+            <div style="display: flex; justify-content: center; width: auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="#000">
+                    <path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t20 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/>
+                </svg>
+                <h3 style="margin-bottom: 0rem;">Settings</h3>
+            </div>
+            <div style="background-color: var(--hr-line); height: 1px; margin: var(--spacing) 0px; width: 100%;"></div>
+            <div style="display: flex; margin: 1rem 0rem 0.5rem 0rem; width: auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="#000">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                <h4 style="word-break: break-all;">Add subject</h4>
+            </div>
+            <form id="settingsAddSubjectForm">
+                <div class="field">
+                    <input type="text" id="settingsSubjectInput" placeholder="Subject name" required />
+                    <button type="submit">Add</button>
+                </div>
+                <div style="display: flex; gap: 5px; margin: 1rem 0rem 0.5rem 0rem; width: auto;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="#000">
+                        <path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                    </svg>
+                    <h4 style="word-break: break-all;">Existing subjects</h4>
+                </div>
+                <ul id="settingsSubjectListDisplay" style="list-style: none; padding: 0;"></ul>
+            </form>
+            <div style="background-color: var(--hr-line); height: 1px; margin: 20px 0px; width: 100%;"></div>
+            <div style="display: flex; margin: 1rem 0rem 0.5rem 0rem; width: auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="#000">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                <h4 style="word-break: break-all;">Add weight/type</h4>
+            </div>
+            <form id="settingsAddTypeForm">
+                <div class="field">
+                    <input type="text" id="settingsTypeInput" placeholder="Type (e.g.: Test, Exam, Participation Grade, Homework Check)" required />
+                    <input type="number" id="settingsTypeWeight" placeholder="Default weighting" min="0.1" step="0.1" required />
+                    <button type="submit">Add</button>
+                </div>
+                <div style="display: flex; gap: 5px; margin: 1rem 0rem 0.5rem 0rem; width: auto;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="#000">
+                        <path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                    </svg>
+                    <h4 style="word-break: break-all;">Existing weights/types</h4>
+                </div>
+                <ul id="settingsTypeListDisplay" style="list-style: none; padding: 0;"></ul>
+            </form>
+            <h4 style="margin: 1rem 0rem 0.5rem 0rem; width: auto;">Export and Import</h4>
+            <div class="field" style="display: flex; gap: 10px; flex-direction: column;">
+                <button class="action-button" id="exportBtn" style="margin: 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                        <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"></path>
+                    </svg>
+                    <a>Export</a>
+                </button>
+                <button class="action-button" id="settingsImportBtn" style="margin: 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                        <path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"></path>
+                    </svg>
+                    <a>Import</a>
+                </button>
+            </div>
+            <button class="action-button" id="closeSettingsBtn" style="margin-top: 1rem;">Return</button>
+        </div>
+    </section>
+    <ul id="subjectContextMenu" class="context-menu hidden">
+        <li id="renameSubject">✏️ Rename Subject</li>
+        <li id="deleteSubject">🗑️ Remove Subject</li>
+    </ul>
+    <div id="dateOverlay" class="hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="background: white; padding: 20px; border-radius: 10px; font-size: 20px; max-width: 400px; text-align: center; width: 90%;">
+            <h3>Edit Entry for subject <a id="overlaySubject"></a></h3>
+            <p id="overlayType"></p>
+            <p id="overlayGrade"></p>
+            <div style="height: 10px; width: 100%;"></div>
+            <label for="overlayDate">Date:</label><br>
+            <div style="height: 10px; width: 100%;"></div>
+            <input type="date" id="overlayDate"><br><br>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button class="action-button" id="overlayCancel">Cancel</button>
+            <button class="action-button" id="overlaySave">Save</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+            .then(reg => console.log('✅ Service Worker registered.\n', reg))
+            .catch(err => console.error('❌ Service Worker Error:', err));
+        }
+    </script>
+</body>
+</html>

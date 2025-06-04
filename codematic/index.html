@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Beautifier</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div style="padding: 20px;">
+        <div class="container">
+            <div id="themeToggle" class="theme-toggle light" title="Toggle Theme">
+                <div class="toggle-knob">
+                    <div class="icon sun"></div>
+                    <div class="icon moon"></div>
+                </div>
+            </div>
+            <div style="margin: -41.82px 0px 20px 0px; text-align: center;">
+                <div style="display: flex; gap: 5px; justify-content: center; width: 100%;">
+                    <div>
+                        <img draggable="false" src="favicon.png" height="37.14">
+                    </div>
+                    <div>
+                        <h1>Welcome to CodeMatic</h1>
+                    </div> 
+                </div>
+                <a>Your one and only tool to format your code!</a>
+            </div>
+            <div class="options">
+                <div class="option-group">
+                    <label for="language">Select language:</label>
+                    <select id="language">
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="indent">Indentation:</label>
+                    <select id="indent">
+                        <option value="2">2 spaces</option>
+                        <option value="4">4 spaces</option>
+                        <option value="tab" selected>TAB</option>
+                        <option disabled>More options coming soon...</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label class="disabledOnSmall">&nbsp;</label>
+                    <button id="beautify-btn">Beautify</button>
+                </div>
+            </div>
+            <div class="code-container">
+                <div class="code-box">
+                    <label for="input-code">Input:</label>
+                    <textarea id="input-code" placeholder="Insert the code to be formatted here..."></textarea>
+                    <div class="info-bar">
+                        <span class="char-count" id="input-count">0 characters</span>
+                        <button class="copy-btn" id="clear-btn">Clear</button>
+                    </div>
+                </div>
+                <div class="code-box">
+                    <label for="output-code">Output:</label>
+                    <textarea id="output-code" readonly placeholder="Formatted code is displayed here..."></textarea>
+                    <div class="info-bar">
+                        <span class="char-count" id="output-count">0 characters</span>
+                        <button class="copy-btn" id="copy-btn">Copy</button>
+                    </div>
+                </div>
+            </div>
+            <div id="error-message" class="error"></div>
+        </div>
+    </div>
+    <div class="cookie-notice">
+        <div class="cookie-notice-inner">
+            <div>
+                <a>This site uses cookies, including from Google LLC and Fonticons Inc, to provide you with fonts, symbols, emojis and other scripts and technologies and to save preferences. Anything beyond these cookies is not collected, stored or visible. By using the site, you agree to the</a>
+                <a class="linkout nodecoration-light" href="/legal/privacy" target="_blank">Privacy Policy</a>
+                <a>and</a>
+                <a class="linkout nodecoration-light" href="/legal/terms" target="_blank">Terms of Use!</a>
+            </div>
+            <div class="cookie-notice-button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                </svg>
+                <a>Understand</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify-html.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

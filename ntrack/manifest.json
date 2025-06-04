@@ -1,0 +1,13 @@
+{
+  "name": "N'Track",
+  "short_name": "N'Track",
+  "start_url": "/projects/ntrack/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/projects/ntrack/favicon-light.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

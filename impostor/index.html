@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splash - Impostor Spiel</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loader.css">
+    <link rel="stylesheet" href="/assets/header.css">
+    <link rel="stylesheet" href="/assets/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="itsmarian">
+    <meta name="description" content="The aim of “Find The impostor” is to expose a secret impostor in the group. All players are given a secret role: most are normal players, but one or more participants are impostors. A random word is chosen and each player must name a word for the word. The impostor must try to guess the word, while the innocents try to guess the impostor.">
+    <meta name="keywords" content="">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Find The Impostor">
+    <meta property="og:description" content="The aim of “Find The impostor” is to expose a secret impostor in the group. All players are given a secret role: most are normal players, but one or more participants are impostors. A random word is chosen and each player must name a word for the word. The impostor must try to guess the word, while the innocents try to guess the impostor.">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
+    <meta property="og:type" content="website">
+    <style>
+        .h400 {
+            height: 400px;
+        }
+    </style>
+</head>
+<body style="overflow-x: hidden;">
+    <div class="placeholder w300 h50"></div>
+    <div class="container initialision">
+        <div style="text-align: center;">
+            <h1>Initialisiere...</h1>
+            
+            <div class="start-progress">
+                <div class="start-progress-bar"></div>
+                <div class="start-progress-text">
+                    <a id="startprogress"></a>
+                </div>
+            </div>
+            <div class="loader_container">
+                <div class="loader">
+                <div class="loader__item loader__item-1"></div>
+                <div class="loader__item loader__item-2"></div>
+                <div class="loader__item loader__item-3"></div>
+                <div class="loader__item loader__item-4"></div>
+                <div class="loader__item loader__item-5"></div>
+                <div class="loader__item loader__item-6"></div>
+                <div class="loader__item loader__item-7"></div>
+                <div class="loader__item loader__item-8"></div>
+                <div class="loader__item loader__item-9"></div>
+                <div class="loader__item loader__item-10"></div>
+                <div class="loader__item loader__item-11"></div>
+                <div class="loader__item loader__item-12"></div>
+                </div>
+            </div>
+            <div id="initialision-text" style="display: none; text-align: center;">
+                <a>Sollte diese Nachricht länger als 10 Sekunden angezeigt werden, lade die Seite neu oder überprüfe deine Internetverbindung</a>
+                <br>
+                <a>
+                    <b>Statussystem powered by GitHub Pages</b>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="information">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+            <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+        </svg>
+    </div>
+    <div class="container" id="setup-screen">
+        <h1>Impostor Setup</h1>
+        <label>Spielernamen:</label>
+        <textarea id="names-input" rows="5" placeholder="Füge hier die Spielernamen ein; jeden Namen in eine neue Zeile"></textarea>
+        <label>Anzahl Impostoren:</label>
+        <input type="number" id="impostor-count" min="1" value="1">
+        <label>Timer Minuten:</label>
+        <input type="number" id="timer-minutes" min="1" value="5">
+        <label>Kategorien auswählen:</label>
+        <div class="dropdown" id="category-dropdown">
+            <button type="button" class="dropdown-toggle">Alle auswählen ▼</button>
+            <div class="dropdown-menu">
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="all">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Alle</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Umfasst alle Kategorien. Es wird eine zufällige Kategorie aus der Liste ausgewählt und daraus ein Wort.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="entertainment">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Unterhaltung</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Alles rund um Filme, Serien, Musik und Freizeitaktivitäten.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="daily">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Alltag</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Begriffe aus dem täglichen Leben und typischen Situationen.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="animalsnature">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Tiere & Natur</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Alles aus der Welt der Tiere, Pflanzen und Naturphänomene.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="sports">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Sport & Freizeit</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Begriffe aus Sportarten, Fitness und Freizeitbeschäftigungen.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="school">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Wissen & Schule</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Schulwissen, Bildung und allgemeines Sachwissen.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="festivals">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Feste & Feiern</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Traditionen, Feste und besondere Anlässe weltweit.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="stars">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Stars & Promis</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Bekannte Persönlichkeiten aus Film, Musik und Gesellschaft.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="fruits">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Obstsorten</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Alle möglichen Früchte und Obstsorten weltweit.</a>
+                        </div>
+                    </div>
+                </label>
+                <label>
+                    <div>
+                        <input type="checkbox" name="category" value="countries">
+                    </div>
+                    <div>
+                        <div>
+                            <a class="dropdown-header">Länder</a>
+                        </div>
+                        <div class="placeholder w100 h5"></div>
+                        <div>
+                            <a>Staaten, Nationen und geographische Begriffe aus aller Welt.</a>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <button id="start-btn">Start</button>
+    </div>
+    <div class="container hidden" id="card-screen">
+        <div class="card" id="card">
+        <div class="card-content front" id="card-front">Zum Aufdecken nach oben swipen</div>
+        <div class="card-content back" id="card-back"></div>
+        </div>
+        <button id="next-btn" disabled>Weiter</button>
+    </div>
+    <div class="container" id="timer-screen">
+        <div class="timer" id="timer-container">
+            <div class="hidden" id="randomplayer"></div>
+            
+            <a id="timer-display"></a>
+        </div>
+        <div id="finished-text" class="hidden">
+            <h2>Zeit abgelaufen!</h2>
+        </div>
+        <div id="impostor-word-reveal" class="hidden">
+            <a>
+                <b id="impostor-sp"></b>
+            </a>
+            <a id="impostor-list"></a>
+            <div class="placeholder w100 h10"></div>
+            <a>
+                <b>Das Wort ist:</b>
+            </a>
+            <a id="final-word"></a>
+        </div>
+        <div id="new-game" class="hidden">
+            <div class="placeholder w300 h20"></div>
+            <button id="startnewgame">Neues Spiel</button>
+        </div>
+        <div class="timer-controls hidden">
+            <button class="pause-btn" id="pause-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                    <path d="M320-200v-560h80v560h-80Zm240 0v-560h80v560h-80Z"/>
+                </svg>
+            </button>
+            <button id="reveal-impostors" class="reveal-impostors hidden"></button>
+        </div>
+    </div>
+    <div id="overlay-background"></div>
+    <overlay id="overlay">
+        <div class="overlay-ui">
+            <div class="overlay-ui-done" id="done-btn">
+                <a>
+                    <b>Fertig</b>
+                </a>
+            </div>
+        </div>
+        <div class="overlay-content">
+            <h2>Wie funktioniert das Spiel?</h2>
+            <div class="overlay-card">
+                <div class="overlay-card-head">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Zm-20 200h80v-400H380v80h80v320Z"/>
+                    </svg>
+                </div>
+                <div class="overlay-card-content">
+                    <div>
+                        <img draggable="false" src="card-img/input.png" style="margin: 0 auto; width: 75%;">
+                    </div>
+                    <div>
+                        <a>Füge alle Mitspieler hinzu. Jeder Name muss in eine neue Zeile geschrieben werden.</a>
+                        <div class="placeholder w100 h5"></div>
+                        <a>Lege fest, wie lange die Runde gehen soll und wie viele Impostoren es geben soll. Achte dabei darauf, dass du nicht zu viele Impostoren festlegst!</a>
+                        <div class="placeholder w100 h5"></div>
+                        <a>Die festgelegten Spieler und Einstellungen werden bei Spielstart gespeichert und werden bei der nächsten Runde wieder automatisch abgerufen.</a></a>
+                        <div class="placeholder w100 h5"></div>
+                        <a>Jetzt kannst du das Spiel starten</a>
+                    </div>
+                </div>
+            </div>
+            <div class="placeholder w100 h10"></div>
+            <div class="overlay-card">
+                <div class="overlay-card-head">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320ZM360-280h240v-80H440v-80h80q33 0 56.5-23.5T600-520v-80q0-33-23.5-56.5T520-680H360v80h160v80h-80q-33 0-56.5 23.5T360-440v160Z"/>
+                    </svg>
+                </div>
+                <div class="overlay-card-content">
+                    <div>
+                        <cards style="display: flex; gap: 5px; justify-content: center;">
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ccc; border-radius: 15px; display: flex; height: 75px; justify-content: center; width: 60px;">
+                                <a style="position: relative;">☝️</a>
+                            </card>
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ccc; border-radius: 15px; display: flex; height: 75px; justify-content: center; width: 60px;">
+                                <a style="position: relative;">☝️</a>
+                            </card>
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ff0000; border-radius: 15px; display: flex; height: 75px; justify-content: center; width: 60px;">
+                                <a style="position: relative;">🕵️</a>
+                            </card>
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ccc; border-radius: 15px; display: flex; height: 75px; justify-content: center; width: 60px;">
+                                <a style="position: relative;">☝️</a>
+                            </card>
+                        </cards>
+                    </div>
+                    <div>
+                        <a>Jede Person zieht eine Karte. Eine Person ist der Impostor und kennt das geheime Wort nicht. Alle anderen haben dasselbe geheime Wort.</a>
+                    </div>
+                </div>
+            </div>
+            <div class="placeholder w100 h10"></div>
+            <div class="overlay-card">
+                <div class="overlay-card-head">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320ZM360-280h160q33 0 56.5-23.5T600-360v-60q0-26-17-43t-43-17q26 0 43-17t17-43v-60q0-33-23.5-56.5T520-680H360v80h160v80h-80v80h80v80H360v80Z"/>
+                    </svg>
+                </div>
+                <div class="overlay-card-content">
+                    <div>
+                        <countdown style="background-color: #3e3e3e; border-radius: 10px; display: block; height: 50px; margin: 0 auto; width: 100px;">
+                            <countdown-time style="align-items: center; display: flex; font-size: 25px; height: 100%; justify-content: center; position: relative;">
+                                <a>4:54</a>
+                            </countdown-time>
+                        </countdown>
+                    </div>
+                    <div>
+                        <a>
+                            <b>Hinweise geben</b>
+                        </a>
+                        <div class="placeholder w100 h10"></div>
+                        <a>Der Timer wird gestartet. Reihum sagt jede Person genau ein Wort, das mit dem geheimen Wort zu tun hat.</a>
+                    </div>
+                </div>
+            </div>
+            <div class="placeholder w100 h10"></div>
+            <div class="overlay-card">
+                <div class="overlay-card-head">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Zm40 200h80v-400h-80v160h-80v-160h-80v240h160v160Z"/>
+                    </svg>
+                </div>
+                <div class="overlay-card-content">
+                    <div>
+                        <cards style="display: flex; align-items: center; justify-content: center;">
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ccc; border-radius: 15px; display: flex; height: 75px; justify-content: center; width: 60px;">
+                                <a style="position: relative;">👉</a>
+                            </card>
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ccc; border-radius: 15px; display: flex; height: 75px; justify-content: center; margin-left: -10px; width: 60px;">
+                                <a style="position: relative;">👉</a>
+                            </card>
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ccc; border-radius: 15px; display: flex; height: 75px; justify-content: center; margin-left: -10px; width: 60px;">
+                                <a style="position: relative;">👉</a>
+                            </card>
+                            <div style="height: 25px; margin: 0 10px; width: 25px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                                    <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
+                                </svg>
+                            </div>
+                            <card data-type="inoccent" style="align-items: center; background-color: #fff; border: 1px solid #ff0000; border-radius: 15px; display: flex; height: 75px; justify-content: center; width: 60px;">
+                                <a style="position: relative;">🕵️</a>
+                            </card>
+                        </cards>
+                    </div>
+                    <div>
+                        <a>
+                            <b>Ziel</b>
+                        </a>
+                        <div class="placeholder w100 h10"></div>
+                        <a>Die Gruppe versucht, den Impostor zu enttarnen. Der Impostor versucht das geheime Wort zu erraten, ohne entdeckt zu werden.</a>
+                    </div>
+                </div>
+            </div>
+            <div class="placeholder w100 h10"></div>
+            <div class="overlay-card">
+                <div class="overlay-card-head">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320ZM360-280h160q33 0 56.5-23.5T600-360v-80q0-33-23.5-56.5T520-520h-80v-80h160v-80H360v240h160v80H360v80Z"/>
+                    </svg>
+                </div>
+                <div class="overlay-card-content">
+                    <div>
+                        <countdown style="background-color: #3e3e3e; border-radius: 10px; display: block; height: 50px; margin: 0 auto; width: 125px;">
+                            <countdown-time style="align-items: center; display: flex; font-size: 25px; height: 100%; justify-content: center; position: relative;">
+                                <a>The End</a>
+                            </countdown-time>
+                        </countdown>
+                    </div>
+                    <div>
+                        <a>
+                            <b>Spielende</b>
+                        </a>
+                        <div class="placeholder w100 h10"></div>
+                        <a>Das Spiel endet, wenn der Impostor das Wort errät, die anderen sich auf ihn einigen oder die Zeit abläuft</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </overlay>
+    <footer>
+        <div class="footer-lines" style="color: rgb(255, 255, 255);">
+            <div class="placeholder w300 h555" id="footer-placeholder"></div>
+            <div class="footer-line">
+                <a>This site is related to Projekt City and is managed, operated and created by Projekt City Ltd. and its services. The same terms and conditions and associated policies apply and might be subject to change!</a>
+            </div>
+            <div class="placeholder w300 h20"></div>
+            <div class="footer-line">
+                <div class="footer-line">
+                    <a class="nodecoration" href="https://projektcity.github.io/legal/github-privacy?utm_src=itsmarian_githubpages_footer&amp;utm_medium=itsmariany&amp;utm_content=githubprivacypolicy" target="_blank" style="color: rgb(255, 255, 255);">GitHub Privacy Policy</a>
+                    <a>&nbsp;•&nbsp;</a>
+                    <a class="nodecoration" href="https://projektcity.github.io/legal/imprint?utm_src=itsmarian_githubpages_footer&amp;utm_medium=itsmariany&amp;utm_content=imprint" target="_blank" style="color: rgb(255, 255, 255);">Imprint</a>
+                    <a>&nbsp;•&nbsp;</a>
+                    <a class="nodecoration" href="https://projektcity.github.io/legal/privacy?utm_src=itsmarian_githubpages_footer&amp;utm_medium=itsmariany&amp;utm_content=privacypolicy" target="_blank" style="color: rgb(255, 255, 255);">Privacy Policy</a>
+                    <a>&nbsp;•&nbsp;</a>
+                    <a class="nodecoration" href="https://projektcity.github.io/legal/terms?utm_src=itsmarian_githubpages_footer&amp;utm_medium=itsmariany&amp;utm_content=termsofuse" target="_blank" style="color: rgb(255, 255, 255);">Terms of use</a>
+                </div>
+            </div>
+            <div class="placeholder w300 h10"></div>
+            <div class="footer-copy">
+                <a>© 2025 itsmarian / Projekt City Ltd. | All rights reserved!</a>
+            </div>
+            <div style="font-size: 20px;">
+                <a>Made with ❤️ in</a>
+                <a style="color: #000000;">GE</a><a style="color: #DD0000;">RMA</a><a style="color: #FFCE00;">NY</a>
+            </div>
+            <div class="placeholder w300 h20"></div>
+        </div>
+    </footer>
+    <div class="cookie-notice">
+        <div class="cookie-notice-inner">
+            <div>
+                <a>This site uses cookies, including from Google LLC and Fonticons Inc, to provide you with fonts, symbols, emojis and other scripts and technologies and to save your game and other progress on the site. Anything beyond these cookies is not collected, stored or visible. By using the site, you agree to the</a>
+                <a class="linkout nodecoration-light" href="/legal/privacy" target="_blank">Privacy Policy</a>
+                <a>and</a>
+                <a class="linkout nodecoration-light" href="/legal/terms" target="_blank">Terms of Use!</a>
+            </div>
+            <div class="cookie-notice-button">
+                <a>✔&nbsp;Understand</a>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/script.js"></script>
+    <script src="script.js"></script>
+    <script src="dropdown.js"></script>
+</body>
+</html>
