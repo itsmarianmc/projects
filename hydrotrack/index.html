@@ -6,9 +6,9 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/style.css?v=1.0">
-    <link rel="stylesheet" href="/projects/hydrotrack/style.css?v=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="style.css">
     <!-- META -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="author" content="itsmarian">
@@ -329,7 +329,7 @@
     <event id="event-changer">
         <div class="event-content">
             <div style="margin: 15px 0px 15px 0px">
-                <a style="color: var(--text-color) !important; font-size: 35px;">Change your daily goal</a>
+                <a id="goalUpdaterHeader" style="color: var(--text-color) !important; font-size: 35px;">Change your daily goal</a>
             </div>
             <div id="calculator-form2">
                 <form>
@@ -375,7 +375,7 @@
                         </div>
                     </div>
                     <div class="placeholder w200 h20"></div>
-                    <label style="color: var(--text-color);">Your recommended daily goal</label>
+                    <label for="setGoal" style="color: var(--text-color);">Your recommended daily goal</label>
                     <input type="number" id="goalInput" placeholder="Daily goal (ml)">
                     <button class="action-button" id="setGoal" type="button">Set goal</button>
                     <a id="event-action-tooltip"></a>
@@ -390,27 +390,11 @@
         </div>
         </div>
         <div class="event-controls">
-            <div class="action-button" id="closeEventChanger" style="width: calc(100% - 20px - 20px);">
+            <div class="action-button" id="closeEventChanger" style="width: calc(100%);">
                 <a>Close</a>
             </div>
         </div>
     </event>
-    <div class="cookie-notice">
-        <div class="cookie-notice-inner">
-            <div>
-                <a>HydroTrack and its associated app and website use cookies, including from third-party providers to provide you with fonts, icons, emojis and other scripts and technologies and to operate the website and to use, store and retrieve the data you enter for computing purposes. Anything beyond these cookies is not collected, stored or visible to (internal) users. By using the site, you agree to the use of your data in accordance with the</a>
-                <a class="linkout nodecoration" href="legal/privacy" style="color: #fff;" target="_blank">Privacy Policy</a>
-                <a>and ensure that you use the Services in accordance with the</a>
-                <a class="linkout nodecoration" href="legal/terms" style="color: #fff;" target="_blank">Terms of Use!</a>
-            </div>
-            <div class="cookie-notice-button">
-                <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
-                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
-                </svg>
-                <a>Understand</a>
-            </div>
-        </div>
-    </div>
     <overlay id="overlay">
         <div class="overlay-ui">
             <div class="overlay-ui-done" id="done-btn">
@@ -498,7 +482,7 @@
         </div>
     </overlay>
     <script src="/assets/script.js"></script>
-    <script src="script.js?v=1.0"></script>
+    <script src="script.js"></script>
     <script src="push.js"></script>
     <script src="settings.js"></script>
     <script src="goal-calculator.js"></script>

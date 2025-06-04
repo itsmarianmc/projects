@@ -72,11 +72,11 @@
     </div>
     <div class="container" id="setup-screen">
         <h1>Impostor Setup</h1>
-        <label>Spielernamen:</label>
+        <label for="names-input">Spielernamen:</label>
         <textarea id="names-input" rows="5" placeholder="Füge hier die Spielernamen ein; jeden Namen in eine neue Zeile"></textarea>
-        <label>Anzahl Impostoren:</label>
+        <label for="impostor-count">Anzahl Impostoren:</label>
         <input type="number" id="impostor-count" min="1" value="1">
-        <label>Timer Minuten:</label>
+        <label for="timer-minutes">Timer Minuten:</label>
         <input type="number" id="timer-minutes" min="1" value="5">
         <label>Kategorien auswählen:</label>
         <div class="dropdown" id="category-dropdown">
@@ -418,9 +418,6 @@
     <footer>
         <div class="footer-lines" style="color: rgb(255, 255, 255);">
             <div class="placeholder w300 h555" id="footer-placeholder"></div>
-            <div class="footer-line">
-                <a>This site is related to Projekt City and is managed, operated and created by Projekt City Ltd. and its services. The same terms and conditions and associated policies apply and might be subject to change!</a>
-            </div>
             <div class="placeholder w300 h20"></div>
             <div class="footer-line">
                 <div class="footer-line">
@@ -444,19 +441,6 @@
             <div class="placeholder w300 h20"></div>
         </div>
     </footer>
-    <div class="cookie-notice">
-        <div class="cookie-notice-inner">
-            <div>
-                <a>This site uses cookies, including from Google LLC and Fonticons Inc, to provide you with fonts, symbols, emojis and other scripts and technologies and to save your game and other progress on the site. Anything beyond these cookies is not collected, stored or visible. By using the site, you agree to the</a>
-                <a class="linkout nodecoration-light" href="/legal/privacy" target="_blank">Privacy Policy</a>
-                <a>and</a>
-                <a class="linkout nodecoration-light" href="/legal/terms" target="_blank">Terms of Use!</a>
-            </div>
-            <div class="cookie-notice-button">
-                <a>✔&nbsp;Understand</a>
-            </div>
-        </div>
-    </div>
     <script src="/assets/script.js"></script>
     <script src="script.js"></script>
     <script src="dropdown.js"></script>

@@ -161,8 +161,8 @@ function swapTiles(tile1, tile2) {
             // Berechne die gleichen Offsets, um rückwärts zu animieren
             tile1.el.style.transition = 'transform 0.3s ease';
             tile2.el.style.transition = 'transform 0.3s ease';
-            tile1.el.style.transform = `translate(${-dx}px, ${-dy}px)`;
-            tile2.el.style.transform = `translate(${dx}px, ${dy}px)`;
+            tile1.el.style.transform = `translate(${dx}px, ${dy}px)`;
+            tile2.el.style.transform = `translate(${-dx}px, ${-dy}px)`;
             setTimeout(() => {
             tile1.el.style.transition = '';
             tile2.el.style.transition = '';

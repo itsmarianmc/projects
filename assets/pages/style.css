@@ -1,0 +1,91 @@
+:root {
+	--bg: #121416;
+	--card-bg: #1e1e1e;
+	--bg-btn: #333;
+	--accent-btn: #ffffff;
+}
+
+body {
+	background: var(--bg);
+	color: var(--txt);
+	font-family: "Source Code Pro", monospace;
+	line-height: 1.6;
+	padding: 1rem;
+}
+
+p {
+	color: #c1c1c1;
+}
+.grid {
+	display: grid;
+	gap: 2.5rem;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+	.grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.card {
+	background: var(--card-bg);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	min-height: 220px;
+	transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+	transform: scale(1.025);
+}
+
+.card-head {
+    display: flex;
+    gap: 10px;
+}
+
+.card h2 {
+	font-size: 1.25rem;
+	margin-bottom: 0.5rem;
+}
+
+.card p {
+	flex-grow: 1;
+}
+
+.card a {
+	background: var(--bg-btn);
+	border-radius: 6px;
+	color: var(--txt);
+	display: inline-block;
+	font-weight: 500;
+	margin-top: 1rem;
+	padding: 0.6rem 1rem;
+	text-align: center;
+	text-decoration: none;
+	transition: background 0.2s;
+}
+
+.card a:hover {
+	background: var(--accent-btn);
+	color: var(--bg);
+}
+
+.linkout-span {
+	display: inline-block;
+	opacity: 0;
+	transform: translate(-.6em);
+	transition: .2s;
+	white-space: nowrap;
+}
+
+.card a:hover span {
+	transform: translate(0);
+	opacity: 1;
+}
