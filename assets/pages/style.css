@@ -1,91 +1,172 @@
 :root {
-	--bg: #121416;
-	--card-bg: #1e1e1e;
-	--bg-btn: #333;
-	--accent-btn: #ffffff;
+	--bg: hsl(220, 10%, 8%);
+	--bg-2: hsl(220, 10%, 17%);
+	--bg-3: hsl(220, 10%, 11%);
+	--bg-4: hsl(220, 10%, 16%);
+	--txt: hsl(220, 30%, 80%);
+	--txt-1: hsl(220, 45%, 90%);
+	--txt-2: hsl(220, 14%, 55%);
+	--txt-3: hsl(220, 11%, 35%);
+    --txt-4: #000000;
+    --border: hsl(0, 0%, 100%);
+    /* Accent colors */
+    --accent: #f9e2af;
+    --success: #a6e3a1;
+    --error: #f38ba8;
 }
 
-body {
-	background: var(--bg);
-	color: var(--txt);
-	font-family: "Source Code Pro", monospace;
-	line-height: 1.6;
-	padding: 1rem;
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
-p {
-	color: #c1c1c1;
+h1, h2, h3, h4 {
+    color: var(--txt-1);
+    line-height: 1.3;
+    font-family: "Source Code Pro", monospace;
+    font-variant-ligatures: no-common-ligatures;
+    font-weight: 400;
+    margin-block-end: 5.1px;
+    margin-block-start: 5.1px;
+    margin-inline-end: 0px;
+    margin-inline-start: 0px;
 }
-.grid {
-	display: grid;
-	gap: 2.5rem;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+.bold {
+    font-weight: 800;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.placeholder {
 	margin: 0 auto;
 }
 
-@media (min-width: 1024px) {
-	.grid {
-		grid-template-columns: repeat(3, 1fr);
-	}
+.linkout, .nodecoration {
+    color: var(--txt);
+    cursor: pointer;
+    text-decoration: none;
 }
 
-.card {
-	background: var(--card-bg);
-	border: 1px solid var(--border);
-	border-radius: 12px;
-	padding: 1.25rem;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	min-height: 220px;
-	transition: transform 0.2s, box-shadow 0.2s;
+.nodecoration:hover {
+    text-decoration: underline;
 }
 
-.card:hover {
-	transform: scale(1.025);
-}
-
-.card-head {
-    display: flex;
-    gap: 10px;
-}
-
-.card h2 {
-	font-size: 1.25rem;
-	margin-bottom: 0.5rem;
-}
-
-.card p {
-	flex-grow: 1;
-}
-
-.card a {
-	background: var(--bg-btn);
-	border-radius: 6px;
-	color: var(--txt);
-	display: inline-block;
-	font-weight: 500;
-	margin-top: 1rem;
-	padding: 0.6rem 1rem;
+footer {
 	text-align: center;
-	text-decoration: none;
-	transition: background 0.2s;
+	margin: 4rem 0rem 1rem 0rem;
+	font-size: 1.25rem;
+	color: #aaa !important;
+    width: 100%;
 }
 
-.card a:hover {
-	background: var(--accent-btn);
-	color: var(--bg);
+footer .linkout, footer .nodecoration, footer .linkout.nodecoration {
+    color: #aaa;
 }
 
-.linkout-span {
-	display: inline-block;
-	opacity: 0;
-	transform: translate(-.6em);
-	transition: .2s;
-	white-space: nowrap;
+/* Scrollbar / Source: https://community.hubspot.com/t5/CMS-Development/CSS-for-Scrollbar-in-iOS-devices/m-p/293889 */
+::-webkit-scrollbar {
+	-webkit-appearance: none;
+	width: 7px;
 }
 
-.card a:hover span {
-	transform: translate(0);
-	opacity: 1;
+::-webkit-scrollbar-thumb {
+	border-radius: 4px;
+	background-color: transparent;
+	-webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+::-webkit-scrollbar-track {
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #707070;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #646464;
+}
+
+::-webkit-overflow-scrolling:touch {
+	background: #707070;
+	width: 5px;
+}
+
+.cb {
+    background-color: var(--bg-2);
+    border: 1px solid #383939;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    bottom: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0.5rem;
+    position: fixed;
+    text-align: center;
+    z-index: 100;
+    width: 100%;
+}
+
+.cb-head h2 {
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.cb-footer {
+    align-items: center;
+    justify-content: space-around;
+    background-color: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    margin: 0 auto;
+    font-size: 20px;
+    gap: 5px;
+    padding: 5px;
+    width: calc(120.97px + 10px + 10px);
+}
+
+.cb-footer div {
+    height: 23px;
+}
+
+.cb-footer:hover #check {
+    display: block;
+}
+
+.cb-footer:hover > div:first-child {
+    display: block !important;
+}
+
+.cb-footer > div:first-child {
+    display: none;
+}
+
+#check {
+    display: none;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 20;
+    stroke-linecap: round;
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    animation: draw 0.5s ease-in-out forwards;
+}
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
 }
