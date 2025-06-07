@@ -1,57 +1,90 @@
 {
-    "https://itsmarian.is-a.dev/legal": {
-        "id": "d2fB",
-        "paths": {
-        "/privacy": "d2fB-SBQm-Zw3d-csi2",
-        "/terms": "d2fB-41wl-jm8X-gxMh"
-        }
-    },
-    "/blockblast": {
-        "id": "ffeE",
-        "paths": {
-        "/index": "ffeE-0emr-kYWU-P9zp"
-        }
-    },
-    "/codematic": {
-        "id": "o1kC",
-        "paths": {
-        "/index": "o1kC-c4at-gRlF-5ikH"
-        }
-    },
-    "/cookieclicker": {
-        "id": "7UKe",
-        "paths": {
-        "/index": "7UKe-9qrp-cRgi-aP3O"
-        }
-    },
-    "/hydrotrack": {
-        "id": "sryr",
-        "paths": {
-        "/index": "sryr-liIv-WPKQ-qv6m"
-        }
-    },
-    "/impostor": {
-        "id": "5sRR",
-        "paths": {
-        "/index": "5sRR-Jc2Q-8Zc6-S1o5"
-        }
-    },
-    "/ntrack": {
-        "id": "GgYZ",
-        "paths": {
-        "/index": "GgYZ-wibV-qpD7-zgSr"
-        }
-    },
-    "/royalmatch": {
-        "id": "Z118",
-        "paths": {
-        "/index": "Z118-GwrY-XEhE-rKGQ"
-        }
-    },
-    "/timer-watch-worldtime": {
-        "id": "P7co",
-        "paths": {
-        "/index": "P7co-7rXS-UqIy-ecbm"
-        }
-    }
+	"https://itsmarian.is-a.dev/": {
+		"id": "d2fB",
+		"paths": {
+			"/legal": {
+				"id": "SBQm",
+				"paths": {
+					"/privacy": {
+						"id": "Zw3d"
+					},
+					"/terms": {
+						"id": "jm8X"
+					}
+				}
+			},
+			"/socials": {
+				"id": "tr1J",
+				"paths": {
+					"/index": {
+						"id": "9poW"
+					}
+				}
+			}
+		}
+	},
+	"/blockblast": {
+		"id": "ffeE",
+		"paths": {
+			"/index": {
+				"id": "0emr"
+			}
+		}
+	},
+	"/codematic": {
+		"id": "o1kC",
+		"paths": {
+			"/index": {
+				"id": "c4at"
+			}
+		}
+	},
+	"/cookieclicker": {
+		"id": "7UKe",
+		"paths": {
+			"/index": {
+				"id": "9qrp"
+			}
+		}
+	},
+	"/hydrotrack": {
+		"id": "sryr",
+		"paths": {
+			"/index": {
+				"id": "liIv"
+			}
+		}
+	},
+	"/impostor": {
+		"id": "5sRR",
+		"paths": {
+			"/index": {
+				"id": "Jc2Q"
+			}
+		}
+	},
+	"/ntrack": {
+		"id": "GgYZ",
+		"paths": {
+			"/index": {
+				"id": "wibV"
+			}
+		}
+	},
+	"/royalmatch": {
+		"id": "Z118",
+		"paths": {
+			"/index": {
+				"id": "GwrY"
+			}
+		}
+	},
+	"/timer-watch-worldtime": {
+		"id": "P7co",
+		"paths": {
+			"/index": {
+				"id": "7rXS"
+			}
+		}
+	}
 }
