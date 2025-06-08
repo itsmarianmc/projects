@@ -45,20 +45,23 @@ body {
 	-ms-overflow-style: none;
 }
 
-h1, h2, h3, h4 {
-    color: var(--txt-1);
-    font-family: "Source Code Pro", monospace;
-    font-variant-ligatures: no-common-ligatures;
-    font-weight: 400;
-    line-height: 1.3;
-    margin-block-end: 5.1px;
-    margin-block-start: 5.1px;
-    margin-inline-end: 0px;
-    margin-inline-start: 0px;
+h1,
+h2,
+h3,
+h4 {
+	color: var(--txt-1);
+	font-family: "Source Code Pro", monospace;
+	font-variant-ligatures: no-common-ligatures;
+	font-weight: 400;
+	line-height: 1.3;
+	margin-block-end: 5.1px;
+	margin-block-start: 5.1px;
+	margin-inline-end: 0px;
+	margin-inline-start: 0px;
 }
 
 .bold {
-    font-weight: 800;
+	font-weight: 800;
 }
 
 .hidden {
@@ -69,14 +72,15 @@ h1, h2, h3, h4 {
 	margin: 0 auto;
 }
 
-.linkout, .nodecoration {
-    color: var(--txt-1);
-    cursor: pointer;
-    text-decoration: none;
+.linkout,
+.nodecoration {
+	color: var(--txt-1);
+	cursor: pointer;
+	text-decoration: none;
 }
 
 .nodecoration:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 footer {
@@ -84,11 +88,13 @@ footer {
 	font-size: 1.25rem;
 	margin: 4rem 0rem 1rem 0rem;
 	text-align: center;
-    width: 100%;
+	width: 100%;
 }
 
-footer .linkout, footer .nodecoration, footer .linkout.nodecoration {
-    color: #aaa;
+footer .linkout,
+footer .nodecoration,
+footer .linkout.nodecoration {
+	color: #aaa;
 }
 
 /* Scrollbar / Source: https://community.hubspot.com/t5/CMS-Development/CSS-for-Scrollbar-in-iOS-devices/m-p/293889 */
@@ -157,7 +163,7 @@ footer .linkout, footer .nodecoration, footer .linkout.nodecoration {
 	font-size: 1.8rem;
 	height: 50px;
 	justify-content: center;
-    padding: 10px;
+	padding: 10px;
 	width: 50px;
 }
 
@@ -276,8 +282,9 @@ footer .linkout, footer .nodecoration, footer .linkout.nodecoration {
 	padding: 1.5rem;
 }
 
-.cookie-category-bottom, .cookie-header-bottom {
-    margin-bottom: 0px;
+.cookie-category-bottom,
+.cookie-header-bottom {
+	margin-bottom: 0px;
 }
 
 .category-header {
@@ -300,7 +307,7 @@ footer .linkout, footer .nodecoration, footer .linkout.nodecoration {
 	font-size: 1.2rem;
 	height: 40px !important;
 	justify-content: center;
-    padding: 5px;
+	padding: 5px;
 	width: 40px !important;
 }
 
@@ -493,12 +500,12 @@ input:checked+.slider:before {
 		gap: 0.8rem;
 	}
 
-    .settings-panel {
-        padding: 1rem;
-        width: 95%;
-    }
+	.settings-panel {
+		padding: 1rem;
+		width: 95%;
+	}
 
 	.cookie-category {
-		padding: 1rem;	
+		padding: 1rem;
 	}
 }
