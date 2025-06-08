@@ -84,11 +84,15 @@ h4 {
 }
 
 footer {
-	color: var(--txt-2);
+	color: var(--txt-2) !important;
 	font-size: 1.25rem;
 	margin: 4rem 0rem 1rem 0rem;
 	text-align: center;
 	width: 100%;
+}
+
+footer a {
+	color: var(--txt-2) !important;
 }
 
 footer .linkout,
@@ -323,7 +327,6 @@ footer .linkout.nodecoration {
 	gap: 0.8rem;
 }
 
-/* Toggle Switch */
 .toggle-switch {
 	display: inline-block;
 	height: 30px;
@@ -426,7 +429,6 @@ input:checked+.slider:before {
 	cursor: pointer;
 }
 
-/* Animations */
 @keyframes slideUp {
 	from {
 		opacity: 0;
@@ -487,6 +489,12 @@ input:checked+.slider:before {
 	}
 }
 
+@media (max-width: 540px) {
+	footer {
+		font-size: 0.9rem;
+	}
+}
+
 @media (max-width: 480px) {
 	.cookie-header {
 		align-items: center;
@@ -507,5 +515,11 @@ input:checked+.slider:before {
 
 	.cookie-category {
 		padding: 1rem;
+	}
+}
+
+@media (max-width: 385px) {
+	footer {
+		font-size: 0.75rem;
 	}
 }
