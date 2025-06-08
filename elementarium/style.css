@@ -35,19 +35,8 @@
 	--txt: hsl(220, 30%, 80%);
 }
 
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 body {
 	background: linear-gradient(135deg, var(--primary), #1a252f);
-	color: var(--light);
-	min-height: 100vh;
-	padding: 20px;
-	overflow-x: hidden;
 }
 
 .container {
