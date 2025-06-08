@@ -85,27 +85,27 @@ function showElementDetails(element) {
 
 	propertiesGrid.innerHTML = `
                 <div class="property-card">
-                    <div class="property-name">Atommasse</div>
+                    <div class="property-name">Atomic Mass</div>
                     <div class="property-value">${element.mass} u</div>
                 </div>
                 <div class="property-card">
-                    <div class="property-name">Schmelzpunkt</div>
+                    <div class="property-name">Melting Point</div>
                     <div class="property-value">${element.melt} °C</div>
                 </div>
                 <div class="property-card">
-                    <div class="property-name">Siedepunkt</div>
+                    <div class="property-name">Boiling Point</div>
                     <div class="property-value">${element.boil} °C</div>
                 </div>
                 <div class="property-card">
-                    <div class="property-name">Dichte</div>
+                    <div class="property-name">Density</div>
                     <div class="property-value">${element.density} g/cm³</div>
                 </div>
                 <div class="property-card">
-                    <div class="property-name">Elektronenkonfiguration</div>
+                    <div class="property-name">Electron Configuration</div>
                     <div class="property-value">${element.config}</div>
                 </div>
                 <div class="property-card">
-                    <div class="property-name">Elektronegativität</div>
+                    <div class="property-name">Electronegativity</div>
                     <div class="property-value">${element.electronegativity || '—'}</div>
                 </div>
             `;
