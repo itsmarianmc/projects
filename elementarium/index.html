@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elementarium - Periodic Table</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="itsmarian">
+    <meta name="description" content="Elementarium is a modern, interactive science experience that makes learning about chemical elements fun and intuitive. Explore, discover, and engage with the periodic table like never before.">
+    <meta name="keywords" content="Elementarium, periodic table, chemical elements, science education, interactive learning, modern chemistry, STEM, educational app">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Elementarium - Explore the World of Elements">
+    <meta property="og:description" content="Elementarium is a modern, interactive science experience that makes learning about chemical elements fun and intuitive. Explore, discover, and engage with the periodic table like never before.">
+    <meta property="og:image" content="http://yourdomain.com/assets/elementarium-logo.png">
+    <meta property="og:url" content="http://yourdomain.com/projects/elementarium/">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Periodic Table</h1>
+            <p class="subtitle">Explore the elements with detailed information, properties and 3D atomic models</p>
+        </header>
+        
+        <div class="controls">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search" placeholder="Search element... (Name, Symbol or Number)">
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">
+                    <i class="fas fa-globe"></i> All
+                </button>
+                <button class="filter-btn" data-category="metal" style="background-color: var(--metal);">
+                    <i class="fas fa-cogs"></i> Metals
+                </button>
+                <button class="filter-btn" data-category="nonmetal" style="background-color: var(--nonmetal);">
+                    <i class="fas fa-wind"></i> Nonmetals
+                </button>
+                <button class="filter-btn" data-category="alkali" style="background-color: var(--alkali);">
+                    <i class="fas fa-fire"></i> Alkali Metals
+                </button>
+                <button class="filter-btn" data-category="noble" style="background-color: var(--noble);">
+                    <i class="fas fa-crown"></i> Noble Gases
+                </button>
+            </div>
+        </div>
+        
+        <div class="periodic-table-container">
+            <div class="table-section">
+                <h2 class="table-title">Main Groups</h2>
+                <div class="periodic-table" id="main-table">
+                    <!-- Main groups will be inserted here -->
+                </div>
+            </div>
+            
+            <div class="table-section">
+                <h2 class="table-title">Lanthanides</h2>
+                <div class="periodic-table lanthanides" id="lanthanides">
+                    <!-- Lanthanides will be inserted here -->
+                </div>
+            </div>
+            
+            <div class="table-section">
+                <h2 class="table-title">Actinides</h2>
+                <div class="periodic-table actinides" id="actinides">
+                    <!-- Actinides will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-section" id="detail-section">
+            <div class="detail-header">
+                <div class="detail-title">
+                    <div class="detail-symbol" id="detail-symbol">H</div>
+                    <h2 class="detail-name" id="detail-name">Hydrogen</h2>
+                </div>
+                <div class="detail-number" id="detail-number">1</div>
+            </div>
+            
+            <div class="detail-info">
+                <div class="detail-properties">
+                    <h3>Properties</h3>
+                    <div class="property-grid" id="properties">
+                        <!-- Properties will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="detail-description">
+                    <h3>Description</h3>
+                    <p id="description">Hydrogen is the lightest and most abundant element in the universe. It is a colorless, odorless, non-metallic, monatomic gas with the element symbol H and atomic number 1. Hydrogen forms water (H₂O) together with oxygen and is the main component of the sun and other stars.</p>
+                </div>
+            </div>
+            
+            <div class="atomic-model">
+                <div class="model-placeholder">
+                    <i class="fas fa-atom"></i>
+                    <h3>3D Atomic Model</h3>
+                    <p>Click on an element to display the atomic model</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>This is a scientific project and is for illustrative purposes only | All data comes from publicly available scientific sources and may be changed or removed at any time. Important information should be verified.</p>
+        </div>
+    </div>
+    <footer>
+        <a>This is a scientific project and is for illustrative purposes only | All data comes from publicly available scientific sources and may be changed or removed at any time. Important information should be verified.</a>
+        <br>
+        <a class="linkout nodecoration" id="settingsPannelOpener" style="display: none;">Change Cookie Preferences</a>
+        <br>
+        <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
+        <br>
+        <a>Made with <span class="heart">&hearts;</span> by itsmarian in <span>GERMANY</span></a>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
