@@ -319,9 +319,9 @@ button.secondary {
 
 .world-clock ul {
     list-style: none;
-    padding: 0 20px;
     margin: 0 auto;
     max-width: 400px;
+    padding: 0 20px;
 }
   
 .world-clock li {
@@ -330,7 +330,6 @@ button.secondary {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
-    animation: fadeIn 0.4s ease forwards;
 }
   
 .world-clock li:last-child {
