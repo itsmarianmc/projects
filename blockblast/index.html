@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlockFit - Puzzle Game</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://itsmarian.is-a.dev/assets/variables.css">
     <link rel="stylesheet" href="/assets/style.css">
-    <link rel="stylesheet" href="/assets/variables.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2E9SPPVJFL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2E9SPPVJFL');
+    </script>
 </head>
 <body>
     <div class="game-container">
@@ -14,547 +24,187 @@
             <h1>🧩 BlockFit</h1>
             <div class="coins">💰 Coins: <span id="coins">0</span></div>
         </div>
-
         <div class="score-display">
             <div class="score">Score: <span id="score">0</span></div>
             <div class="combo">Combo: <span id="combo">0</span>x</div>
         </div>
-
         <div class="power-ups">
             <button class="power-up" id="bomb-btn" onclick="useBomb()">💣 Bomb (100)</button>
             <button class="power-up" id="line-btn" onclick="useLineClear()">⚡ Linie (150)</button>
             <button class="power-up" id="refresh-btn" onclick="refreshBlocks()">🔄 Refresh (75)</button>
         </div>
-
         <div class="game-board" id="game-board"></div>
-
         <div class="blocks-container" id="blocks-container"></div>
-
         <div class="stats">
-            <span>Platzierte Blöcke: <span id="placed-blocks">0</span></span>
-            <span>Gelöschte Linien: <span id="cleared-lines">0</span></span>
+            <span>Placed Blocks: <span id="placed-blocks">0</span></span>
+            <span>Lines deleted: <span id="cleared-lines">0</span></span>
         </div>
-
         <div style="text-align: center; margin-top: 15px;">
-            <button class="btn" onclick="newGame()">Neues Spiel</button>
+            <button class="btn" onclick="newGame()">New game</button>
         </div>
     </div>
-
     <div class="game-over" id="game-over">
         <div class="game-over-content">
             <h2>Game Over!</h2>
             <div class="final-score" id="final-score">0</div>
-            <p>Keine weiteren Züge möglich!</p>
-            <button class="btn" onclick="newGame()">Nochmal spielen</button>
+            <p>No more moves possible!</p>
+            <button class="btn" onclick="newGame()">Play again</button>
         </div>
     </div>
     <footer>
-        <p>*Some code is not public and is protected by copyright, please check the information in the respective file for more details.</p>
-        <p>If the main file does not contain the copyright notice, the code is proprietary and cannot be used without permission.</p>
-        <br>
         <a class="linkout nodecoration" id="settingsPannelOpener">Change Cookie Preferences</a>
-        <p>© 2025 itsmarian.is-a.dev | All rights reserved!</p>
-        <p>Made with <span class="heart">♥</span> by itsmarian</p>
+        <br>
+        <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
+        <br>
+        <a>Made with <i class="fas fa-heart"></i> by itsmarian in <span>GERMANY</span></a>
     </footer>
-
-    <script>
-        // Game State
-        let gameBoard = Array(8).fill().map(() => Array(8).fill(false));
-        let score = 0;
-        let combo = 0;
-        let coins = 100;
-        let placedBlocks = 0;
-        let clearedLines = 0;
-        let currentBlocks = [];
-        let selectedBlock = null;
-        let isDragging = false;
-        let dragPreview = null;
-
-        // Block Shapes
-        const blockShapes = {
-            single: [[true]],
-            line2: [[true], [true]],
-            line3: [[true], [true], [true]],
-            line4: [[true], [true], [true], [true]],
-            line2h: [[true, true]],
-            line3h: [[true, true, true]],
-            line4h: [[true, true, true, true]],
-            square: [[true, true], [true, true]],
-            L1: [[true, false], [true, false], [true, true]],
-            L2: [[true, true, true], [true, false, false]],
-            L3: [[true, true], [false, true], [false, true]],
-            L4: [[false, false, true], [true, true, true]],
-            T1: [[true, true, true], [false, true, false]],
-            T2: [[false, true], [true, true], [false, true]],
-            Z1: [[true, true, false], [false, true, true]],
-            Z2: [[false, true], [true, true], [true, false]]
-        };
-
-        // Initialize Game
-        function initGame() {
-            createBoard();
-            generateBlocks();
-            updateDisplay();
-        }
-
-        function createBoard() {
-            const board = document.getElementById('game-board');
-            board.innerHTML = '';
-            
-            for (let i = 0; i < 64; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.row = Math.floor(i / 8);
-                cell.dataset.col = i % 8;
-                
-                cell.addEventListener('dragover', handleDragOver);
-                cell.addEventListener('drop', handleDrop);
-                
-                board.appendChild(cell);
-            }
-        }
-
-        function generateBlocks() {
-            const shapeNames = Object.keys(blockShapes);
-            currentBlocks = [];
-            
-            for (let i = 0; i < 3; i++) {
-                const randomShape = shapeNames[Math.floor(Math.random() * shapeNames.length)];
-                currentBlocks.push({
-                    shape: blockShapes[randomShape],
-                    name: randomShape,
-                    used: false
-                });
-            }
-            
-            renderBlocks();
-        }
-
-        function renderBlocks() {
-            const container = document.getElementById('blocks-container');
-            container.innerHTML = '';
-            
-            currentBlocks.forEach((block, index) => {
-                if (block.used) return;
-                
-                const preview = document.createElement('div');
-                preview.className = 'block-preview';
-                preview.dataset.index = index;
-                
-                const shape = document.createElement('div');
-                shape.className = 'block-shape';
-                shape.style.gridTemplateColumns = `repeat(${block.shape[0].length}, 1fr)`;
-                shape.style.gridTemplateRows = `repeat(${block.shape.length}, 1fr)`;
-                
-                block.shape.forEach(row => {
-                    row.forEach(cell => {
-                        const cellDiv = document.createElement('div');
-                        if (cell) {
-                            cellDiv.className = 'block-cell';
-                        } else {
-                            cellDiv.style.width = '12px';
-                            cellDiv.style.height = '12px';
-                        }
-                        shape.appendChild(cellDiv);
-                    });
-                });
-                
-                preview.appendChild(shape);
-                preview.draggable = true;
-                preview.addEventListener('dragstart', handleDragStart);
-                preview.addEventListener('click', selectBlock);
-                
-                container.appendChild(preview);
-            });
-        }
-
-        function selectBlock(e) {
-            const index = parseInt(e.currentTarget.dataset.index);
-            selectedBlock = index;
-            
-            document.querySelectorAll('.block-preview').forEach(preview => {
-                preview.classList.remove('selected');
-            });
-            e.currentTarget.classList.add('selected');
-        }
-
-        function handleDragStart(e) {
-            const index = parseInt(e.currentTarget.dataset.index);
-            selectedBlock = index;
-            isDragging = true;
-            
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', e.currentTarget.outerHTML);
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            
-            if (selectedBlock !== null && isDragging) {
-                const row = parseInt(e.currentTarget.dataset.row);
-                const col = parseInt(e.currentTarget.dataset.col);
-                highlightPlacement(row, col);
-            }
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            isDragging = false;
-            
-            if (selectedBlock !== null) {
-                const row = parseInt(e.currentTarget.dataset.row);
-                const col = parseInt(e.currentTarget.dataset.col);
-                placeBlock(row, col, selectedBlock);
-            }
-            
-            clearHighlight();
-        }
-
-        function highlightPlacement(row, col) {
-            clearHighlight();
-            
-            if (selectedBlock === null) return;
-            
-            const block = currentBlocks[selectedBlock];
-            if (block.used) return;
-            
-            const canPlace = canPlaceBlock(row, col, block.shape);
-            
-            for (let r = 0; r < block.shape.length; r++) {
-                for (let c = 0; c < block.shape[r].length; c++) {
-                    if (block.shape[r][c]) {
-                        const targetRow = row + r;
-                        const targetCol = col + c;
-                        
-                        if (targetRow >= 0 && targetRow < 8 && targetCol >= 0 && targetCol < 8) {
-                            const cell = document.querySelector(`[data-row="${targetRow}"][data-col="${targetCol}"]`);
-                            if (cell) {
-                                cell.classList.add('highlight');
-                                if (!canPlace) {
-                                    cell.style.background = '#FFB6B3';
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        function clearHighlight() {
-            document.querySelectorAll('.cell').forEach(cell => {
-                cell.classList.remove('highlight');
-                if (!cell.classList.contains('filled')) {
-                    cell.style.background = '';
-                }
-            });
-        }
-
-        function canPlaceBlock(row, col, shape) {
-            for (let r = 0; r < shape.length; r++) {
-                for (let c = 0; c < shape[r].length; c++) {
-                    if (shape[r][c]) {
-                        const targetRow = row + r;
-                        const targetCol = col + c;
-                        
-                        if (targetRow < 0 || targetRow >= 8 || targetCol < 0 || targetCol >= 8) {
-                            return false;
-                        }
-                        
-                        if (gameBoard[targetRow][targetCol]) {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-        function placeBlock(row, col, blockIndex) {
-            const block = currentBlocks[blockIndex];
-            if (block.used || !canPlaceBlock(row, col, block.shape)) {
-                return false;
-            }
-            
-            // Place block on board
-            let blockSize = 0;
-            for (let r = 0; r < block.shape.length; r++) {
-                for (let c = 0; c < block.shape[r].length; c++) {
-                    if (block.shape[r][c]) {
-                        gameBoard[row + r][col + c] = true;
-                        blockSize++;
-                    }
-                }
-            }
-            
-            // Mark block as used
-            block.used = true;
-            selectedBlock = null;
-            
-            // Update score
-            score += blockSize * 10;
-            placedBlocks++;
-            coins += 5;
-            
-            // Update board display
-            updateBoardDisplay();
-            
-            // Check for line clears
-            const clearedCount = checkAndClearLines();
-            if (clearedCount > 0) {
-                combo++;
-                const comboMultiplier = Math.min(1 + (combo - 1) * 0.2, 3.0);
-                const lineBonus = clearedCount === 1 ? 100 : 
-                                 clearedCount === 2 ? 300 : 
-                                 clearedCount === 3 ? 600 : 1000;
-                score += Math.floor(lineBonus * comboMultiplier);
-                clearedLines += clearedCount;
-                
-                // Perfect clear bonus
-                if (isBoardEmpty()) {
-                    score += 2000;
-                    showFloatingText('+2000 Perfect Clear!');
-                }
-            } else {
-                combo = 0;
-            }
-            
-            // Generate new blocks if all used
-            if (currentBlocks.every(b => b.used)) {
-                generateBlocks();
-            } else {
-                renderBlocks();
-            }
-            
-            updateDisplay();
-            
-            // Check game over
-            if (isGameOver()) {
-                setTimeout(showGameOver, 500);
-            }
-            
-            return true;
-        }
-
-        // In der JavaScript-Datei: Aktualisiere die checkAndClearLines-Funktion
-        function checkAndClearLines() {
-            const rowsToClear = [];
-            const colsToClear = [];
-            
-            // Check rows
-            for (let r = 0; r < 8; r++) {
-                if (gameBoard[r].every(cell => cell)) {
-                    rowsToClear.push(r);
-                }
-            }
-            
-            // Check columns
-            for (let c = 0; c < 8; c++) {
-                if (gameBoard.every(row => row[c])) {
-                    colsToClear.push(c);
-                }
-            }
-            
-            // Clear lines with animation
-            const totalClears = rowsToClear.length + colsToClear.length;
-            if (totalClears > 0) {
-                const cellsToClear = new Set();
-                
-                rowsToClear.forEach(r => {
-                    for (let c = 0; c < 8; c++) {
-                        cellsToClear.add(`${r},${c}`);
-                        const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
-                        cell.classList.add('clear-animation');
-                    }
-                });
-                
-                colsToClear.forEach(c => {
-                    for (let r = 0; r < 8; r++) {
-                        const key = `${r},${c}`;
-                        if (!cellsToClear.has(key)) {
-                            const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
-                            cell.classList.add('clear-animation');
-                        }
-                    }
-                });
-                
-                // Update game state after animation
-                setTimeout(() => {
-                    rowsToClear.forEach(r => {
-                        for (let c = 0; c < 8; c++) {
-                            gameBoard[r][c] = false;
-                        }
-                    });
-                    
-                    colsToClear.forEach(c => {
-                        for (let r = 0; r < 8; r++) {
-                            gameBoard[r][c] = false;
-                        }
-                    });
-                    
-                    // Remove animation class and update display
-                    document.querySelectorAll('.clear-animation').forEach(cell => {
-                        cell.classList.remove('clear-animation');
-                    });
-                    
-                    updateBoardDisplay();
-                }, 500);
-            }
-            
-            return totalClears;
-        }
-
-        function updateBoardDisplay() {
-            for (let r = 0; r < 8; r++) {
-                for (let c = 0; c < 8; c++) {
-                    const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
-                    if (gameBoard[r][c]) {
-                        cell.classList.add('filled');
-                        cell.style.background = '#4ECDC4';
-                    } else {
-                        cell.classList.remove('filled');
-                        cell.style.background = '';
-                    }
-                }
-            }
-        }
-
-        function isBoardEmpty() {
-            return gameBoard.every(row => row.every(cell => !cell));
-        }
-
-        function isGameOver() {
-            return currentBlocks.filter(b => !b.used).every(block => {
-                for (let r = 0; r < 8; r++) {
-                    for (let c = 0; c < 8; c++) {
-                        if (canPlaceBlock(r, c, block.shape)) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            });
-        }
-
-        function showGameOver() {
-            document.getElementById('final-score').textContent = score.toLocaleString();
-            document.getElementById('game-over').style.display = 'flex';
-        }
-
-        function updateDisplay() {
-            document.getElementById('score').textContent = score.toLocaleString();
-            document.getElementById('combo').textContent = combo;
-            document.getElementById('coins').textContent = coins;
-            document.getElementById('placed-blocks').textContent = placedBlocks;
-            document.getElementById('cleared-lines').textContent = clearedLines;
-        }
-
-        function newGame() {
-            gameBoard = Array(8).fill().map(() => Array(8).fill(false));
-            score = 0;
-            combo = 0;
-            placedBlocks = 0;
-            clearedLines = 0;
-            selectedBlock = null;
-            
-            document.getElementById('game-over').style.display = 'none';
-            updateBoardDisplay();
-            generateBlocks();
-            updateDisplay();
-        }
-
-        // Power-ups
-        function useBomb() {
-            if (coins < 100) {
-                alert('Nicht genug Münzen!');
-                return;
-            }
-            
-            coins -= 100;
-            // Simple bomb implementation - clear center 3x3
-            for (let r = 2; r < 6; r++) {
-                for (let c = 2; c < 6; c++) {
-                    gameBoard[r][c] = false;
-                }
-            }
-            updateBoardDisplay();
-            updateDisplay();
-        }
-
-        function useLineClear() {
-            if (coins < 150) {
-                alert('Nicht genug Münzen!');
-                return;
-            }
-            
-            coins -= 150;
-            // Clear random filled row or column
-            const filledRows = [];
-            const filledCols = [];
-            
-            for (let r = 0; r < 8; r++) {
-                if (gameBoard[r].some(cell => cell)) filledRows.push(r);
-            }
-            
-            for (let c = 0; c < 8; c++) {
-                if (gameBoard.some(row => row[c])) filledCols.push(c);
-            }
-            
-            if (filledRows.length > 0) {
-                const rowToClear = filledRows[Math.floor(Math.random() * filledRows.length)];
-                for (let c = 0; c < 8; c++) {
-                    gameBoard[rowToClear][c] = false;
-                }
-            }
-            
-            updateBoardDisplay();
-            updateDisplay();
-        }
-
-        function refreshBlocks() {
-            if (coins < 75) {
-                alert('Nicht genug Münzen!');
-                return;
-            }
-            
-            coins -= 75;
-            generateBlocks();
-            updateDisplay();
-        }
-
-        function showFloatingText(text) {
-            const floatingText = document.createElement('div');
-            floatingText.textContent = text;
-            floatingText.style.position = 'fixed';
-            floatingText.style.top = '50%';
-            floatingText.style.left = '50%';
-            floatingText.style.transform = 'translate(-50%, -50%)';
-            floatingText.style.color = '#F7DC6F';
-            floatingText.style.fontSize = '24px';
-            floatingText.style.fontWeight = 'bold';
-            floatingText.style.zIndex = '1001';
-            floatingText.style.pointerEvents = 'none';
-            floatingText.style.animation = 'fadeUp 2s ease-out forwards';
-            
-            document.body.appendChild(floatingText);
-            
-            setTimeout(() => {
-                document.body.removeChild(floatingText);
-            }, 2000);
-        }
-
-        // Add CSS for floating text animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeUp {
-                0% { opacity: 1; transform: translate(-50%, -50%); }
-                100% { opacity: 0; transform: translate(-50%, -70%); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Initialize game on load
-        initGame();
-    </script>
+    <div class="cookie-banner">
+        <div class="cookie-header flex-column">
+            <div class="cookie-header cookie-header-bottom flex-row">
+                <div class="cookie-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
+                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-75 29-147t81-128.5q52-56.5 125-91T475-881q21 0 43 2t45 7q-9 45 6 85t45 66.5q30 26.5 71.5 36.5t85.5-5q-26 59 7.5 113t99.5 56q1 11 1.5 20.5t.5 20.5q0 82-31.5 154.5t-85.5 127q-54 54.5-127 86T480-80Zm-60-480q25 0 42.5-17.5T480-620q0-25-17.5-42.5T420-680q-25 0-42.5 17.5T360-620q0 25 17.5 42.5T420-560Zm-80 200q25 0 42.5-17.5T400-420q0-25-17.5-42.5T340-480q-25 0-42.5 17.5T280-420q0 25 17.5 42.5T340-360Zm260 40q17 0 28.5-11.5T640-360q0-17-11.5-28.5T600-400q-17 0-28.5 11.5T560-360q0 17 11.5 28.5T600-320ZM480-160q122 0 216.5-84T800-458q-50-22-78.5-60T683-603q-77-11-132-66t-68-132q-80-2-140.5 29t-101 79.5Q201-644 180.5-587T160-480q0 133 93.5 226.5T480-160Zm0-324Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="cookie-title">This site uses cookies</h2>
+                </div>
+            </div>
+            <div>
+                <p class="cookie-description">
+                    <a>This site uses cookies to offer the services, to improve and deliver you the best experience and to provide personalized content.</a>
+                    <br>
+                    <a>By clicking “Accept,” you agree to the use of all cookies. You can change your settings at any time. For more information, visit the</a>
+                    <a class="linkout nodecoration" href="/legal/cookies">Cookie Policy</a>
+                    <a>and</a>
+                    <a class="linkout nodecoration" href="/legal/privacy">Privacy Policy</a><a>.</a>
+                </p>
+            </div>
+        </div>
+        <div class="cookie-buttons">
+            <button class="cookie-btn btn-primary" id="accept-all">
+                <i class="fas fa-check-circle"></i>
+                Accept all
+            </button>
+            <button class="cookie-btn btn-secondary" id="change-settings">
+                <i class="fas fa-cog"></i>
+                Change settings
+            </button>
+        </div>
+    </div>
+    <div class="settings-panel" id="settings-panel">
+        <div class="settings-header">
+            <h2 class="settings-title">Cookie-Settings</h2>
+            <button class="close-btn" id="close-settings">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="settings-content">
+            <div class="cookie-category">
+                <div class="category-header">
+                    <div class="category-icon" style="background: rgba(52, 211, 153, 0.15);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#34d399">
+                            <path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q97-30 162-118.5T718-480H480v-315l-240 90v207q0 7 2 18h238v316Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="category-title">Necessary Cookies</h3>
+                    </div>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <p class="category-description">These cookies are necessary for the basic functions of the website and cannot be disabled. They ensure security functions and enable navigation on the website.</p>
+            </div>
+            <div class="cookie-category">
+                <div class="category-header">
+                    <div class="category-icon" style="background: rgba(96, 165, 250, 0.15);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#60a5fa">
+                            <path d="M80-120v-80h800v80H80Zm40-120v-280h120v280H120Zm200 0v-480h120v480H320Zm200 0v-360h120v360H520Zm200 0v-600h120v600H720Z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="category-title">Statistics and Analytics</h3>
+                    </div>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="analytics-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <p class="category-description">These cookies collect information about how visitors use our website. They help us understand which pages are most popular and how visitors navigate the website. All data collected is anonymized.</p>
+            </div>
+            <div class="cookie-category">
+                <div class="category-header">
+                    <div class="category-icon" style="background: rgba(251, 191, 36, 0.15);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 24 24" width="30" fill="#fbbf24">
+                            <path d="m17.5 17.5-2.498.993L17.5 19.5l1 2.5 1-2.5 2.5-1.007-2.5-.993-1-2.514-1 2.514Zm1-15.5-1 2.5-2.498 1.007L17.5 6.5l1 2.514 1-2.514 2.5-.993L19.5 4.5l-1-2.5ZM7.714 9.714 10 4l2.286 5.714L18 12l-5.714 2.286L10 20l-2.286-5.714L2 12Zm.77.77L4.693 12l3.79 1.516L10 17.307l1.516-3.79L15.307 12l-3.79-1.516L10 6.693l-1.516 3.79Z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="category-title">Preferences and Personalization</h3>
+                    </div>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="preferences-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <p class="category-description">These cookies enable the website to remember choices you have made (such as your username, language, or region) and provide enhanced, more personal features.</p>
+            </div>
+            <div class="cookie-category">
+                <div class="category-header">
+                    <div class="category-icon" style="background: rgba(139, 92, 246, 0.15);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#8b5cf6">
+                            <path d="M440-183v-274L200-596v274l240 139Zm80 0 240-139v-274L520-457v274Zm-40-343 237-137-237-137-237 137 237 137ZM160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11L160-252Zm320-228Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="category-title">Third-Party Content</h3>
+                    </div>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="thirdparty-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <p class="category-description">These cookies are set by third-party services that we use to provide additional features, such as embedded videos, maps, or social media content. Third-party providers may also use these cookies to deliver personalized advertising.</p>
+            </div>
+            <div class="cookie-category cookie-category-bottom">
+                <div class="category-header">
+                    <div class="category-icon" style="background: rgba(236, 72, 153, 0.15);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#ec4899">
+                            <path d="M200-280h560v-80H200v80Zm0-160h560v-80H200v80Zm0-160h400v-80H200v80Zm-40 440q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="category-title">Marketing and Advertising</h3>
+                    </div>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="marketing-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <p class="category-description">These cookies are used to show visitors relevant advertising on other websites. They are also used to limit the frequency of ad display and measure the effectiveness of advertising campaigns.</p>
+            </div>
+        </div>
+        <div class="settings-footer">
+            <button class="btn-save" id="save-settings">
+                <i class="fas fa-save"></i>
+                Save settings
+            </button>
+        </div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+    <script src="https://itsmarian.is-a.dev/assets/cb.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

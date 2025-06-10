@@ -34,24 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById("getApp").addEventListener("click", function(){
     document.documentElement.style.overflowY = "hidden";
     document.documentElement.style.overflowX = "hidden";
-    document.getElementById("overlay").style.display = "block";
+    document.getElementById("u-overlay").style.display = "block";
     
     setTimeout(function() {
-        document.getElementById("overlay").style.top = "calc(50% + 10px)";
-        document.getElementById("overlay").style.height = "calc(100% - 10px)";
-        document.getElementById("overlay").style.transform = "translate(-50%, -50%)";
+        document.getElementById("u-overlay").style.top = "calc(50% + 10px)";
+        document.getElementById("u-overlay").style.height = "calc(100% - 10px)";
+        document.getElementById("u-overlay").style.transform = "translate(-50%, -50%)";
     }, 10);
 });
 
 document.getElementById("done-btn").addEventListener("click", function(){
-    document.getElementById("overlay").style.top = "100%";
-    document.getElementById("overlay").style.height = "100%";
-    document.getElementById("overlay").style.transform = "translate(-50%, 0%)";
+    document.getElementById("u-overlay").style.top = "100%";
+    document.getElementById("u-overlay").style.height = "100%";
+    document.getElementById("u-overlay").style.transform = "translate(-50%, 0%)";
     document.documentElement.style.overflowY = "auto";
     document.documentElement.style.overflowX = "hidden";
 
     setTimeout(function() {
-        document.getElementById("overlay").style.display = "none";
+        document.getElementById("u-overlay").style.display = "none";
     }, 150);
 });
 

@@ -1,10 +1,30 @@
+:root {
+    --accent: #f9e2af;
+	--bg-2: hsl(220, 10%, 17%);
+	--bg-3: hsl(220, 10%, 11%);
+	--bg-4: hsl(220, 10%, 16%);
+	--bg-t-2: hsla(220, 12%, 5%, 0.5);
+	--bg-t: hsla(220, 12%, 5%, 0.25);
+	--bg: hsl(220, 10%, 8%);
+	--border-d: #334155;
+	--border: hsl(0, 0%, 100%);
+	--error: #f38ba8;
+	--gradient-primary: linear-gradient(90deg, #CF5DEB 0%, #9F3DFA 100%);
+	--gradient-secondary: linear-gradient(90deg, var(--txt-1) 0%, var(--txt) 100%);
+	--success: #a6e3a1;
+	--txt-1: hsl(220, 45%, 90%);
+	--txt-2: hsl(220, 14%, 55%);
+	--txt-3: hsl(220, 11%, 35%);
+	--txt-4: #000000;
+	--txt: hsl(220, 30%, 80%);
+}
+
 body {
     background-color: var(--bg);
     font-family: 'Arial', sans-serif;
     margin: 0px;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 1rem;
     text-align: center;
     touch-action: manipulation;
     user-select: none;
@@ -224,16 +244,19 @@ li {
     border-radius: 5px;
     height: 40px;
     margin: 0 auto;
-    width: 280px;
+    width: 300px;
 }
 
 #fileInput {
     color: #fff;
+    height: calc(100% - 15px);
     margin: 5px;
     margin-top: 10px;
+    width: 100%;
 }
 
 .loadCancel {
+    cursor: pointer;
     margin: 5px;
 }
 

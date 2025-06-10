@@ -37,6 +37,10 @@ main {
     color: var(--text);
 }
 
+footer {
+    background-color: var(--background);
+}
+
 .container {
     position: relative;
     width: 100%;

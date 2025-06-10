@@ -1,491 +1,548 @@
-const boardSize = 10;
-const cellSize = 40;
-const boardCanvas = document.getElementById('board-canvas');
-const boardCtx = boardCanvas.getContext('2d');
-const piecesContainer = document.getElementById('pieces-container');
-const scoreDisplay = document.getElementById('score');
-
+// Game State
+let gameBoard = Array(8).fill().map(() => Array(8).fill(false));
 let score = 0;
-let gameOver = false;
+let combo = 0;
+let coins = 100;
+let placedBlocks = 0;
+let clearedLines = 0;
+let currentBlocks = [];
+let selectedBlock = null;
+let isDragging = false;
+let dragPreview = null;
 
-let draggedPiece = null; 
-let selectedPiece = null;
-let selectedPieceIndex = -1;
-let previewCells = [];
+// Block Shapes
+const blockShapes = {
+	single: [
+		[true]
+	],
+	line2: [
+		[true],
+		[true]
+	],
+	line3: [
+		[true],
+		[true],
+		[true]
+	],
+	line4: [
+		[true],
+		[true],
+		[true],
+		[true]
+	],
+	line2h: [
+		[true, true]
+	],
+	line3h: [
+		[true, true, true]
+	],
+	line4h: [
+		[true, true, true, true]
+	],
+	square: [
+		[true, true],
+		[true, true]
+	],
+	L1: [
+		[true, false],
+		[true, false],
+		[true, true]
+	],
+	L2: [
+		[true, true, true],
+		[true, false, false]
+	],
+	L3: [
+		[true, true],
+		[false, true],
+		[false, true]
+	],
+	L4: [
+		[false, false, true],
+		[true, true, true]
+	],
+	T1: [
+		[true, true, true],
+		[false, true, false]
+	],
+	T2: [
+		[false, true],
+		[true, true],
+		[false, true]
+	],
+	Z1: [
+		[true, true, false],
+		[false, true, true]
+	],
+	Z2: [
+		[false, true],
+		[true, true],
+		[true, false]
+	]
+};
 
-let board = [];
-for (let y = 0; y < boardSize; y++) {
-        board[y] = [];
-        for (let x = 0; x < boardSize; x++) {
-            board[y][x] = 0;
-        }
-    }
-    const pieceShapes = [
-        {
-            blocks: [[0,0], [0,1], [0,2], [1,2]], color: '#FF5733'
-        },
-        {
-            blocks: [[1,0], [0,1], [1,1], [2,1]], color: '#33FF57'
-        },
-        {
-            blocks: [[0,0], [1,0], [0,1], [1,1]], color: '#3357FF'
-        },
-        {
-            blocks: [[0,0], [1,0], [2,0], [0,1], [1,1], [2,1],[0,2], [1,2], [2,2]], color: '#F1C40F'
-        },
-        {
-            blocks: [[0,0], [1,0], [2,0], [0,1], [1,1], [2,1]], color: '#9B59B6'
-        },
-        {
-            blocks: [[0,0], [1,0], [2,0], [3,0], [4,0]], color: '#E67E22'
-        },
-        {
-            blocks: [[0,0], [1,0], [0,1]], color: '#2ECC71'
-        }
-    ];
-    
-    let currentPieces = [];
-    
-    function adjustColor(color, amount) {
-        let usePound = false;
-        if (color[0] === "#") {
-            color = color.slice(1);
-            usePound = true;
-        }
-        let num = parseInt(color, 16);
-        let r = Math.max(Math.min(255, (num >> 16) + amount), 0);
-        let g = Math.max(Math.min(255, ((num >> 8) & 0x00FF) + amount), 0);
-        let b = Math.max(Math.min(255, (num & 0x0000FF) + amount), 0);
-        return (usePound ? "#" : "") + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-    }
-    
-    function lightenColor(color, factor) {
-        return adjustColor(color, Math.round(50 * factor));
-    }
-    
-    function darkenColor(color, factor) {
-        return adjustColor(color, -Math.round(50 * factor));
-    }
-    
-    function drawBlock(x, y, color) {
-        let gradient = boardCtx.createLinearGradient(x, y, x, y + cellSize);
-        gradient.addColorStop(0, lightenColor(color, 0.3));
-        gradient.addColorStop(1, darkenColor(color, 0.3));
-        boardCtx.fillStyle = gradient;
-        boardCtx.fillRect(x, y, cellSize, cellSize);
-        boardCtx.strokeStyle = '#000';
-        boardCtx.strokeRect(x, y, cellSize, cellSize);
-    }
-    
-    function drawBoard() {
-        boardCtx.clearRect(0, 0, boardCanvas.width, boardCanvas.height);
-        for (let y = 0; y < boardSize; y++) {
-            for (let x = 0; x < boardSize; x++) {
-            boardCtx.strokeStyle = '#ccc';
-            boardCtx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
-            if (board[y][x] !== 0) {
-                drawBlock(x * cellSize, y * cellSize, board[y][x]);
-            }
-            }
-        }
-        if (previewCells && previewCells.length > 0) {
-            boardCtx.save();
-            boardCtx.fillStyle = 'rgba(255, 0, 0, 0.3)';
-            previewCells.forEach(cell => {
-            boardCtx.fillRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
-            });
-            boardCtx.restore();
-        }
-    }
-    
-    function generatePieces() {
-        currentPieces = [];
-        piecesContainer.innerHTML = '';
-        for (let i = 0; i < 3; i++) {
-            const randomIndex = Math.floor(Math.random() * pieceShapes.length);
-            const piece = JSON.parse(JSON.stringify(pieceShapes[randomIndex]));
-            currentPieces.push(piece);
-            createPieceElement(piece, i);
-        }
-    }
-    
-    function isBlockInPiece(piece, x, y) {
-        return piece.blocks.some(block => block[0] === x && block[1] === y);
-    }
-    
-    function drawPieceExactOutline(ctx, piece) {
-        ctx.beginPath();
-        piece.blocks.forEach(block => {
-            let bx = block[0] * cellSize;
-            let by = block[1] * cellSize;
-            if (!isBlockInPiece(piece, block[0], block[1] - 1)) {
-            ctx.moveTo(bx, by);
-            ctx.lineTo(bx + cellSize, by);
-            }
-            if (!isBlockInPiece(piece, block[0] + 1, block[1])) {
-            ctx.moveTo(bx + cellSize, by);
-            ctx.lineTo(bx + cellSize, by + cellSize);
-            }
-            if (!isBlockInPiece(piece, block[0], block[1] + 1)) {
-            ctx.moveTo(bx, by + cellSize);
-            ctx.lineTo(bx + cellSize, by + cellSize);
-            }
-            if (!isBlockInPiece(piece, block[0] - 1, block[1])) {
-            ctx.moveTo(bx, by);
-            ctx.lineTo(bx, by + cellSize);
-            }
-        });
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
-    
-    function createPieceElement(piece, index) {
-        let maxX = 0, maxY = 0;
-        piece.blocks.forEach(block => {
-            if (block[0] > maxX) maxX = block[0];
-            if (block[1] > maxY) maxY = block[1];
-        });
-        const canvasWidth = (maxX + 1) * cellSize;
-        const canvasHeight = (maxY + 1) * cellSize;
-        
-        const pieceCanvas = document.createElement('canvas');
-        pieceCanvas.width = canvasWidth;
-        pieceCanvas.height = canvasHeight;
-        pieceCanvas.classList.add('piece-canvas');
-        pieceCanvas.dataset.index = index;
-        const ctx = pieceCanvas.getContext('2d');
-        
-        piece.blocks.forEach(block => {
-            ctx.fillStyle = piece.color;
-            ctx.fillRect(block[0] * cellSize, block[1] * cellSize, cellSize, cellSize);
-        });
-        drawPieceExactOutline(ctx, piece);
-        
-        pieceCanvas.addEventListener('mousedown', function(e) {
-            e.preventDefault();
-            if (!gameOver) startDrag(e, pieceCanvas, piece, index);
-        });
-        pieceCanvas.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            if (!gameOver) startDrag(e.touches[0], pieceCanvas, piece, index);
-        });
-        
-        piecesContainer.appendChild(pieceCanvas);
-    }
-    
-    function startDrag(eObj, pieceCanvas, piece, index) {
-        selectedPiece = piece;
-        selectedPieceIndex = index;
-        const dragClone = pieceCanvas.cloneNode(true);
-        dragClone.style.position = 'absolute';
-        dragClone.style.pointerEvents = 'none';
-        const rect = pieceCanvas.getBoundingClientRect();
-        const offsetX = eObj.clientX - rect.left;
-        const offsetY = eObj.clientY - rect.top;
-        dragClone.dataset.offsetX = offsetX;
-        dragClone.dataset.offsetY = offsetY;
-        dragClone.style.left = rect.left + 'px';
-        dragClone.style.top = rect.top + 'px';
-        document.body.appendChild(dragClone);
-        draggedPiece = dragClone;
-        pieceCanvas.style.visibility = 'hidden';
-    }
-    
-    function handleDragMove(eObj) {
-        if (!draggedPiece) return;
-        const offsetX = parseFloat(draggedPiece.dataset.offsetX);
-        const offsetY = parseFloat(draggedPiece.dataset.offsetY);
-        draggedPiece.style.left = (eObj.clientX - offsetX) + 'px';
-        draggedPiece.style.top = (eObj.clientY - offsetY) + 'px';
-        
-        const boardRect = boardCanvas.getBoundingClientRect();
-        if (eObj.clientX >= boardRect.left && eObj.clientX <= boardRect.right &&
-            eObj.clientY >= boardRect.top && eObj.clientY <= boardRect.bottom) {
-            let dropLeft = eObj.clientX - offsetX;
-            let dropTop = eObj.clientY - offsetY;
-            let boardX = Math.round((dropLeft - boardRect.left) / cellSize);
-            let boardY = Math.round((dropTop - boardRect.top) / cellSize);
-            if (canPlacePiece(selectedPiece, boardX, boardY)) {
-            previewCells = computePreviewCells(boardX, boardY, selectedPiece);
-            } else {
-            previewCells = [];
-            }
-        } else {
-            previewCells = [];
-        }
-        drawBoard();
-    }
-    
-    document.addEventListener('mousemove', e => { handleDragMove(e); });
-    document.addEventListener('touchmove', e => { 
-        if (e.touches.length > 0) handleDragMove(e.touches[0]);
-    }, { passive: false });
-    
-    function revertDrag() {
-        const canvases = document.querySelectorAll('.piece-canvas');
-        canvases.forEach(canvas => {
-            if (parseInt(canvas.dataset.index) === selectedPieceIndex) {
-            canvas.style.visibility = 'visible';
-            }
-        });
-    }
-    
-    function handleDragEnd(eObj) {
-        if (!draggedPiece) return;
-        const boardRect = boardCanvas.getBoundingClientRect();
-        const offsetX = parseFloat(draggedPiece.dataset.offsetX);
-        const offsetY = parseFloat(draggedPiece.dataset.offsetY);
-        let dropLeft = eObj.clientX - offsetX;
-        let dropTop = eObj.clientY - offsetY;
-        let boardX = Math.round((dropLeft - boardRect.left) / cellSize);
-        let boardY = Math.round((dropTop - boardRect.top) / cellSize);
-        
-        if (boardX < 0 || boardX >= boardSize || boardY < 0 || boardY >= boardSize) {
-            revertDrag();
-        } else {
-            if (canPlacePiece(selectedPiece, boardX, boardY)) {
-            placePiece(selectedPiece, boardX, boardY);
-            } else {
-            alert("Hier kann der Stein nicht platziert werden!");
-            revertDrag();
-            }
-        }
-        
-        if (draggedPiece.parentNode) {
-            draggedPiece.parentNode.removeChild(draggedPiece);
-        }
-        draggedPiece = null;
-        selectedPiece = null;
-        selectedPieceIndex = -1;
-        previewCells = [];
-        drawBoard();
-    }
-    
-    document.addEventListener('mouseup', e => { handleDragEnd(e); });
-    document.addEventListener('touchend', e => { 
-        if (e.changedTouches.length > 0) handleDragEnd(e.changedTouches[0]);
-    });
-    
-    function computePreviewCells(boardX, boardY, piece) {
-        let simulated = [];
-        for (let y = 0; y < boardSize; y++) {
-            simulated[y] = board[y].slice();
-        }
-        piece.blocks.forEach(block => {
-            let x = boardX + block[0];
-            let y = boardY + block[1];
-            simulated[y][x] = piece.color;
-        });
-        let preview = [];
-        for (let y = 0; y < boardSize; y++) {
-            if (simulated[y].every(cell => cell !== 0)) {
-            for (let x = 0; x < boardSize; x++) {
-                preview.push({ x, y });
-            }
-            }
-        }
-        for (let x = 0; x < boardSize; x++) {
-            let full = true;
-            for (let y = 0; y < boardSize; y++) {
-            if (simulated[y][x] === 0) { full = false; break; }
-            }
-            if (full) {
-            for (let y = 0; y < boardSize; y++) {
-                if (!preview.some(cell => cell.x === x && cell.y === y)) {
-                preview.push({ x, y });
-                }
-            }
-            }
-        }
-        return preview;
-    }
-    
-    function canPlacePiece(piece, boardX, boardY) {
-        for (let block of piece.blocks) {
-            const x = boardX + block[0];
-            const y = boardY + block[1];
-            if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) return false;
-            if (board[y][x] !== 0) return false;
-        }
-        return true;
-    }
-    
-    function placePiece(piece, boardX, boardY) {
-        piece.blocks.forEach(block => {
-            const x = boardX + block[0];
-            const y = boardY + block[1];
-            board[y][x] = piece.color;
-        });
-        currentPieces[selectedPieceIndex] = null;
-        const canvases = document.querySelectorAll('.piece-canvas');
-        canvases.forEach(canvas => {
-            if (parseInt(canvas.dataset.index) === selectedPieceIndex) {
-            canvas.remove();
-            }
-        });
-        drawBoard();
-        let cleared = clearFullLines();
-        if (!cleared) { checkEmptyBoard(); }
-        updateScore(10);
-        setTimeout(() => {
-            if (!hasValidMove() && !gameOver) {
-            gameOver = true;
-            animateEndScreen();
-            }
-        }, 100);
-        
-        if (currentPieces.every(piece => piece === null)) {
-            generatePieces();
-        }
-    }
-    
-    function clearFullLines() {
-        let cellsToClear = [];
-        let clearedRows = [];
-        let clearedCols = [];
-        
-        for (let y = 0; y < boardSize; y++) {
-            if (board[y].every(cell => cell !== 0)) {
-            clearedRows.push(y);
-            for (let x = 0; x < boardSize; x++) {
-                cellsToClear.push({ x, y, color: board[y][x] });
-            }
-            }
-        }
-        for (let x = 0; x < boardSize; x++) {
-            let full = true;
-            for (let y = 0; y < boardSize; y++) {
-            if (board[y][x] === 0) { full = false; break; }
-            }
-            if (full) {
-            clearedCols.push(x);
-            for (let y = 0; y < boardSize; y++) {
-                if (!cellsToClear.some(cell => cell.x === x && cell.y === y)) {
-                cellsToClear.push({ x, y, color: board[y][x] });
-                }
-            }
-            }
-        }
-        
-        const bonusPoints = (clearedRows.length + clearedCols.length) * 20;
-        if (cellsToClear.length > 0) {
-            animateClearCells(cellsToClear, function() {
-            cellsToClear.forEach(cell => { board[cell.y][cell.x] = 0; });
-            drawBoard();
-            updateScore(bonusPoints);
-            checkEmptyBoard();
-            });
-            return true;
-        }
-        return false;
-    }
-    
-    function animateClearCells(cells, callback) {
-        let startTime = null;
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            let progress = (timestamp - startTime) / 500;
-            if (progress > 1) progress = 1;
-            drawBoard();
-            cells.forEach(cell => {
-            boardCtx.save();
-            boardCtx.globalAlpha = 1 - progress;
-            boardCtx.fillStyle = cell.color;
-            boardCtx.fillRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
-            boardCtx.restore();
-            });
-            if (progress < 1) {
-            requestAnimationFrame(step);
-            } else {
-            callback();
-            }
-        }
-        requestAnimationFrame(step);
-    }
-    
-    function checkEmptyBoard() {
-        let empty = true;
-        for (let y = 0; y < boardSize; y++) {
-            for (let x = 0; x < boardSize; x++) {
-            if (board[y][x] !== 0) { empty = false; break; }
-            }
-            if (!empty) break;
-        }
-        if (empty && !gameOver) { animateEmptyBoard(); }
-    }
-    
-    function animateEndScreen() {
-        document.getElementById("pieces-container").style.display = "none";
-        let startTime = null;
-        const duration = 2000;
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            let progress = timestamp - startTime;
-            let cutoff = (progress / duration) * boardCanvas.height;
-            if (cutoff > boardCanvas.height) cutoff = boardCanvas.height;
-            boardCtx.clearRect(0, 0, boardCanvas.width, boardCanvas.height);
-            for (let y = 0; y < boardSize; y++) {
-            for (let x = 0; x < boardSize; x++) {
-                boardCtx.strokeStyle = '#ccc';
-                boardCtx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
-            }
-            }
-            for (let y = 0; y < boardSize; y++) {
-            for (let x = 0; x < boardSize; x++) {
-                let blockTop = y * cellSize;
-                if (blockTop >= cutoff && board[y][x] !== 0) {
-                drawBlock(x * cellSize, y * cellSize, board[y][x]);
-                }
-            }
-            }
-            if (progress < duration) {
-                requestAnimationFrame(step);
-            } else {
-                boardCtx.clearRect(0, 0, boardCanvas.width, boardCanvas.height);
-                boardCtx.save();
-                boardCtx.fillStyle = '#7f7f7f';
-                boardCtx.font = "40px sans-serif";
-                boardCtx.textAlign = "center";
-                boardCtx.fillText("No space left!", boardCanvas.width / 2, boardCanvas.height / 2 - 20);
-                boardCtx.fillText("Score: " + score, boardCanvas.width / 2, boardCanvas.height / 2 + 20);
-                boardCtx.restore();
-            }
-        }
-        requestAnimationFrame(step);
-    }
-    
-    function animateEmptyBoard() {
-        animateEndScreen();
-    }
-    
-    function updateScore(points) {
-        score += points;
-        scoreDisplay.textContent = score;
-    }
-    
-    function hasValidMove() {
-        for (let piece of currentPieces) {
-            if (piece === null) continue;
-            for (let y = 0; y < boardSize; y++) {
-            for (let x = 0; x < boardSize; x++) {
-                if (canPlacePiece(piece, x, y)) return true;
-            }
-            }
-        }
-        return false;
-    }
-    
-    drawBoard();
-    generatePieces();
+// Initialize Game
+function initGame() {
+	createBoard();
+	generateBlocks();
+	updateDisplay();
+}
 
-    boardCanvas.addEventListener('click', function(event) {
-        const mouseX = event.offsetX;
-        const mouseY = event.offsetY;
-        const replayX = boardCanvas.width / 2;
-        const replayY = boardCanvas.height / 2 + 60;
+function createBoard() {
+	const board = document.getElementById('game-board');
+	board.innerHTML = '';
 
-        if (mouseX >= replayX && mouseX <= replayX + 100 && mouseY >= replayY - 30 && mouseY <= replayY) {
-            location.reload();
-        }
-    });
+	for (let i = 0; i < 64; i++) {
+		const cell = document.createElement('div');
+		cell.className = 'cell';
+		cell.dataset.row = Math.floor(i / 8);
+		cell.dataset.col = i % 8;
+
+		cell.addEventListener('dragover', handleDragOver);
+		cell.addEventListener('drop', handleDrop);
+
+		board.appendChild(cell);
+	}
+}
+
+function generateBlocks() {
+	const shapeNames = Object.keys(blockShapes);
+	currentBlocks = [];
+
+	for (let i = 0; i < 3; i++) {
+		const randomShape = shapeNames[Math.floor(Math.random() * shapeNames.length)];
+		currentBlocks.push({
+			shape: blockShapes[randomShape],
+			name: randomShape,
+			used: false
+		});
+	}
+
+	renderBlocks();
+}
+
+function renderBlocks() {
+	const container = document.getElementById('blocks-container');
+	container.innerHTML = '';
+
+	currentBlocks.forEach((block, index) => {
+		if (block.used) return;
+
+		const preview = document.createElement('div');
+		preview.className = 'block-preview';
+		preview.dataset.index = index;
+
+		const shape = document.createElement('div');
+		shape.className = 'block-shape';
+		shape.style.gridTemplateColumns = `repeat(${block.shape[0].length}, 1fr)`;
+		shape.style.gridTemplateRows = `repeat(${block.shape.length}, 1fr)`;
+
+		block.shape.forEach(row => {
+			row.forEach(cell => {
+				const cellDiv = document.createElement('div');
+				if (cell) {
+					cellDiv.className = 'block-cell';
+				} else {
+					cellDiv.style.width = '12px';
+					cellDiv.style.height = '12px';
+				}
+				shape.appendChild(cellDiv);
+			});
+		});
+
+		preview.appendChild(shape);
+		preview.draggable = true;
+		preview.addEventListener('dragstart', handleDragStart);
+		preview.addEventListener('click', selectBlock);
+
+		container.appendChild(preview);
+	});
+}
+
+function selectBlock(e) {
+	const index = parseInt(e.currentTarget.dataset.index);
+	selectedBlock = index;
+
+	document.querySelectorAll('.block-preview').forEach(preview => {
+		preview.classList.remove('selected');
+	});
+	e.currentTarget.classList.add('selected');
+}
+
+function handleDragStart(e) {
+	const index = parseInt(e.currentTarget.dataset.index);
+	selectedBlock = index;
+	isDragging = true;
+
+	e.dataTransfer.effectAllowed = 'move';
+	e.dataTransfer.setData('text/html', e.currentTarget.outerHTML);
+}
+
+function handleDragOver(e) {
+	e.preventDefault();
+	e.dataTransfer.dropEffect = 'move';
+
+	if (selectedBlock !== null && isDragging) {
+		const row = parseInt(e.currentTarget.dataset.row);
+		const col = parseInt(e.currentTarget.dataset.col);
+		highlightPlacement(row, col);
+	}
+}
+
+function handleDrop(e) {
+	e.preventDefault();
+	isDragging = false;
+
+	if (selectedBlock !== null) {
+		const row = parseInt(e.currentTarget.dataset.row);
+		const col = parseInt(e.currentTarget.dataset.col);
+		placeBlock(row, col, selectedBlock);
+	}
+
+	clearHighlight();
+}
+
+function highlightPlacement(row, col) {
+	clearHighlight();
+
+	if (selectedBlock === null) return;
+
+	const block = currentBlocks[selectedBlock];
+	if (block.used) return;
+
+	const canPlace = canPlaceBlock(row, col, block.shape);
+
+	for (let r = 0; r < block.shape.length; r++) {
+		for (let c = 0; c < block.shape[r].length; c++) {
+			if (block.shape[r][c]) {
+				const targetRow = row + r;
+				const targetCol = col + c;
+
+				if (targetRow >= 0 && targetRow < 8 && targetCol >= 0 && targetCol < 8) {
+					const cell = document.querySelector(`[data-row="${targetRow}"][data-col="${targetCol}"]`);
+					if (cell) {
+						cell.classList.add('highlight');
+						if (!canPlace) {
+							cell.style.background = '#FFB6B3';
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+function clearHighlight() {
+	document.querySelectorAll('.cell').forEach(cell => {
+		cell.classList.remove('highlight');
+		if (!cell.classList.contains('filled')) {
+			cell.style.background = '';
+		}
+	});
+}
+
+function canPlaceBlock(row, col, shape) {
+	for (let r = 0; r < shape.length; r++) {
+		for (let c = 0; c < shape[r].length; c++) {
+			if (shape[r][c]) {
+				const targetRow = row + r;
+				const targetCol = col + c;
+
+				if (targetRow < 0 || targetRow >= 8 || targetCol < 0 || targetCol >= 8) {
+					return false;
+				}
+
+				if (gameBoard[targetRow][targetCol]) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
+function placeBlock(row, col, blockIndex) {
+	const block = currentBlocks[blockIndex];
+	if (block.used || !canPlaceBlock(row, col, block.shape)) {
+		return false;
+	}
+
+	// Place block on board
+	let blockSize = 0;
+	for (let r = 0; r < block.shape.length; r++) {
+		for (let c = 0; c < block.shape[r].length; c++) {
+			if (block.shape[r][c]) {
+				gameBoard[row + r][col + c] = true;
+				blockSize++;
+			}
+		}
+	}
+
+	// Mark block as used
+	block.used = true;
+	selectedBlock = null;
+
+	// Update score
+	score += blockSize * 10;
+	placedBlocks++;
+	coins += 5;
+
+	// Update board display
+	updateBoardDisplay();
+
+	// Check for line clears
+	const clearedCount = checkAndClearLines();
+	if (clearedCount > 0) {
+		combo++;
+		const comboMultiplier = Math.min(1 + (combo - 1) * 0.2, 3.0);
+		const lineBonus = clearedCount === 1 ? 100 :
+			clearedCount === 2 ? 300 :
+			clearedCount === 3 ? 600 : 1000;
+		score += Math.floor(lineBonus * comboMultiplier);
+		clearedLines += clearedCount;
+
+		// Perfect clear bonus
+		if (isBoardEmpty()) {
+			score += 2000;
+			showFloatingText('+2000 Perfect Clear!');
+		}
+	} else {
+		combo = 0;
+	}
+
+	// Generate new blocks if all used
+	if (currentBlocks.every(b => b.used)) {
+		generateBlocks();
+	} else {
+		renderBlocks();
+	}
+
+	updateDisplay();
+
+	// Check game over
+	if (isGameOver()) {
+		setTimeout(showGameOver, 500);
+	}
+
+	return true;
+}
+
+// In der JavaScript-Datei: Aktualisiere die checkAndClearLines-Funktion
+function checkAndClearLines() {
+	const rowsToClear = [];
+	const colsToClear = [];
+
+	// Check rows
+	for (let r = 0; r < 8; r++) {
+		if (gameBoard[r].every(cell => cell)) {
+			rowsToClear.push(r);
+		}
+	}
+
+	// Check columns
+	for (let c = 0; c < 8; c++) {
+		if (gameBoard.every(row => row[c])) {
+			colsToClear.push(c);
+		}
+	}
+
+	// Clear lines with animation
+	const totalClears = rowsToClear.length + colsToClear.length;
+	if (totalClears > 0) {
+		const cellsToClear = new Set();
+
+		rowsToClear.forEach(r => {
+			for (let c = 0; c < 8; c++) {
+				cellsToClear.add(`${r},${c}`);
+				const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+				cell.classList.add('clear-animation');
+			}
+		});
+
+		colsToClear.forEach(c => {
+			for (let r = 0; r < 8; r++) {
+				const key = `${r},${c}`;
+				if (!cellsToClear.has(key)) {
+					const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+					cell.classList.add('clear-animation');
+				}
+			}
+		});
+
+		// Update game state after animation
+		setTimeout(() => {
+			rowsToClear.forEach(r => {
+				for (let c = 0; c < 8; c++) {
+					gameBoard[r][c] = false;
+				}
+			});
+
+			colsToClear.forEach(c => {
+				for (let r = 0; r < 8; r++) {
+					gameBoard[r][c] = false;
+				}
+			});
+
+			// Remove animation class and update display
+			document.querySelectorAll('.clear-animation').forEach(cell => {
+				cell.classList.remove('clear-animation');
+			});
+
+			updateBoardDisplay();
+		}, 500);
+	}
+
+	return totalClears;
+}
+
+function updateBoardDisplay() {
+	for (let r = 0; r < 8; r++) {
+		for (let c = 0; c < 8; c++) {
+			const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+			if (gameBoard[r][c]) {
+				cell.classList.add('filled');
+				cell.style.background = '#4ECDC4';
+			} else {
+				cell.classList.remove('filled');
+				cell.style.background = '';
+			}
+		}
+	}
+}
+
+function isBoardEmpty() {
+	return gameBoard.every(row => row.every(cell => !cell));
+}
+
+function isGameOver() {
+	return currentBlocks.filter(b => !b.used).every(block => {
+		for (let r = 0; r < 8; r++) {
+			for (let c = 0; c < 8; c++) {
+				if (canPlaceBlock(r, c, block.shape)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	});
+}
+
+function showGameOver() {
+	document.getElementById('final-score').textContent = score.toLocaleString();
+	document.getElementById('game-over').style.display = 'flex';
+}
+
+function updateDisplay() {
+	document.getElementById('score').textContent = score.toLocaleString();
+	document.getElementById('combo').textContent = combo;
+	document.getElementById('coins').textContent = coins;
+	document.getElementById('placed-blocks').textContent = placedBlocks;
+	document.getElementById('cleared-lines').textContent = clearedLines;
+}
+
+function newGame() {
+	gameBoard = Array(8).fill().map(() => Array(8).fill(false));
+	score = 0;
+	combo = 0;
+	placedBlocks = 0;
+	clearedLines = 0;
+	selectedBlock = null;
+
+	document.getElementById('game-over').style.display = 'none';
+	updateBoardDisplay();
+	generateBlocks();
+	updateDisplay();
+}
+
+// Power-ups
+function useBomb() {
+	if (coins < 100) {
+		alert('Nicht genug Münzen!');
+		return;
+	}
+
+	coins -= 100;
+	// Simple bomb implementation - clear center 3x3
+	for (let r = 2; r < 6; r++) {
+		for (let c = 2; c < 6; c++) {
+			gameBoard[r][c] = false;
+		}
+	}
+	updateBoardDisplay();
+	updateDisplay();
+}
+
+function useLineClear() {
+	if (coins < 150) {
+		alert('Nicht genug Münzen!');
+		return;
+	}
+
+	coins -= 150;
+	// Clear random filled row or column
+	const filledRows = [];
+	const filledCols = [];
+
+	for (let r = 0; r < 8; r++) {
+		if (gameBoard[r].some(cell => cell)) filledRows.push(r);
+	}
+
+	for (let c = 0; c < 8; c++) {
+		if (gameBoard.some(row => row[c])) filledCols.push(c);
+	}
+
+	if (filledRows.length > 0) {
+		const rowToClear = filledRows[Math.floor(Math.random() * filledRows.length)];
+		for (let c = 0; c < 8; c++) {
+			gameBoard[rowToClear][c] = false;
+		}
+	}
+
+	updateBoardDisplay();
+	updateDisplay();
+}
+
+function refreshBlocks() {
+	if (coins < 75) {
+		alert('Nicht genug Münzen!');
+		return;
+	}
+
+	coins -= 75;
+	generateBlocks();
+	updateDisplay();
+}
+
+function showFloatingText(text) {
+	const floatingText = document.createElement('div');
+	floatingText.textContent = text;
+	floatingText.style.position = 'fixed';
+	floatingText.style.top = '50%';
+	floatingText.style.left = '50%';
+	floatingText.style.transform = 'translate(-50%, -50%)';
+	floatingText.style.color = '#F7DC6F';
+	floatingText.style.fontSize = '24px';
+	floatingText.style.fontWeight = 'bold';
+	floatingText.style.zIndex = '1001';
+	floatingText.style.pointerEvents = 'none';
+	floatingText.style.animation = 'fadeUp 2s ease-out forwards';
+
+	document.body.appendChild(floatingText);
+
+	setTimeout(() => {
+		document.body.removeChild(floatingText);
+	}, 2000);
+}
+
+// Add CSS for floating text animation
+const style = document.createElement('style');
+style.textContent = `
+            @keyframes fadeUp {
+                0% { opacity: 1; transform: translate(-50%, -50%); }
+                100% { opacity: 0; transform: translate(-50%, -70%); }
+            }
+        `;
+document.head.appendChild(style);
+
+// Initialize game on load
+initGame();

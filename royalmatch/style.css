@@ -8,6 +8,10 @@ body {
 	padding: 0;
 }
 
+footer {
+	background-color: #f2f2f2;
+}
+
 h1 {
 	color: var(--txt-4) !important;
 	margin-top: 20px;

@@ -75,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function() {
         setTimeout(() => {
             document.querySelector(".initialision").style.display = "none";
             document.getElementById("setup-screen").classList.remove("hidden");
-            document.getElementById("footer-placeholder").classList.replace('h555', 'h400');
         }, 500);
         document.getElementById("initialision-text").style.display = "block";
     }, 6000);
@@ -285,7 +284,6 @@ pauseBtn.addEventListener('click', function() {
 
 revealImpostorBtn.addEventListener('click', revealImpostors);
 
-// Zeigt nach Ende die Impostoren und das Wort
 function revealImpostors() {
     document.getElementById('timer-display').classList.add('hidden');
     pauseBtn.classList.add('hidden');
@@ -304,30 +302,29 @@ function revealImpostors() {
 
 document.getElementById('startnewgame').addEventListener('click', () => location.reload());
 
-// Overlay-Infos
 document.querySelector(".information").addEventListener("click", function(){
     document.documentElement.style.overflowY = "hidden";
     document.documentElement.style.overflowX = "hidden";
     document.getElementById("overlay-background").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
+    document.getElementById("u-overlay").style.display = "block";
     
     setTimeout(function() {
-        document.getElementById("overlay").style.top = "calc(50% + 10px)";
-        document.getElementById("overlay").style.height = "calc(100% - 10px)";
-        document.getElementById("overlay").style.transform = "translate(-50%, -50%)";
+        document.getElementById("u-overlay").style.top = "calc(50% + 10px)";
+        document.getElementById("u-overlay").style.height = "calc(100% - 10px)";
+        document.getElementById("u-overlay").style.transform = "translate(-50%, -50%)";
     }, 10);
 });
 
 document.getElementById("done-btn").addEventListener("click", function(){
-    document.getElementById("overlay").style.top = "100%";
-    document.getElementById("overlay").style.height = "100%";
-    document.getElementById("overlay").style.transform = "translate(-50%, 0%)";
+    document.getElementById("u-overlay").style.top = "100%";
+    document.getElementById("u-overlay").style.height = "100%";
+    document.getElementById("u-overlay").style.transform = "translate(-50%, 0%)";
     document.documentElement.style.overflowY = "auto";
     document.documentElement.style.overflowX = "hidden";
 
     setTimeout(function() {
         document.getElementById("overlay-background").style.display = "none";
-        document.getElementById("overlay").style.display = "none";
+        document.getElementById("u-overlay").style.display = "none";
     }, 150);
 });
 

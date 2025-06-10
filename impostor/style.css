@@ -1,12 +1,31 @@
 :root {
-    --primary: #fff;
-    --secondary: #bbb;
+    --primary--i: #fff;
+    --secondary--i: #bbb;
     --background: #121416;
-    --background-playing: #e85344;
+    --background-playing: #e65167;
     --card-bg: #3e3e3e;
     --text-color: #fff;
     --radius: 12px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    --accent: #f9e2af;
+	--bg-2: hsl(220, 10%, 17%);
+	--bg-3: hsl(220, 10%, 11%);
+	--bg-4: hsl(220, 10%, 16%);
+	--bg-t-2: hsla(220, 12%, 5%, 0.5);
+	--bg-t: hsla(220, 12%, 5%, 0.25);
+	--bg: hsl(220, 10%, 8%);
+	--border-d: #334155;
+	--border: hsl(0, 0%, 100%);
+	--error: #f38ba8;
+	--gradient-primary: linear-gradient(90deg, #CF5DEB 0%, #9F3DFA 100%);
+	--gradient-secondary: linear-gradient(90deg, var(--txt-1) 0%, var(--txt) 100%);
+	--success: #a6e3a1;
+	--txt-1: hsl(220, 45%, 90%);
+	--txt-2: hsl(220, 14%, 55%);
+	--txt-3: hsl(220, 11%, 35%);
+	--txt-4: #000000;
+	--txt: hsl(220, 30%, 80%);
 }
 
 body {
@@ -22,6 +41,15 @@ body {
     padding: 0;
     touch-action: manipulation;
     user-select: none;
+}
+
+footer {
+    background-color: var(--background-playing);
+    color: var(--txt-1) !important;
+}
+
+footer a {
+    color: var(--txt-1) !important;
 }
 
 h1 {
@@ -51,7 +79,7 @@ h1 {
     z-index: 100001;
 }
 
-#overlay {
+#u-overlay {
     background-color: #2e2e2e;
     border: 1px solid #383939;
     border-radius: 20px;
@@ -136,7 +164,7 @@ h1 {
 
 .start-progress-bar {
     animation: start-progress 7s ease forwards;
-    background-color: #e85344;
+    background-color: var(--background-playing);
     border: 1px solid  #fff;
     border-radius: 10px;
     height: 29px;
@@ -320,7 +348,7 @@ button:disabled {
 }
 
 .card .back {
-    background: var(--secondary);
+    background: var(--secondary--i);
     color: #fff;
     transform: rotateX(180deg);
 }
@@ -360,7 +388,7 @@ select {
     margin-bottom: 16px;
     background: var(--card-bg);
     color: var(--text-color);
-    border: 2px solid var(--secondary);
+    border: 2px solid var(--secondary--i);
     border-radius: var(--radius);
     font-size: 1rem;
     box-shadow: var(--shadow);
@@ -369,14 +397,14 @@ select {
 }
 
 textarea::placeholder {
-    color: var(--secondary);
+    color: var(--secondary--i);
     opacity: 0.8;
 }
 
 textarea:focus,
 input[type="number"]:focus {
     outline: none;
-    border: 2px solid var(--primary);
+    border: 2px solid var(--primary--i);
     background: #4ecca320;
 }
 
@@ -408,12 +436,12 @@ select option:checked {
 }
 
 select option:hover {
-    background: var(--primary);
+    background: var(--primary--i);
     color: var(--background);
 }
 
 select:focus option:hover {
-    background: var(--primary);
+    background: var(--primary--i);
     color: var(--background);
 }
 
@@ -426,7 +454,7 @@ input[type="number"]::-webkit-outer-spin-button {
 textarea:hover,
 input[type="number"]:hover,
 select:hover {
-    border-color: var(--primary);
+    border-color: var(--primary--i);
 }
 
 @media (max-width: 480px) {
@@ -450,7 +478,7 @@ select:hover {
     background: var(--card-bg);
     box-shadow: var(--shadow);
     color: var(--text-color);
-    border: 2px solid var(--secondary);
+    border: 2px solid var(--secondary--i);
     border-radius: var(--radius);
     cursor: pointer;
     margin: 0px 0 !important;
@@ -463,7 +491,7 @@ select:hover {
 
 .dropdown-menu {
     background: var(--card-bg);
-    border: 2px solid var(--secondary);
+    border: 2px solid var(--secondary--i);
     border-radius: var(--radius);
     border-top: none;
     box-shadow: var(--shadow);
@@ -507,7 +535,7 @@ select:hover {
 }
 
 .dropdown-menu label:hover {
-    background: var(--primary);
+    background: var(--primary--i);
     color: var(--background);
 }
 

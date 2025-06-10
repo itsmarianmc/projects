@@ -61,6 +61,10 @@ h1 {
 	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+footer {
+	background-color: linear-gradient(135deg, var(--primary), #1a252f);
+}
+
 .subtitle {
 	font-size: 1.2rem;
 	opacity: 0.8;
@@ -229,10 +233,10 @@ h1 {
 
 .detail-section.active {
 	display: block;
-	animation: fadeIn 0.5s ease;
+	animation: detailFadeIn 0.5s ease;
 }
 
-@keyframes fadeIn {
+@keyframes detailFadeIn {
 	from {
 		opacity: 0;
 		transform: translateY(20px);
