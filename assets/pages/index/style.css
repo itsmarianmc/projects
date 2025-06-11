@@ -93,8 +93,9 @@ body::-webkit-scrollbar {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	position: relative;
+	opacity: 0;
 	overflow: hidden;
+	position: relative;
 }
 
 .project-card:hover {
