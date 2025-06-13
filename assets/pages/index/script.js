@@ -74,3 +74,25 @@ document.addEventListener('DOMContentLoaded', function() {
 		}, 150 * index);
 	});
 });
+
+document.querySelectorAll('.ripple-btn').forEach(el => {
+    el.addEventListener('click', function(e) {
+        const oldRipple = el.querySelector('.ripple');
+        if (oldRipple) oldRipple.remove();
+
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const circle = document.createElement('span');
+        const diameter = Math.max(el.clientWidth, el.clientHeight);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = diameter + 'px';
+        circle.style.left = (x - radius) + 'px';
+        circle.style.top = (y - radius) + 'px';
+        circle.classList.add('ripple');
+
+        el.appendChild(circle);
+        circle.addEventListener('animationend', () => circle.remove());
+    });
+});
