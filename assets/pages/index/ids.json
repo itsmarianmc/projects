@@ -1,10 +1,16 @@
 {
-	"https://itsmarian.is-a.dev/": {
+	"https://itsmarian.is-a.dev": {
 		"id": "d2fB",
 		"paths": {
 			"/legal": {
 				"id": "SBQm",
 				"paths": {
+					"/cookies": {
+						"id": "D4e5"
+					},
+					"/index": {
+						"id": "8dL5"
+					},
 					"/privacy": {
 						"id": "Zw3d"
 					},
@@ -71,6 +77,14 @@
 			}
 		}
 	},
+	"/ios-clock-tools": {
+		"id": "P7co",
+		"paths": {
+			"/index": {
+				"id": "7rXS"
+			}
+		}
+	},
 	"/ntrack": {
 		"id": "GgYZ",
 		"paths": {
@@ -87,11 +101,11 @@
 			}
 		}
 	},
-	"/timer-watch-worldtime": {
-		"id": "P7co",
+	"/sonicbloom": {
+		"id": "D58R",
 		"paths": {
 			"/index": {
-				"id": "7rXS"
+				"id": "DRE2"
 			}
 		}
 	}
