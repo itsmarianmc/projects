@@ -182,10 +182,12 @@ body::-webkit-scrollbar {
 }
 
 .project-card__links {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	margin-top: auto;
 	position: relative;
 	z-index: 2;
-	height: 52.1px;
 }
 
 .project-card__link {

@@ -29,6 +29,63 @@
 			}
 		}
 	},
+	"https://github.com/itsmarianmc": {
+		"id": "GtHb",
+		"paths": {
+			"/itsmarianmc.github.io": {
+				"id": "devP"
+			},
+			"/MacOS-Controls": {
+				"id": "MCrl"
+			},
+			"/ModernAnimations": {
+				"id": "MdAn"
+			},
+			"/hydrotrack": {
+				"id": "HdTr"
+			},
+			"/projects": {
+				"id": "pRct",
+				"paths": {
+					"/tree/main": {
+						"id": "d4eS",
+						"paths": {
+							"/blockblast": {
+								"id": "X9gQ"
+							},
+							"/codematic": {
+								"id": "aP4b"
+							},
+							"/cookieclicker": {
+								"id": "Z7rK"
+							},
+							"/elementarium": {
+								"id": "d2Lm"
+							},
+							"/hydrotrack": {
+								"id": "Bq0f"
+							},
+							"/impostor": {
+								"id": "E1xW"
+							},
+							"/ios-clock-tools": {
+								"id": "mY9C"
+							},
+							"/ntrack": {
+								"id": "Vb7p"
+							},
+							"/royalmatch": {
+								"id": "T4qA"
+							},
+							"/sonicbloom": {
+								"id": "Rj6n"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
 	"/blockblast": {
 		"id": "ffeE",
 		"paths": {
