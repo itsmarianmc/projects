@@ -1,9 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-	console.log("[BUILD INFO] Release Channel: stable, Build Number: #237, Update date: 05/22/2025");
-	setTimeout(() => {
-		console.log('%cWARNING!', 'color: red; font-size: 30px; font-weight: bold;');
-		console.log('%cThis is a browser feature intended for developers and debuggers only and may contain sensitive links and information about you, your data and private information, account/s, device, browser and current session. \nScammers have been known to encourage people to copy and/or paste information or run commands on the command line to hack accounts or access sensitive data. If you do not know what you are doing, do not proceed and close the debug menu! \nThe information that is/will be visible above and below this text is only for the development and improvement of the site and helps to find and fix bugs and other problems in JavaScript faster. \nAs this is a website related to Projekt City, please visit the following address, for more information about this message and what you can do if you have been taken in by a scam: https://projektcity.github.io/helpcenter/debug-menu', 'color: red; font-size: 12.5px;');
-	}, 250);
+	console.log("[BUILD INFO] Release Channel: stable, Build Number: #282, Update date: 06/18/2025");
 
 	function generateStyles() {
 		const elements = document.querySelectorAll('*');
@@ -36,9 +32,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	styleTag.appendChild(document.createTextNode(styles));
 	document.head.appendChild(styleTag);
 
-	//----------------------------------------//
-
-	// Device
 	function getDeviceType() {
 		const userAgent = navigator.userAgent.toLowerCase();
 		if (/mobile|android|iphone|ipad|ipod|blackberry|windows phone/i.test(userAgent)) {
@@ -48,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
-	// Browser
 	function getBrowser() {
 		const userAgent = navigator.userAgent;
 		if (userAgent.indexOf("Firefox") > -1) {
@@ -78,4 +70,32 @@ document.addEventListener("DOMContentLoaded", function() {
 		console.log(`get-userbrowser=${browser}`);
 		console.log(`placeholder-stylesheet-count=${styles.split('\n').length}`);
 	}, 10);
+	
+    const switcher = document.getElementById('scrollBarSwitcher');
+    const html = document.documentElement;
+    const body = document.body;
+    
+    const scrollState = localStorage.getItem('scrollbarState');
+    const isHidden = scrollState === null || scrollState === 'hidden';
+    
+    if (isHidden) {
+        html.classList.add('scrollbar-hidden');
+        body.classList.add('scrollbar-hidden');
+        switcher.textContent = 'Show ScrollBar';
+    } else {
+        html.classList.remove('scrollbar-hidden');
+        body.classList.remove('scrollbar-hidden');
+        switcher.textContent = 'Hide ScrollBar';
+    }
+
+    switcher.addEventListener('click', () => {
+        const isNowHidden = !html.classList.contains('scrollbar-hidden');
+        
+        html.classList.toggle('scrollbar-hidden');
+        body.classList.toggle('scrollbar-hidden');
+        
+        switcher.textContent = isNowHidden ? 'Show ScrollBar' : 'Hide ScrollBar';
+        
+        localStorage.setItem('scrollbarState', isNowHidden ? 'hidden' : 'visible');
+    });
 });
