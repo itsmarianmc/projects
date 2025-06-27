@@ -422,31 +422,6 @@
 	<script src="https://itsmarian.is-a.dev/assets/cb.js"></script>
 	<script src="/assets/script.js"></script>
 	<script src="script.js"></script>
-	<script>
-		function detectDevice() {
-			const userAgent = navigator.userAgent.toLowerCase();
-			const isMobile = /iphone|ipod|android.*mobile|windows phone/.test(userAgent);
-
-			if (isMobile) {
-				return "mobile";
-			} else {
-				return "desktop";
-			}
-		}
-
-		document.addEventListener("DOMContentLoaded", function() {
-			const deviceType = detectDevice();
-
-			if (deviceType === "desktop") {
-				document.getElementById("desktop").style.display = deviceType === "desktop" ? "block" : "none";
-			} else {
-				window.location.href = "/projects/cookieclicker/mobile.html";
-			}
-		});
-
-		console.log("set-userdevice=" + detectDevice());
-
-	</script>
 </body>
 
 </html>
