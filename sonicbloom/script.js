@@ -464,10 +464,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             footerPlayIcon.className = 'fas fa-play';
             document.querySelector('.album-art').classList.remove('pulse');
 
-            document.querySelector('.track-title').textContent = 'No song selected';
-            document.querySelector('.track-artist').textContent = 'Select a song to play';
-            document.querySelector('.mini-track-info .title').textContent = 'No song selected';
-            document.querySelector('.mini-track-info .artist').textContent = 'Select a song to play';
+            document.querySelector('.track-title').textContent = 'Unknown title';
+            document.querySelector('.track-artist').textContent = 'Unknown artist';
+            document.querySelector('.mini-track-info .title').textContent = 'Unknown title';
+            document.querySelector('.mini-track-info .artist').textContent = 'Unknown artist';
             totalTimeEl.textContent = '0:00';
             currentTimeEl.textContent = '0:00';
             progressBar.style.width = '0%';
@@ -778,4 +778,39 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 document.getElementById("save-settings").addEventListener("click", function() {
     location.reload();
+});
+
+document.addEventListener("DOMContentLoaded", async function() {
+    const switcher = document.getElementById('scrollBarSwitcherAside');
+    const html = document.documentElement;
+    const body = document.body;
+    
+    const scrollState = localStorage.getItem('scrollbarState');
+    const isHidden = scrollState === null || scrollState === 'hidden';
+    
+    if (isHidden) {
+        html.classList.add('scrollbar-hidden');
+        body.classList.add('scrollbar-hidden');
+        switcher.textContent = 'Show ScrollBar';
+    } else {
+        html.classList.remove('scrollbar-hidden');
+        body.classList.remove('scrollbar-hidden');
+        switcher.textContent = 'Hide ScrollBar';
+    }
+
+    switcher.addEventListener('click', () => {
+        const isNowHidden = !html.classList.contains('scrollbar-hidden');
+        
+        html.classList.toggle('scrollbar-hidden');
+        body.classList.toggle('scrollbar-hidden');
+        
+        switcher.textContent = isNowHidden ? 'Show ScrollBar' : 'Hide ScrollBar';
+        
+        localStorage.setItem('scrollbarState', isNowHidden ? 'hidden' : 'visible');
+    });
+});
+
+document.getElementById("settingsPannelOpenerAside").addEventListener("click", function() {
+    document.getElementById("settings-panel").style.display = "block";
+	document.getElementById("overlay").style.display = "block";
 });

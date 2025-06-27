@@ -396,35 +396,3 @@ select {
 .theme-toggle.dark .icon.moon {
     opacity: 1;
 }
-
-/* Scrollbar / Source: https://community.hubspot.com/t5/CMS-Development/CSS-for-Scrollbar-in-iOS-devices/m-p/293889 [04/01/2025]*/
-::-webkit-scrollbar {
-    width: 7.5px;
-    -webkit-appearance: none;
-    z-index: 1000000;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
-}
-
-::-webkit-scrollbar-track {
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #707070;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #a0a0a0;
-}
-
-::-webkit-overflow-scrolling:touch {
-    background: #707070;
-    width: 5px;
-}

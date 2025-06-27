@@ -47,7 +47,7 @@
             <i class="fas fa-cookie-bite"></i> Cookie Settings
         </button>
     </header>
-    <div class="container">
+    <class class="container">
         <aside class="sidebar">
             <div class="sidebar-head">
                 <h2><i class="fas fa-folder-open"></i> Folders</h2>
@@ -76,9 +76,22 @@
                 </button>
             </div>
             <div class="sidebar-information">
-                <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
-                <br>
-                <a>Made with <i class="fas fa-heart"></i> by itsmarian in <span>GERMANY</span></a>
+                <div>
+                    <a style="color: var(--app-gray);" class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/privacy" target="_blank">Privacy Policy</a>
+                    <a>•</a>
+                    <a style="color: var(--app-gray);" class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/terms" target="_blank">Terms of Use</a>
+                </div>
+                <div>
+                    <a style="color: var(--app-gray);" class="linkout nodecoration" id="scrollBarSwitcherAside">Show ScrollBar</a>
+                    <a>•</a>
+                    <a style="color: var(--app-gray);" class="linkout nodecoration" id="settingsPannelOpenerAside">Change Cookie Preferences</a>
+                </div>
+                <div>
+                    <br>
+                    <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
+                    <br>
+                    <a>Made with <span class="heart">&hearts;</span> by itsmarian in <span>GERMANY</span></a>
+                </div>
             </div>
         </aside>
         <main class="main-content">
@@ -113,8 +126,8 @@
                         </div>
                     </div>
                     <div class="track-info">
-                        <h3 class="track-title">No song selected</h3>
-                        <div class="track-artist">Select a song to play</div>
+                        <h3 class="track-title">Unknown title</h3>
+                        <div class="track-artist">Unknown artist</div>
                         <div class="progress-container">
                             <div class="progress-info">
                                 <span class="current-time">0:00</span>
@@ -149,20 +162,32 @@
             </section>
         </main>
         <div class="main-bottom-information">
-            <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
-            <br>
-            <a>Made with <i class="fas fa-heart"></i> by itsmarian in <span>GERMANY</span></a>
-            <div class="placeholder" style="width: 100%; height: 100px;"></div>
+            <div>
+                <a style="color: var(--app-gray);" class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/privacy" target="_blank">Privacy Policy</a>
+                <a>•</a>
+                <a style="color: var(--app-gray);" class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/terms" target="_blank">Terms of Use</a>
+            </div>
+            <div>
+                <a style="color: var(--app-gray);" class="linkout nodecoration" id="scrollBarSwitcher">Show ScrollBar</a>
+                <a>•</a>
+                <a style="color: var(--app-gray);" class="linkout nodecoration" id="settingsPannelOpener">Change Cookie Preferences</a>
+            </div>
+            <div>
+                <br>
+                <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
+                <br>
+                <a>Made with <span class="heart">&hearts;</span> by itsmarian in <span>GERMANY</span></a>
+            </div>
         </div>
-    </div>
+    </class>
     <div class="player-footer">
         <div class="current-track">
             <div class="mini-album-art">
                 <i class="fas fa-music"></i>
             </div>
             <div class="mini-track-info">
-                <div class="title">No song selected</div>
-                <div class="artist">Select a song to play</div>
+                <div class="title">Unknown title</div>
+                <div class="artist">Unknown artist</div>
             </div>
         </div>
         <div class="footer-controls">
@@ -175,10 +200,6 @@
             <button class="footer-player-btn" id="footer-next-btn" title="Next">
                 <i class="fas fa-step-forward"></i>
             </button>
-        </div>
-        <div class="status">
-            <div class="status-dot"></div>
-            <span>Ready</span>
         </div>
     </div>
     <div class="modal" id="folder-modal">
@@ -347,11 +368,6 @@
                 </div>
                 <p class="category-description">These cookies are used to show visitors relevant advertising on other websites. They are also used to limit the frequency of ad display and measure the effectiveness of advertising campaigns.</p>
             </div>
-            <footer>
-                <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
-                <br>
-                <a>Made with <i class="fas fa-heart"></i> by itsmarian in <span>GERMANY</span></a>
-            </footer>
         </div>
         <div class="settings-footer">
             <button class="btn-save" id="save-settings">
