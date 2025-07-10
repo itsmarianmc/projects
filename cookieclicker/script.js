@@ -10,7 +10,6 @@ let autoClickerCost = 50;
 let grandmaCost = 200;
 let prestigeCost = 25000;
 
-// Navbar
 document.getElementById("home").addEventListener("click", function(){
     location.reload();
 });
@@ -48,11 +47,14 @@ document.getElementById("github").addEventListener("click", function(){
     open("https://github.com/itsmarianmc", target="_blank")
 });
 
-document.getElementById("changelog").addEventListener("click", function(){
-    open("/projects/cookieclicker/changelog.html", target="_parent")
+document.getElementById("sourcecode").addEventListener("click", function(){
+    open("/?red-id=GtHb-pRct-d4eS-Z7rK", target="_blank")
 });
 
-// Load progress
+document.getElementById("changelog").addEventListener("click", function(){
+    open("/cookieclicker/changelog.html", target="_parent")
+});
+
 function openLoader() {
     document.getElementById("fileLoader").style.display = "flex";
     document.getElementById("loadbtn").style.display = "none";
@@ -123,7 +125,6 @@ document.getElementById("loadButton").addEventListener("click", function() {
     reader.readAsText(file);
 });
 
-// Save progress as file
 function saveGame() {
     const gameData = {
         cookies: cookies,
@@ -147,7 +148,6 @@ function saveGame() {
     URL.revokeObjectURL(url);
 };
 
-// Cookie click event
 document.getElementById("cookie").addEventListener("click", function(event) {
     let prestigeMultiplier = prestige > 0 ? prestige : 1; 
     let gainedCookies = clickValue * prestigeMultiplier;
@@ -157,7 +157,6 @@ document.getElementById("cookie").addEventListener("click", function(event) {
     showFloatingText(event, `+${gainedCookies}`);
 });
 
-// Upgrades
 function buyUpgrade(type) {
     if (type === 'click' && cookies >= clickUpgradeCost) {
         cookies -= clickUpgradeCost;
@@ -182,7 +181,6 @@ function buyUpgrade(type) {
     updateDisplay();
 }
 
-// Prestige
 function buyPrestige() {
     if (cookies >= prestigeCost) {
         cookies -= prestigeCost;
@@ -212,12 +210,10 @@ function applyPrestigeBonus() {
     updateDisplay();
 }
 
-// Game End
 function gameFinished() {
     hardReset();
 }
 
-// Reset game
 function resetGame(isPrestige) {
     if (isPrestige) {
         cookies = 0;
@@ -238,7 +234,6 @@ function resetGame(isPrestige) {
     updateDisplay();
 }
 
-// Hard reset - no user permission
 function hardReset() {
     cookies = 0;
     clickValue = 1;
@@ -253,7 +248,6 @@ function hardReset() {
     updateDisplay();
 }
 
-// Update changes
 function updateDisplay() {
     document.getElementById("cookies").innerText = cookies;
     document.getElementById("clickValue").innerText = clickValue;
@@ -268,7 +262,6 @@ setInterval(() => {
     updateDisplay();
 }, 1000);
 
-// Cookie Text
 function showFloatingText(event, text) {
     let floatingText = document.createElement("div");
     floatingText.innerText = text;
@@ -283,7 +276,6 @@ function showFloatingText(event, text) {
     setTimeout(() => floatingText.remove(), 1000);
 }
 
-// Save game to cache
 setInterval(() => {
     localStorage.setItem("cookies", cookies);
     localStorage.setItem("clickValue", clickValue);
@@ -301,7 +293,6 @@ setInterval(() => {
     }, 2500);
 }, 10000);
 
-// Load progress on website load
 window.onload = () => {
     cookies = parseInt(localStorage.getItem("cookies")) || 0;
     clickValue = parseInt(localStorage.getItem("clickValue")) || 1;

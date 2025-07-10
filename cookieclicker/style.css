@@ -134,6 +134,11 @@ hr {
     overflow: hidden;
 }
 
+.btn-svg {
+    display: flex;
+    align-items: center;
+}
+
 .shop-button {
     text-align: center;
     font-size: 1.05rem;
@@ -196,6 +201,7 @@ hr {
 }
 
 .element {
+    cursor: pointer;
     flex: 1;
     min-width: 180px;
     max-width: 220px;
@@ -270,6 +276,7 @@ footer {
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    display: none;
 }
 
 .overlay-content {
@@ -459,20 +466,4 @@ footer {
 
 #closeAbout, #acceptCookiesBtn {
     background: linear-gradient(to bottom, var(--cookie-green), #4a9e48) !important;
-}
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--cookie-light);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--cookie-orange);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--cookie-dark);
 }
