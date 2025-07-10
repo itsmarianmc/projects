@@ -283,6 +283,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('themeToggle');
     const root = document.documentElement;
 
+    if (!localStorage.getItem('darkMode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        location.reload();
+        return;
+    }
+
     const darkModePreference = localStorage.getItem('darkMode');
     if (darkModePreference === 'enabled') {
         root.classList.add('dark');

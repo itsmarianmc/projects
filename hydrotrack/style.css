@@ -87,6 +87,10 @@ body {
     color: var(--text-color);
 }
 
+footer {
+    background-color: transparent !important;
+}
+
 h1 {
     color: var(--text-color);
     margin-block-start: 0.0em;
@@ -238,15 +242,8 @@ h1, h2, h3, h4 {
     padding: 1rem 2rem;
     border: 2px solid var(--primary--ht);
     border-radius: 10px;
-    margin: 18px 0 !important;
     font-size: 1.1rem;
     width: 120px;
-}
-
-#goalInput:focus {
-    outline: none;
-    border: 2px solid var(--accent)--ht;
-    box-shadow: 0 0 5px var(--accent)--ht;
 }
 
 #addCustomValue, #changeGoalOpener, #historyOpener, #removeCustomValue {
@@ -329,6 +326,7 @@ h1, h2, h3, h4 {
 
 #amount, #removeAmount, #firstGoalInput, #weight, #weight2 {
     appearance: none;
+    color: var(--text-color);
     padding: 0.9rem;
     outline: 0;
     border: 2px solid var(--primary--ht);
@@ -337,19 +335,15 @@ h1, h2, h3, h4 {
     width: 100%;
 }
 
-#firstGoalInput, #weight, #weight2 {
+#firstGoalInput, #weight, #weight2, #goalInput {
+    background-color: transparent !important;
+    color: var(--text-color);
     margin: 10px 0px;
     width: 100%;
 }
 
 #weight, #weight2 {
     margin: 0px 0px 10px 0px;
-}
-
-#amount:focus, #removeAmount:focus, #firstGoalInput:focus {
-    outline: none;
-    border: 2px solid var(--accent)--ht;
-    box-shadow: 0 0 5px var(--accent)--ht;
 }
 
 .add-btn {
@@ -583,6 +577,13 @@ h1, h2, h3, h4 {
     overflow-y: hidden;
     padding: 0 !important;
     width: 100%;
+}
+
+.version-information {
+    overflow: scroll !important;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
 }
 
 #setGoal {

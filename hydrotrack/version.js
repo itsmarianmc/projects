@@ -1,5 +1,5 @@
 const CURRENT_VERSION = "1.4.0";
-const VERSION_URL = "https://hydrotrack-itsmarian.vercel.app/api/version.json";
+const VERSION_URL = "https://itsmarianmc-github.vercel.app/api/hydrotrack/version.js";
 
 function compareVersions(v1, v2) {
     const v1Parts = v1.split('.').map(Number);
