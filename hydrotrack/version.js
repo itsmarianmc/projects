@@ -1,4 +1,4 @@
-const CURRENT_VERSION = "1.4.0";
+const CURRENT_VERSION = "2.0";
 const VERSION_URL = "https://itsmarianmc-github.vercel.app/api/hydrotrack/version.js";
 
 function compareVersions(v1, v2) {
