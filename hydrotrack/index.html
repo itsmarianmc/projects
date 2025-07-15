@@ -73,10 +73,10 @@
             </div>
         </div>
         <div class="navbar-links">
-            <a href="#home">Home</a>
+            <a href="/hydrotrack/">Home</a>
             <a href="#features">Features</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a href="https://itsmarian.is-a.dev/#about">About</a>
+            <a href="https://itsmarian.is-a.dev/#contact">Contact</a>
         </div>
         <div class="navbar-darkmode">
             <div id="themeToggle" class="theme-toggle light" title="Toggle Theme">
@@ -89,12 +89,20 @@
     </nav>
     <div class="placeholder w100 h20"></div>
     <div class="container">
-        <div id="containerMainHeaderNT" style="display: flex; align-items: center; gap: 7.5px;">
-            <img height="66px" src="favicon.png" width="66px">
-            <div style="text-align: left !important; width: 100%">
-                <a style="font-size: 20px; font-weight: 400;">HydroTrack - Drink Tracker</a>
-                <br>
-                <a>A simple, powerful and secure drink tracker, to help you live a better life!</a>
+        <div id="containerMainHeaderNT" style="display: flex; gap: 7.5px; justify-content: space-between;">
+            <div style="align-items: center; display: flex; gap: 7.5px;">
+                <img height="66px" src="favicon.png" width="66px">
+                <div style="text-align: left !important; width: 100%">
+                    <a style="font-size: 20px; font-weight: 400;">HydroTrack - Drink Tracker</a>
+                    <br>
+                    <a>A simple, powerful and secure drink tracker, to help you live a better life!</a>
+                </div>
+            </div>
+            <div>
+                <button class="preset-btn" id="discordLogin">
+                    <i class="fab fa-discord"></i>
+                    <a>Login</a>
+                </button>
             </div>
         </div>      
         <div class="progress-circle" id="progressCircle">
@@ -172,6 +180,12 @@
                 </div>
             </div>
             <div class="controlsPlaceholder" style="height: 100%; width: 100%;"></div>
+        </div>
+        <div class="controls borderOnSmall" id="loginMobileEl" style="width: 100%;">
+            <button class="preset-btn" id="discordLoginM" style="width: 100%;">
+                <i class="fab fa-discord"></i>
+                <a>Login</a>
+            </button>
         </div>
     </div>
     <div class="textalign-center" style="margin-top: 1rem;">
@@ -346,9 +360,11 @@
                     </form>
                     </div>
                     <div style="font-size: 7px; line-height: 10px; margin-bottom: 10px; margin-top: 10px;">
-                        <a>These values are for information purposes only and are based on a predefined script. Each person needs different amounts of fluid.</a>
+                        <a>Please note: The displayed values are for informational purposes only and are calculated based on standardized algorithms and general health guidelines. These calculations serve as approximate guidelines and should not be considered as definitive medical advice.</a>
                         <br>
-                        <a>Other (changing) factors such as body weight, height, activity, age and gender can influence the values daily. Average values; may vary or change at any time. If you have any questions about your diet and the associated fluid intake, contact a doctor.</a>
+                        <a>Individual hydration needs can vary significantly based on multiple factors including but not limited to: body weight, height, physical activity level, age, gender, climate conditions, medical conditions, medications, and overall health status. Environmental factors such as temperature, humidity, and altitude may also affect daily fluid requirements.</a>
+                        <br>
+                        <a>The provided values represent statistical averages and may need adjustment based on your specific circumstances. For personalized hydration recommendations, especially if you have underlying health conditions or specific dietary requirements, please consult with a qualified healthcare provider or registered dietitian.</a>
                     </div>
                 </div>
             </div>
@@ -410,9 +426,11 @@
                 </form>
                 </div>
                 <div style="font-size: 7px; line-height: 10px; margin-bottom: 10px; margin-top: 10px;">
-                    <a>These values are for information purposes only. Each person needs different amounts of fluid.</a>
+                    <a>Please note: The displayed values are for informational purposes only and are calculated based on standardized algorithms and general health guidelines. These calculations serve as approximate guidelines and should not be considered as definitive medical advice.</a>
                     <br>
-                    <a>Other factors such as body weight, height, activity, age and gender influence the values. Average values; may vary or change at any time. If you have any questions, contact a doctor!</a>
+                    <a>Individual hydration needs can vary significantly based on multiple factors including but not limited to: body weight, height, physical activity level, age, gender, climate conditions, medical conditions, medications, and overall health status. Environmental factors such as temperature, humidity, and altitude may also affect daily fluid requirements.</a>
+                    <br>
+                    <a>The provided values represent statistical averages and may need adjustment based on your specific circumstances. For personalized hydration recommendations, especially if you have underlying health conditions or specific dietary requirements, please consult with a qualified healthcare provider or registered dietitian.</a>
                 </div>
             </div>
         </div>
@@ -656,6 +674,7 @@
         </div>
     </div>
     <div class="overlay" id="overlay"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://itsmarian-static.is-a.dev/global/cookie-banner.js"></script>
     <script src="https://itsmarian-static.is-a.dev/global/basic.min.js"></script>
     <script src="script.js"></script>
@@ -664,6 +683,10 @@
     <script src="goal-calculator.js"></script>
     <script src="goal-editor.js"></script>
     <script src="version.js"></script>
+    <script type="module">
+        import { initializeSupabase } from './supabase.js';
+        window.supabase = initializeSupabase();
+    </script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')

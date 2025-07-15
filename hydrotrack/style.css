@@ -128,6 +128,10 @@ h1, h2, h3, h4 {
     color: #fff;
 }
 
+#loginMobileEl {
+    display: none;
+}
+
 .navbar-logo-text {
     display: flex;
     gap: 5px;
@@ -298,6 +302,12 @@ h1, h2, h3, h4 {
     margin: 1rem 0;
 }
 
+#containerMainHeaderNT > div > .preset-btn  {
+    font-size: 1.3rem;
+    padding: 0rem 3rem;
+    height: 100%;
+}
+
 .preset-btn {
     background: var(--primary--ht);
     color: #fff;
@@ -326,7 +336,6 @@ h1, h2, h3, h4 {
 
 #amount, #removeAmount, #firstGoalInput, #weight, #weight2 {
     appearance: none;
-    color: var(--text-color);
     padding: 0.9rem;
     outline: 0;
     border: 2px solid var(--primary--ht);
@@ -526,7 +535,7 @@ h1, h2, h3, h4 {
 .bg-blur {
     backdrop-filter: blur(10px);
     bottom: 0;
-    display: block;
+    display: none;
     height: 100%;
     left: 0;
     padding: 15px;
@@ -847,9 +856,6 @@ th, td {
 }
 
 @media (max-width: 630px) {
-    .navbar-links {
-        display: none;
-    }
 
     .navbar {
         padding: 10px;
@@ -857,6 +863,13 @@ th, td {
 }
 
 @media (max-width: 720px) {
+    #loginMobileEl {
+        display: block;
+    }
+    .navbar-links {
+        display: none;
+    }
+
     .goal-section {
         flex-direction: column !important;
     }

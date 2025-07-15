@@ -1,4 +1,3 @@
-// Change goal
 document.getElementById("changeGoalOpener").addEventListener("click", function() {
     document.querySelector(".bg-blur").style.display = "block";
     document.getElementById("event-changer").style.display = "block";
@@ -9,7 +8,6 @@ document.getElementById("closeEventChanger").addEventListener("click", function(
     document.getElementById("event-changer").style.display = "none";
 })
 
-// Input values
 document.getElementById("addCustomValue").addEventListener("click", function() {
     const amountInput = document.getElementById('amount');
     const value = parseFloat(amountInput.value);
@@ -20,7 +18,6 @@ document.getElementById("addCustomValue").addEventListener("click", function() {
     }
 });
 
-// App detector
 document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.querySelector('.app-container');
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -30,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// App
 document.getElementById("getApp").addEventListener("click", function(){
     document.documentElement.style.overflowY = "hidden";
     document.documentElement.style.overflowX = "hidden";
@@ -55,7 +51,6 @@ document.getElementById("done-btn").addEventListener("click", function(){
     }, 150);
 });
 
-// History
 document.getElementById("historyOpener").addEventListener("click", function(){
     document.querySelector(".history-list").style.display = "block";
     document.querySelector(".bg-blur").style.display = "block";
@@ -70,7 +65,6 @@ document.getElementById("historyCloser").addEventListener("click", function(){
     document.body.style.overflowY = "auto";
 });
 
-// App Container
 document.querySelector(".app-action-menu").addEventListener("click", function() {
     document.querySelector(".app-container").style.display = "none";
     document.querySelector(".app-container").remove();

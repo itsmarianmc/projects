@@ -1,15 +1,22 @@
-// script.js
 let currentAmount = 0;
 let goal = 3000;
 let history = [];
 let lastDate = localStorage.getItem('lastDate') || new Date().toISOString().slice(0, 10);
 let firstTimeSettingGoal = localStorage.getItem('firstTimeSettingGoal') !== 'false';
 let animatedProgress = 0;
-const currentUrl = window.location.href;
 
+const currentUrl = window.location.href;
 const getColor = (percentage) => `hsl(${120 * (percentage / 100)}, 70%, 45%)`;
 
-// Event bindings
+const SUPABASE_URL = 'https://kxejefkdnhcmpbccnkyn.supabase.co/';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4ZWplZmtkbmhjbXBiY2Nua3luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2MDE4NTksImV4cCI6MjA2ODE3Nzg1OX0.LdJvLDdGF60DeKuHpjG2NHc-5Sy5ns9jkcFw3RnVu5k';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+	headers: {
+		'apikey': SUPABASE_KEY,
+		'Authorization': `Bearer ${SUPABASE_KEY}`
+	}
+});
+
 document.getElementById("setFirstGoal").addEventListener("click", firstUpdateGoal);
 document.getElementById("addCustomValue").addEventListener("click", addDrink);
 document.getElementById("removeCustomValue").addEventListener("click", removeDrink);
@@ -19,6 +26,185 @@ document.querySelectorAll('[data-add-value]').forEach(button => {
         if (value > 0) addAmount(value);
     });
 });
+
+async function signInWithDiscord() {
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'discord',
+        options: {
+            redirectTo: window.location.href
+        }
+    });
+    if (error) console.error(error);
+}
+
+async function saveToSupabase() {
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+            console.log('Not saving to Supabase - no user');
+            return;
+        }
+
+        if (currentAmount === 0) {
+            const { error: tempError } = await supabase
+                .from('user_data')
+                .upsert({
+                    id: user.id,
+                    current_amount: 1,
+                    goal: goal,
+                    history: history,
+                    last_date: lastDate
+                }, {
+                    onConflict: 'id'
+                });
+            
+            if (tempError) {
+                console.error('Temporary save error:', tempError);
+                return;
+            }
+            
+            const { error } = await supabase
+                .from('user_data')
+                .upsert({
+                    id: user.id,
+                    current_amount: 0,
+                    goal: goal,
+                    history: history,
+                    last_date: lastDate
+                }, {
+                    onConflict: 'id'
+                });
+            
+            if (error) {
+                console.error('Supabase save error:', error);
+            } else {
+                console.log('Data saved to Supabase (with workaround)');
+            }
+            return;
+        }
+
+        const { error } = await supabase
+            .from('user_data')
+            .upsert({
+                id: user.id,
+                current_amount: currentAmount,
+                goal: goal,
+                history: history,
+                last_date: lastDate
+            }, {
+                onConflict: 'id'
+            });
+
+        if (error) {
+            console.error('Supabase save error:', error);
+        } else {
+            console.log('Data saved to Supabase');
+        }
+    } catch (error) {
+        console.error('Unexpected error in saveToSupabase:', error);
+    }
+}
+
+async function loadFromSupabase() {
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+            console.log('No user logged in, loading from localStorage');
+            return loadLocalData();
+        }
+
+        const { data, error } = await supabase
+            .from('user_data')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        if (!data && !error) {
+            console.log('No data found for user, creating new record');
+            
+            const newRecord = {
+                current_amount: currentAmount,
+                goal: goal,
+                history: history,
+                last_date: new Date().toISOString().slice(0, 10)
+            };
+            
+            const { error: createError } = await supabase
+                .from('user_data')
+                .insert({
+                    id: user.id,
+                    ...newRecord
+                });
+
+            if (createError) {
+                console.error('Create error:', createError);
+                return loadLocalData();
+            }
+            
+            console.log('New record created successfully');
+            updateDisplay();
+            updateHistory();
+            return true;
+        }
+
+        if (error) {
+            console.error('Supabase load error:', error);
+            return loadLocalData();
+        }
+
+        currentAmount = data.current_amount;
+        goal = data.goal;
+        history = data.history || [];
+        lastDate = data.last_date || new Date().toISOString().slice(0, 10);
+        
+        localStorage.setItem('hydroData', JSON.stringify({
+            current: currentAmount,
+            goal: goal,
+            date: new Date().toISOString().slice(0, 10),
+            history: history
+        }));
+        
+        updateDisplay();
+        updateHistory();
+        return true;
+    } catch (error) {
+        console.error('Unexpected error in loadFromSupabase:', error);
+        return loadLocalData();
+    }
+}
+
+function loadLocalData() {
+    const today = new Date().toISOString().slice(0, 10);
+    const saved = JSON.parse(localStorage.getItem('hydroData')) || {
+        current: 0,
+        goal: 3000,
+        date: today,
+        history: []
+    };
+    if (saved.date !== today) {
+        if (saved.current > 0) {
+            history = saved.history || [];
+            history.push({ 
+                date: saved.date, 
+                amount: saved.current, 
+                goal: saved.goal 
+            });
+        }
+        currentAmount = 0;
+        saved.date = today;
+    } else {
+        currentAmount = saved.current;
+        history = saved.history || [];
+    }
+
+    goal = saved.goal || 3000;
+    
+    lastDate = saved.date || today;
+    
+    return true;
+}
 
 function removeDrink() {
     const amount = parseInt(document.getElementById('removeAmount').value) || 0;
@@ -66,54 +252,39 @@ function animateChange(amount) {
     setTimeout(() => anim.remove(), 1000);
 }
 
-function loadData() {
-    const today = new Date().toISOString().slice(0, 10);
-    const saved = JSON.parse(localStorage.getItem('hydroData')) || {
-        current: 0,
-        goal: 3000,
-        date: today,
-        history: []
-    };
-
-    if (saved.date !== today) {
-        if (saved.current > 0) {
-            history = saved.history || [];
-            history.push({ date: saved.date, amount: saved.current, goal: saved.goal });
-        }
-        currentAmount = 0;
-        saved.date = today;
-    } else {
-        currentAmount = saved.current;
-        history = saved.history || [];
+async function loadData() {
+    loadLocalData();
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+        await loadFromSupabase();
     }
-
-    goal = saved.goal || 3000;
-
+    
     if (firstTimeSettingGoal) {
         document.getElementById('setup-overlay').style.display = 'block';
         document.getElementById('firstGoalInput').style.display = 'block';
+        document.querySelector('.bg-blur').style.display = 'block';
     } else {
-        document.querySelector('.bg-blur').style.display = 'none';
-        setTimeout(() => {
-            document.getElementById('setup-overlay')?.remove();
-        }, 2000);
+        document.getElementById('setup-overlay')?.remove();
     }
-
-    saveData();
+    
     updateDisplay();
     updateHistory();
 }
 
 function saveData() {
     const today = new Date().toISOString().slice(0, 10);
-    localStorage.setItem('hydroData', JSON.stringify({
+    const dataToSave = {
         current: currentAmount,
         goal: goal,
         date: today,
         history: history
-    }));
+    };
 
-    localStorage.setItem('lastDate', lastDate);
+    localStorage.setItem('hydroData', JSON.stringify(dataToSave));
+    localStorage.setItem('lastDate', today);
+
+    saveToSupabase();
 }
 
 function updateGoal() {
@@ -202,24 +373,13 @@ function updateHistory() {
         : `<a>No history yet!</a><br><a>Keep tracking your drinks to get a list, or import an existing one below.</a>`;
 }
 
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) loadData();
-});
-
-document.addEventListener('DOMContentLoaded', loadData);
-
-if (currentUrl.endsWith("?") || currentUrl.endsWith("/?")) {
-    const cleanedUrl = currentUrl.replace(/\?$/, "");
-    window.location.replace(cleanedUrl);
-}
-
-// Import and Export
 document.getElementById("fileExport").addEventListener("click", function() {
     exportData();
-})
+});
+
 document.getElementById("versionFileExport").addEventListener("click", function() {
     exportData();
-})
+});
 
 document.getElementById("fileImport").addEventListener("click", function() {
     document.getElementById("importAction").style.display = "block";
@@ -231,16 +391,20 @@ document.getElementById("fileImport").addEventListener("click", function() {
             document.getElementById("import-action").innerText = ``;
         }, 2500);
     }, 500);
-})
+});
 
 function exportData() {
-    const data = localStorage.getItem('hydroData');
-    if (!data) return;
+    const data = {
+        current: currentAmount,
+        goal: goal,
+        date: new Date().toISOString().slice(0, 10),
+        history: history
+    };
 
     const today = new Date().toISOString().slice(0, 10);
     const fileName = `HydroTrack_Data_${today}.json`;
 
-    const blob = new Blob([data], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
@@ -253,12 +417,12 @@ function exportData() {
     URL.revokeObjectURL(url);
 }
 
-function importData(event) {
+async function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             const importedData = JSON.parse(e.target.result);
             if (
@@ -268,15 +432,73 @@ function importData(event) {
                 Array.isArray(importedData.history)
             ) {
                 localStorage.setItem('hydroData', JSON.stringify(importedData));
-                location.reload();
+                
+                currentAmount = importedData.current;
+                goal = importedData.goal;
+                history = importedData.history;
+                lastDate = importedData.date;
+                
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    const { error } = await supabase
+                        .from('user_data')
+                        .upsert({
+                            id: user.id,
+                            current_amount: importedData.current,
+                            goal: importedData.goal,
+                            history: importedData.history,
+                            last_date: importedData.date
+                        }, {
+                            onConflict: 'id'
+                        });
+                    
+                    if (error) {
+                        console.error('Supabase import error:', error);
+                        alert('Failed to save imported data to Supabase!');
+                    }
+                }
+                
+                updateDisplay();
+                updateHistory();
+                saveData();
+                
+                alert('Data imported successfully!');
             } else {
-                alert('Ungültiges Datenformat.');
+                alert('Invalid data format.');
             }
         } catch (error) {
-            alert('Fehler beim Importieren der Datei.');
+            alert('Error importing file.');
         }
     };
     reader.readAsText(file);
+}
+
+async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Logout error:', error);
+    else location.reload();
+}
+
+async function updateLoginButton() {
+    const loginButton = document.getElementById('discordLogin');
+    const loginButtonM = document.getElementById('discordLoginM');
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+        loginButton.innerHTML = '<i class="fab fa-discord"></i> Logout';
+        loginButton.removeEventListener('click', signInWithDiscord);
+        loginButton.addEventListener('click', signOut);
+        loginButtonM.innerHTML = '<i class="fab fa-discord"></i> Logout';
+        loginButtonM.removeEventListener('click', signInWithDiscord);
+        loginButtonM.addEventListener('click', signOut);
+    } else {
+        loginButton.innerHTML = '<i class="fab fa-discord"></i> Login';
+        loginButton.removeEventListener('click', signOut);
+        loginButton.addEventListener('click', signInWithDiscord);
+        loginButtonM.innerHTML = '<i class="fab fa-discord"></i> Login';
+        loginButtonM.removeEventListener('click', signOut);
+        loginButtonM.addEventListener('click', signInWithDiscord);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -323,4 +545,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateDisplay();
     });
+
+    supabase.auth.onAuthStateChange((event, session) => {
+        console.log('Auth state changed:', event);
+        if (event === 'SIGNED_IN' && session?.user) {
+            loadFromSupabase();
+        } else if (event === 'SIGNED_OUT') {
+            loadData();
+        }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+            loadFromSupabase();
+        } else {
+            loadData();
+        }
+    });
+    
+    document.getElementById('discordLogin').addEventListener('click', signInWithDiscord);
+    document.getElementById('discordLoginM').addEventListener('click', signInWithDiscord);
+    updateLoginButton();
+    
+    setInterval(updateLoginButton, 5000);
 });
+
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) loadData();
+});
+
+if (currentUrl.endsWith("?") || currentUrl.endsWith("/?")) {
+    const cleanedUrl = currentUrl.replace(/\?$/, "");
+    window.location.replace(cleanedUrl);
+}
+
+if (currentUrl.endsWith("#") || currentUrl.endsWith("/#")) {
+    const cleanedUrl = currentUrl.replace(/\#$/, "");
+    window.location.replace(cleanedUrl);
+}
+
+function startSupabasePolling() {
+    setInterval(async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+            .from('user_data')
+            .select('current_amount, goal, history, last_date')
+            .eq('id', user.id)
+            .single();
+
+        if (error || !data) return;
+
+        if (data.current_amount !== currentAmount || 
+            data.goal !== goal || 
+            JSON.stringify(data.history) !== JSON.stringify(history)) {
+            loadFromSupabase();
+        }
+    }, 1000);
+}
+
+document.addEventListener('DOMContentLoaded', startSupabasePolling);
