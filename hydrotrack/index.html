@@ -203,34 +203,37 @@
             <a class="linkout nodecoration" id="scrollBarSwitcher">Show ScrollBar</a>
         </div>
         <div>
-            <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
+            <a>&copy; 2025 itsmarian.is-a.dev & HydroTrack Ltd. | All rights reserved!</a>
             <br>
             <a>Made with <span class="heart">&hearts;</span> by itsmarian in <span>GERMANY</span></a>
         </div>
     </footer>
     </div>
-    <div class="version-information">
-        <div class="version-header">
-            <h3>
-                <i class="fas fa-sync-alt"></i>
-                <a>New version avaible!</a>
-            </h3>
+    <div class="version-information" style="align-items: center; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem;">
+        <div>
+            <div class="version-header">
+                <h2>
+                    <i class="fas fa-sync-alt"></i>
+                    <a>New version avaible!</a>
+                </h2>
+            </div>
+            <div class="version-maincontent">
+                <div id="version-information">
+                    <a style="font-weight: 400;">Current Version:</a>
+                    <a id="version-update-current"></a>
+                    <div class="placeholder w100 h5"></div>
+                    <a style="font-weight: 400;">Newest Version:</a>
+                    <a id="version-update-newest"></a>
+                    <div class="placeholder w100 h15"></div>
+                    <a id="version-update-log"></a>
+                </div>
+                <div class="placeholder w100 h30"></div>
+                <div>
+                    <a>To transfer your progress to the new version, you can now download your data and import it again in the new version under “History” > “Import”!</a>
+                </div>
+            </div>
         </div>
-        <div class="version-maincontent">
-            <div id="version-information">
-                <a style="font-weight: 400;">Current Version:</a>
-                <a id="version-update-current"></a>
-                <div class="placeholder w100 h5"></div>
-                <a style="font-weight: 400;">Newest Version:</a>
-                <a id="version-update-newest"></a>
-                <div class="placeholder w100 h15"></div>
-                <a id="version-update-log"></a>
-            </div>
-            <div class="placeholder w100 h30"></div>
-            <div>
-                <a>To transfer your progress to the new version, you can now download your data and import it again in the new version under “History” > “Import”!</a>
-            </div>
-            <div class="placeholder w100 h20"></div>
+        <div style="width: 100%;">
             <button class="history-action-button" id="versionFileExport">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
@@ -686,6 +689,55 @@
     <script type="module">
         import { initializeSupabase } from './supabase.js';
         window.supabase = initializeSupabase();
+    </script>
+    <script>
+        const VERSION_URL = "https://itsmarianmc-github.vercel.app/api/hydrotrack/version.js";
+
+        function compareVersions(v1, v2) {
+            const v1Parts = v1.split('.').map(Number);
+            const v2Parts = v2.split('.').map(Number);
+            for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
+                const a = v1Parts[i] || 0;
+                const b = v2Parts[i] || 0;
+                if (a > b) return 1;
+                if (a < b) return -1;
+            }
+            console.log(`✅ Version is up-to-date \nRunning version: ${CURRENT_VERSION}`)
+            document.querySelector(".version-information").remove();
+            return 0;
+        }
+
+        async function checkForUpdate() {
+            try {
+                const res = await fetch(VERSION_URL);
+                if (!res.ok) throw new Error("Unable to fetch version info.");
+                const data = await res.json();
+
+                const latest = data.latest || "0.0.0";
+                const changelogArray = Array.isArray(data.changelog) ? data.changelog : [];
+
+                const result = compareVersions(CURRENT_VERSION, latest);
+                if (result === -1) {
+                    const formatted = `
+                        <strong>🆕 What's New in v${latest}:</strong>
+                        <ul class="update-ul">
+                            ${changelogArray.map(line => `<li>🔹${line}</li>`).join("")}
+                        </ul>`;
+                    
+                    document.querySelector(".version-information").style.display = "flex";
+                    document.querySelector(".bg-blur").style.display = "block";
+                    document.getElementById("version-update-current").textContent = CURRENT_VERSION;
+                    document.getElementById("version-update-newest").textContent = latest;
+                    document.getElementById("version-update-log").innerHTML = formatted;
+
+                    console.log(`New version available: ${latest} \nCurrent version: ${CURRENT_VERSION}`)
+                }
+            } catch (error) {
+                console.error("Update check failed:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", checkForUpdate);
     </script>
     <script>
         if ('serviceWorker' in navigator) {

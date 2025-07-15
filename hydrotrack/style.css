@@ -569,6 +569,8 @@ h1, h2, h3, h4 {
 .history-list, .version-information {
     background-color: var(--background) !important;
     overflow-x: hidden;
+    overflow-y: hidden;
+    width: 100%;
     transition: all 0.1s ease;
 }
 
@@ -582,10 +584,8 @@ h1, h2, h3, h4 {
     height: calc(100% - 63.8px) !important;
 }
 
-.history-list, .version-information {
-    overflow-y: hidden;
+.history-list {
     padding: 0 !important;
-    width: 100%;
 }
 
 .version-information {
