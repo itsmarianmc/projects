@@ -34,7 +34,7 @@ document.getElementById("getApp").addEventListener("click", function(){
     document.querySelector(".modal-app").classList.add("u-overlay-active-content");
     
     setTimeout(function() {
-        document.getElementById("u-overlay").style.top = "calc(50% + 10px)";
+        document.getElementById("u-overlay").style.top = "calc(50% + 15px)";
         document.getElementById("u-overlay").style.height = "calc(100% - 30px)";
         document.getElementById("u-overlay").style.transform = "translate(-50%, -50%)";
     }, 10);
