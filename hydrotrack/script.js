@@ -7,6 +7,7 @@ let animatedProgress = 0;
 
 const currentUrl = window.location.href;
 const getColor = (percentage) => `hsl(${120 * (percentage / 100)}, 70%, 45%)`;
+const discordLoginM = document.getElementById('discordLoginM');
 
 const SUPABASE_URL = 'https://kxejefkdnhcmpbccnkyn.supabase.co/';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4ZWplZmtkbmhjbXBiY2Nua3luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2MDE4NTksImV4cCI6MjA2ODE3Nzg1OX0.LdJvLDdGF60DeKuHpjG2NHc-5Sy5ns9jkcFw3RnVu5k';
@@ -104,6 +105,10 @@ async function saveToSupabase() {
     } catch (error) {
         console.error('Unexpected error in saveToSupabase:', error);
     }
+}
+
+if (discordLoginM) {
+    discordLoginM.addEventListener('click', signInWithDiscord);
 }
 
 async function loadFromSupabase() {
@@ -484,26 +489,32 @@ async function updateLoginButton() {
     const loginButtonM = document.getElementById('discordLoginM');
     const { data: { user } } = await supabase.auth.getUser();
     
-    if (user) {
-        loginButton.innerHTML = '<i class="fab fa-discord"></i> Logout';
-        loginButton.removeEventListener('click', signInWithDiscord);
-        loginButton.addEventListener('click', signOut);
-        loginButtonM.innerHTML = '<i class="fab fa-discord"></i> Logout';
-        loginButtonM.removeEventListener('click', signInWithDiscord);
-        loginButtonM.addEventListener('click', signOut);
-    } else {
-        loginButton.innerHTML = '<i class="fab fa-discord"></i> Login';
-        loginButton.removeEventListener('click', signOut);
-        loginButton.addEventListener('click', signInWithDiscord);
-        loginButtonM.innerHTML = '<i class="fab fa-discord"></i> Login';
-        loginButtonM.removeEventListener('click', signOut);
-        loginButtonM.addEventListener('click', signInWithDiscord);
+    if (loginButton) {
+        if (user) {
+            loginButton.innerHTML = '<i class="fab fa-discord"></i> Logout';
+            loginButton.onclick = signOut;
+        } else {
+            loginButton.innerHTML = '<i class="fab fa-discord"></i> Login';
+            loginButton.onclick = signInWithDiscord;
+        }
+    }
+    
+    if (loginButtonM) {
+        if (user) {
+            loginButtonM.innerHTML = '<i class="fab fa-discord"></i> Logout';
+            loginButtonM.onclick = signOut;
+        } else {
+            loginButtonM.innerHTML = '<i class="fab fa-discord"></i> Login';
+            loginButtonM.onclick = signInWithDiscord;
+        }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('themeToggle');
     const root = document.documentElement;
+    
+    document.getElementById('discordLogin').onclick = signInWithDiscord;
 
     if (!localStorage.getItem('darkMode')) {
         localStorage.setItem('darkMode', 'enabled');
@@ -562,11 +573,13 @@ document.addEventListener('DOMContentLoaded', () => {
             loadData();
         }
     });
-    
-    document.getElementById('discordLogin').addEventListener('click', signInWithDiscord);
-    document.getElementById('discordLoginM').addEventListener('click', signInWithDiscord);
+
+    const mobileLoginBtn = document.getElementById('discordLoginM');
+    if (mobileLoginBtn) {
+        mobileLoginBtn.onclick = signInWithDiscord;
+    }
+
     updateLoginButton();
-    
     setInterval(updateLoginButton, 5000);
 });
 
