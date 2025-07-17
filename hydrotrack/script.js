@@ -108,7 +108,10 @@ async function saveToSupabase() {
 }
 
 if (discordLoginM) {
-    discordLoginM.addEventListener('click', signInWithDiscord);
+    discordLoginM.addEventListener('touchend', function(event) {
+        event.preventDefault();
+        signInWithDiscord();
+    });
 }
 
 async function loadFromSupabase() {
