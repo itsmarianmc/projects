@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Videoplayer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: #0f0f0f;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+        }
+        
+        video {
+            width: 100%;
+            display: block;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 15px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .video-container:hover .video-controls {
+            opacity: 1;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 30%;
+            background: #ff0000;
+            border-radius: 3px;
+            position: relative;
+        }
+        
+        .progress-thumb {
+            width: 12px;
+            height: 12px;
+            background: #ff0000;
+            border-radius: 50%;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translate(50%, -50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .progress-container:hover .progress-thumb {
+            opacity: 1;
+        }
+        
+        .time-display {
+            color: white;
+            font-size: 14px;
+            margin: 0 10px;
+            min-width: 120px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .controls-left, .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .controls-left {
+            flex: 1;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-btn:disabled {
+            color: #717171;
+            cursor: not-allowed;
+            background: none;
+        }
+        
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .volume-level {
+            height: 100%;
+            width: 70%;
+            background: white;
+            border-radius: 2px;
+        }
+        
+        .video-info {
+            padding: 20px;
+            color: white;
+        }
+        
+        .video-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .video-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #aaa;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #303030;
+        }
+        
+        .channel-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            gap: 15px;
+        }
+        
+        .channel-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .channel-name {
+            font-weight: bold;
+            color: white;
+        }
+        
+        .subscribe-btn {
+            background: #cc0000;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: auto;
+            transition: background 0.2s;
+        }
+        
+        .subscribe-btn:hover {
+            background: #a80000;
+        }
+        
+        .cast-popup {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            background: rgba(30, 30, 30, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+        
+        .cast-popup.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .cast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .cast-header h3 {
+            color: #fff;
+        }
+        
+        .scan-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .scan-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .cast-device {
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+            transition: background 0.2s;
+        }
+        
+        .cast-device:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .device-status {
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .device-active {
+            color: #4CAF50;
+        }
+        
+        .device-inactive {
+            color: #aaa;
+        }
+        
+        .device-loading {
+            color: #FFC107;
+        }
+        
+        .device-icon {
+            position: relative;
+        }
+        
+        .device-icon .status-dot {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+        
+        .device-icon .status-dot.inactive {
+            background: #f44336;
+        }
+        
+        .device-icon .status-dot.loading {
+            background: #FFC107;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 30, 30, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+        }
+        
+        .notification.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        .loading-icon {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @media (max-width: 600px) {
+            .video-controls {
+                padding: 10px;
+            }
+            
+            .control-btn {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .volume-slider {
+                width: 60px;
+            }
+            
+            .video-title {
+                font-size: 18px;
+            }
+            
+            .video-stats {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .time-display {
+                min-width: 100px;
+                font-size: 13px;
+            }
+            
+            .cast-popup {
+                width: 280px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-container">
+            <video>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                Ihr Browser unterstützt das Video-Tag nicht.
+            </video>
+            <div class="video-controls">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-thumb"></div>
+                    </div>
+                </div>
+                <div class="controls-left">
+                    <button class="control-btn play-pause">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path id="play-icon" d="M8 5v14l11-7z"/>
+                            <path id="pause-icon" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" style="display: none;"/>
+                        </svg>
+                    </button>
+                    <div class="volume-container">
+                        <button class="control-btn volume-btn">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path id="volume-high" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                                <path id="volume-mute" d="M7 9v6h4l5 5V4l-5 5H7z" style="display: none;"/>
+                            </svg>
+                        </button>
+                        <div class="volume-slider">
+                            <div class="volume-level"></div>
+                        </div>
+                    </div>
+                    <div class="time-display">00:00 / 00:00</div>
+                </div>
+                <div class="controls-right">
+                    <button class="control-btn pip-btn">
+                        <svg class="icon" id="pip-icon" viewBox="0 0 24 24">
+                            <path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z"/>
+                        </svg>
+                    </button>
+                    
+                    <button class="control-btn cast-btn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                    </button>
+                    
+                    <button class="control-btn fullscreen-btn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path id="expand-icon" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                            <path id="compress-icon" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" style="display: none;"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="cast-popup" id="castPopup">
+                <div class="cast-header">
+                    <h3>Geräte im Netzwerk</h3>
+                    <button class="scan-btn" id="scanDevices">
+                        <svg class="icon" width="16" height="16" viewBox="0 0 24 24">
+                            <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                        </svg>
+                        Netzwerk scannen
+                    </button>
+                </div>
+                <div id="devicesList">
+                    <div class="cast-device" data-device="tv">
+                        <div class="device-icon">
+                            <svg class="icon" viewBox="0 0 24 24" style="width: 28px; height: 28px;">
+                                <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/>
+                            </svg>
+                            <div class="status-dot active"></div>
+                        </div>
+                        <div>
+                            <div>Wohnzimmer-TV</div>
+                            <div class="device-status device-active">Bereit zum Übertragen</div>
+                        </div>
+                    </div>
+                    <div class="cast-device" data-device="speaker">
+                        <div class="device-icon">
+                            <svg class="icon" viewBox="0 0 24 24" style="width: 28px; height: 28px;">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                            </svg>
+                            <div class="status-dot inactive"></div>
+                        </div>
+                        <div>
+                            <div>Lautsprecher</div>
+                            <div class="device-status device-inactive">Nicht verbunden</div>
+                        </div>
+                    </div>
+                    <div id="loadingDevices" style="display: none; padding: 15px; text-align: center; color: #aaa;">
+                        <svg class="icon loading-icon" viewBox="0 0 24 24" style="width: 24px; height: 24px;">
+                            <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+                        </svg>
+                        <div style="margin-top: 10px;">Suche nach Geräten...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="video-info">
+            <h1 class="video-title">Big Buck Bunny - 1080p Testvideo</h1>
+            <div class="video-stats">
+                <div>125.452 Aufrufe • 15. Juli 2023</div>
+                <div>
+                    <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; display: inline; vertical-align: middle;">
+                        <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/>
+                    </svg>
+                    2.4K 
+                    <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-left: 15px;">
+                        <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/>
+                    </svg>
+                    42
+                </div>
+            </div>
+            
+            <div class="channel-info">
+                <div class="channel-avatar">B</div>
+                <div>
+                    <div class="channel-name">Blender Foundation</div>
+                    <div style="color: #aaa; font-size: 14px;">1,2 Mio. Abonnenten</div>
+                </div>
+                <button class="subscribe-btn">ABONNIEREN</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('video');
+            const playPauseBtn = document.querySelector('.play-pause');
+            const playIcon = document.querySelector('#play-icon');
+            const pauseIcon = document.querySelector('#pause-icon');
+            const volumeBtn = document.querySelector('.volume-btn');
+            const volumeHighIcon = document.querySelector('#volume-high');
+            const volumeMuteIcon = document.querySelector('#volume-mute');
+            const volumeSlider = document.querySelector('.volume-slider');
+            const volumeLevel = document.querySelector('.volume-level');
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = document.querySelector('.progress-bar');
+            const timeDisplay = document.querySelector('.time-display');
+            const pipBtn = document.querySelector('.pip-btn');
+            const pipIcon = document.querySelector('#pip-icon');
+            const castBtn = document.querySelector('.cast-btn');
+            const fullscreenBtn = document.querySelector('.fullscreen-btn');
+            const expandIcon = document.querySelector('#expand-icon');
+            const compressIcon = document.querySelector('#compress-icon');
+            const castPopup = document.getElementById('castPopup');
+            const notification = document.getElementById('notification');
+            const scanDevicesBtn = document.getElementById('scanDevices');
+            const devicesList = document.getElementById('devicesList');
+            const loadingDevices = document.getElementById('loadingDevices');
+            
+            function formatTime(seconds) {
+                const min = Math.floor(seconds / 60);
+                const sec = Math.floor(seconds % 60);
+                return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+            }
+
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            video.addEventListener('click', togglePlayPause);
+            
+            function togglePlayPause() {
+                if (video.paused) {
+                    video.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                } else {
+                    video.pause();
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                }
+            }
+            
+            volumeBtn.addEventListener('click', toggleMute);
+            
+            function toggleMute() {
+                video.muted = !video.muted;
+                if (video.muted) {
+                    volumeHighIcon.style.display = 'none';
+                    volumeMuteIcon.style.display = 'block';
+                    volumeLevel.style.width = '0%';
+                } else {
+                    volumeHighIcon.style.display = 'block';
+                    volumeMuteIcon.style.display = 'none';
+                    volumeLevel.style.width = `${video.volume * 100}%`;
+                }
+            }
+            
+            volumeSlider.addEventListener('click', (e) => {
+                const rect = volumeSlider.getBoundingClientRect();
+                const percent = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+                volumeLevel.style.width = `${percent * 100}%`;
+                video.volume = percent;
+                
+                if (percent === 0) {
+                    video.muted = true;
+                    volumeHighIcon.style.display = 'none';
+                    volumeMuteIcon.style.display = 'block';
+                } else {
+                    video.muted = false;
+                    volumeHighIcon.style.display = 'block';
+                    volumeMuteIcon.style.display = 'none';
+                }
+            });
+            
+            let videoDuration = 0;
+            
+            progressContainer.addEventListener('click', (e) => {
+                if (!videoDuration) return;
+                
+                const rect = progressContainer.getBoundingClientRect();
+                const percent = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+                progressBar.style.width = `${percent * 100}%`;
+                video.currentTime = percent * videoDuration;
+            });
+            
+            video.addEventListener('timeupdate', () => {
+                if (!videoDuration) return;
+                
+                const percent = (video.currentTime / videoDuration) * 100;
+                progressBar.style.width = `${percent}%`;
+                
+                timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(videoDuration)}`;
+            });
+            
+            video.addEventListener('loadedmetadata', () => {
+                videoDuration = video.duration;
+                timeDisplay.textContent = `00:00 / ${formatTime(videoDuration)}`;
+            });
+            
+            pipBtn.addEventListener('click', async () => {
+                try {
+                    if (document.pictureInPictureElement) {
+                        await document.exitPictureInPicture();
+                    } else if (document.pictureInPictureEnabled) {
+                        await video.requestPictureInPicture();
+                    }
+                } catch (error) {
+                    showNotification('PiP nicht unterstützt: ' + error.message);
+                }
+            });
+            
+            video.addEventListener('enterpictureinpicture', () => {
+                pipIcon.innerHTML = '<path d="M23 3H1v18h22V3zm-2 16.01H3V4.99h18v14.02z"/><path d="M9 12h6v6H9z"/>';
+                showNotification('Video im PiP-Modus');
+            });
+            
+            video.addEventListener('leavepictureinpicture', () => {
+                pipIcon.innerHTML = '<path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z"/>';
+                showNotification('PiP-Modus beendet');
+            });
+            
+            castBtn.addEventListener('click', () => {
+                castPopup.classList.toggle('show');
+            });
+            
+            scanDevicesBtn.addEventListener('click', scanNetworkDevices);
+            
+            function scanNetworkDevices() {
+                document.querySelectorAll('.cast-device').forEach(el => el.style.display = 'none');
+                loadingDevices.style.display = 'block';
+                
+                setTimeout(() => {
+                    loadingDevices.style.display = 'none';
+                    
+                    const newDevices = [
+                        {
+                            id: 'laptop',
+                            name: 'Arbeitszimmer-Laptop',
+                            status: 'active',
+                            statusText: 'Verbunden',
+                            type: 'laptop'
+                        },
+                        {
+                            id: 'smart-tv',
+                            name: 'Smart TV Schlafzimmer',
+                            status: 'inactive',
+                            statusText: 'Bereit',
+                            type: 'tv'
+                        },
+                        {
+                            id: 'google-chromecast',
+                            name: 'Chromecast Ultra',
+                            status: 'loading',
+                            statusText: 'Wird verbunden...',
+                            type: 'cast'
+                        }
+                    ];
+                    
+                    newDevices.forEach(device => {
+                        const deviceElement = document.createElement('div');
+                        deviceElement.className = 'cast-device';
+                        deviceElement.dataset.device = device.id;
+                        
+                        let iconPath = '';
+                        switch(device.type) {
+                            case 'laptop':
+                                iconPath = '<path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>';
+                                break;
+                            case 'tv':
+                                iconPath = '<path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/>';
+                                break;
+                            case 'cast':
+                                iconPath = '<path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
+                                break;
+                            default:
+                                iconPath = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="12" cy="12" r="5"/>';
+                        }
+                        
+                        let statusClass = '';
+                        if (device.status === 'active') statusClass = 'active';
+                        if (device.status === 'inactive') statusClass = 'inactive';
+                        if (device.status === 'loading') statusClass = 'loading';
+                        
+                        deviceElement.innerHTML = `
+                            <div class="device-icon">
+                                <svg class="icon" viewBox="0 0 24 24" style="width: 28px; height: 28px;">
+                                    ${iconPath}
+                                </svg>
+                                <div class="status-dot ${statusClass}"></div>
+                            </div>
+                            <div>
+                                <div>${device.name}</div>
+                                <div class="device-status device-${device.status}">${device.statusText}</div>
+                            </div>
+                        `;
+                        
+                        deviceElement.addEventListener('click', () => {
+                            showNotification(`Übertrage zu: ${device.name}`);
+                            
+                            const statusDot = deviceElement.querySelector('.status-dot');
+                            const statusText = deviceElement.querySelector('.device-status');
+                            
+                            statusDot.className = 'status-dot loading';
+                            statusText.textContent = 'Wird verbunden...';
+                            statusText.className = 'device-status device-loading';
+                            
+                            setTimeout(() => {
+                                statusDot.className = 'status-dot active';
+                                statusText.textContent = 'Verbunden';
+                                statusText.className = 'device-status device-active';
+                                showNotification(`Verbindung zu ${device.name} hergestellt`);
+                            }, 2000);
+                        });
+                        
+                        devicesList.appendChild(deviceElement);
+                    });
+                    
+                    document.querySelectorAll('.cast-device').forEach(el => el.style.display = 'flex');
+                    
+                    showNotification('Netzwerkscan abgeschlossen');
+                }, 2000);
+            }
+            
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.querySelector('.container').requestFullscreen()
+                        .then(() => {
+                            expandIcon.style.display = 'none';
+                            compressIcon.style.display = 'block';
+                            showNotification('Vollbildmodus aktiviert');
+                        })
+                        .catch(err => {
+                            showNotification('Vollbildfehler: ' + err.message);
+                        });
+                } else {
+                    document.exitFullscreen()
+                        .then(() => {
+                            expandIcon.style.display = 'block';
+                            compressIcon.style.display = 'none';
+                        })
+                        .catch(err => {
+                            showNotification('Vollbildfehler: ' + err.message);
+                        });
+                }
+            }
+            
+            function showNotification(message) {
+                notification.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            document.addEventListener('click', (e) => {
+                if (!castBtn.contains(e.target) && !castPopup.contains(e.target)) {
+                    castPopup.classList.remove('show');
+                }
+            });
+            
+            volumeLevel.style.width = `${video.volume * 100}%`;
+            
+            castPopup.addEventListener('animationstart', () => {
+                if (castPopup.classList.contains('show')) {
+                    scanNetworkDevices();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
