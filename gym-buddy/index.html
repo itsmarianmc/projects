@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Buddy - Trainingsplan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="loginScreen" class="login-container">
+        <div class="login-logo">
+            <i class="fas fa-dumbbell"></i>
+        </div>
+        <h1>Gym Buddy Trainingsplan</h1>
+        <p class="info-text">Melde dich mit deiner ID an, um Trainingszeiten zu planen</p>
+        
+        <div class="form-group">
+            <label for="userId">Gib deine Nutzer ID ein</label>
+            <input type="text" id="userId" placeholder="XXXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXXX" maxlength="64">
+        </div>
+        
+        <button id="loginBtn" class="btn">Anmelden</button>
+        <p class="info-text">
+            <i class="fas fa-info-circle"></i>
+            Um dich anzumelden, benötigst du eine gültige Nutzer ID. Diese kannst du von deinem Trainer oder Buddy erhalten.
+        </p>
+    </div>
+    <div id="appContainer" class="container" style="display: none;">
+        <header>
+            <div class="logo">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+            <h1>Gym Buddy Trainingsplan</h1>
+            <p class="header-subtitle">Deine gemeinsame Trainingsplanung</p>
+            <div class="user-info">
+                <img id="userAvatar" src="https://ui-avatars.com/api/?name=Gym+Buddy&background=random" alt="User">
+                <span id="displayName">Gym Buddy</span>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+        <main>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-user"></div>
+                    <span>Deine Zeiten</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-buddy"></div>
+                    <span>Dein Buddy</span>
+                </div>
+            </div>
+            <div class="loading" id="loadingIndicator" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+            <div class="week-grid" id="weekGrid"></div>
+        </main>
+    </div>
+    <div id="notification" class="notification">
+        <span id="notificationText"></span>
+    </div>
+    <div id="addSessionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Trainingszeit hinzufügen</h3>
+                <button class="close-btn">
+                    <img height="32" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6M3B4O308L3N0eWxlPjwvZGVmcz48dGl0bGUvPjxnIGlkPSJjcm9zcyI+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iNyIgeDI9IjI1IiB5MT0iNyIgeTI9IjI1Ii8+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iNyIgeDI9IjI1IiB5MT0iMjUiIHkyPSI3Ii8+PC9nPjwvc3ZnPg==">
+                </button>
+            </div>
+            <input type="hidden" id="selectedDay">
+            <div class="time-inputs">
+                <div class="form-group time-input-group">
+                    <label for="startTime">Startzeit</label>
+                    <i class="fas fa-clock time-icon"></i>
+                    <input type="time" id="startTime" required>
+                </div>
+                <div class="form-group time-input-group">
+                    <label for="endTime">Endzeit</label>
+                    <i class="fas fa-clock time-icon"></i>
+                    <input type="time" id="endTime" required>
+                </div>
+            </div>
+            <button id="saveSessionBtn" class="btn">Zeit speichern</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "GYM Buddy",
+  "short_name": "GYM Buddy",
+  "start_url": "/gym-buddy/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/hydrotrack/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
