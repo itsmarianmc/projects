@@ -289,8 +289,8 @@ label {
 	color: var(--dark-text);
 }
 
-#userId input {
-	width: 100%;
+#userId {
+	width: 100% !important;
 }
 
 input {
