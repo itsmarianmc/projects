@@ -4,7 +4,7 @@
 	SUPABASE_KEY: Your "anon public" key can be found in "Settings" > "API Keys" in your Supabase project.
 
 
-	In your project, create these two tables:
+	In your project, create these two tables (users and workout_sessions) with the following SQL commands:
 
 	CREATE TABLE users (
 		auth_id TEXT PRIMARY KEY,
@@ -378,6 +378,20 @@ function showNotification(message, type) {
 		notification.classList.remove('show');
 	}, 3000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+	const splashScreen = document.getElementById('splashScreen');
+	const mainContent = document.getElementById('mainContent');
+
+	setTimeout(function() {
+		splashScreen.classList.add('hidden');
+
+		setTimeout(function() {
+			mainContent.classList.add('visible');
+		}, 300);
+
+	}, 1000);
+});
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
