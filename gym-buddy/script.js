@@ -379,18 +379,53 @@ function showNotification(message, type) {
 	}, 3000);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-	const splashScreen = document.getElementById('splashScreen');
-	const mainContent = document.getElementById('mainContent');
+let isSplashVisible = false;
+let lastHiddenTime = 0;
 
-	setTimeout(function() {
+const splashScreen = document.getElementById('splashScreen');
+
+function showSplashScreen() {
+	if (isSplashVisible) return;
+
+	isSplashVisible = true;
+	splashScreen.classList.remove('hidden');
+
+	setTimeout(() => {
 		splashScreen.classList.add('hidden');
+		isSplashVisible = false;
+	}, 2000);
+}
 
-		setTimeout(function() {
-			mainContent.classList.add('visible');
-		}, 300);
+document.addEventListener('DOMContentLoaded', function() {
+	showSplashScreen();
 
-	}, 1000);
+	document.addEventListener('visibilitychange', function() {
+		if (document.hidden) {
+			lastHiddenTime = Date.now();
+		} else {
+			const timeAway = Date.now() - lastHiddenTime;
+			if (timeAway > 1000) {
+				showSplashScreen();
+			}
+		}
+	});
+
+	window.addEventListener('focus', function() {
+		if (lastHiddenTime > 0) {
+			const timeAway = Date.now() - lastHiddenTime;
+			if (timeAway > 1000) {
+				showSplashScreen();
+			}
+		}
+	});
+});
+
+document.addEventListener('resume', function() {
+	showSplashScreen();
+});
+
+window.addEventListener('blur', function() {
+	lastHiddenTime = Date.now();
 });
 
 if ('serviceWorker' in navigator) {
