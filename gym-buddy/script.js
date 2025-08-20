@@ -393,7 +393,7 @@ function showSplashScreen() {
 	setTimeout(() => {
 		splashScreen.classList.add('hidden');
 		isSplashVisible = false;
-	}, 2000);
+	}, 1287);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
