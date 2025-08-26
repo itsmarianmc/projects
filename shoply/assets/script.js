@@ -23,6 +23,9 @@ const logoutBtnMobile = document.getElementById('logoutBtnMobile');
 const connectionStatus = document.getElementById('connectionStatus');
 const splashScreen = document.getElementById('splashScreen');
 
+const platformButtons = document.querySelectorAll('.platform-btn');
+const tutorialSections = document.querySelectorAll('.tutorial-section');
+
 let currentFamilyId = null;
 let currentFamilyData = null;
 let categories = [];
@@ -941,6 +944,14 @@ async function updateCategoryItems(categoryId) {
     }
 }
 
+document.addEventListener('resume', function() {
+    showSplashScreen();
+});
+
+window.addEventListener('blur', function() {
+    lastHiddenTime = Date.now();
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     showSplashScreen();
 
@@ -954,12 +965,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+	const userAgent = navigator.userAgent;
+	const isChrome = /Chrome/i.test(userAgent) && !/Edge/i.test(userAgent);
+	const isEdge = /Edge/i.test(userAgent);
+	const isFirefox = /Firefox/i.test(userAgent);
+	const isSafari = /Safari/i.test(userAgent) && !/Chrome/i.test(userAgent);
+	const isAndroid = /Android/i.test(userAgent);
+	const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+
+	if (isAndroid && isChrome) {
+		document.querySelector('[data-platform="android"]').click();
+	} else if (isIOS && isSafari) {
+		document.querySelector('[data-platform="safari"]').click();
+	} else if (isFirefox) {
+		document.querySelector('[data-platform="firefox"]').click();
+	} else if (isChrome || isEdge) {
+		document.querySelector('[data-platform="chrome"]').click();
+	}
 });
 
-document.addEventListener('resume', function() {
-    showSplashScreen();
-});
+platformButtons.forEach(button => {
+	button.addEventListener('click', () => {
+		platformButtons.forEach(btn => btn.classList.remove('active'));
 
-window.addEventListener('blur', function() {
-    lastHiddenTime = Date.now();
+		button.classList.add('active');
+
+		tutorialSections.forEach(section => {
+			section.classList.remove('active');
+		});
+
+		const platform = button.dataset.platform;
+		const targetSection = document.getElementById(`${platform}-tutorial`);
+		if (targetSection) {
+			targetSection.classList.add('active');
+		}
+	});
 });
