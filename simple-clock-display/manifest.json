@@ -1,0 +1,17 @@
+{
+    "name": "Simple Clock Display",
+    "short_name": "TimeWords",
+    "description": "Replaces the boring standard time with a lively written-out version.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "any",
+    "icons": [
+        {
+        "src": "favicon.png",
+        "sizes": "320x320",
+        "type": "image/png"
+        }
+    ]
+}

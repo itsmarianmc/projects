@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Simple Clok Display</title>
+	<link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta name="description" content="Replaces the boring standard time with a lively written-out version.">
+    <meta name="author" content="Maria">
+    <meta property="og:title" content="Simple Clock Display">
+    <meta property="og:description" content="Replaces the boring standard time with a lively written-out version.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="favicon.png">
+    <meta property="og:url" content="https://github.com/maria/projects/simple-clock-display">
+    <!-- App / PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1E282E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="favicon.png">
+</head>
+<body>
+	<div class="container" role="region" aria-live="polite" aria-label="Live clock">
+		<div class="time"><span id="hourWord">--</span> <span id="minuteWord">--</span></div>
+		<div class="line">
+            <div class="line-inner"></div>
+            <div class="line-slash">\\</div>
+        </div>
+		<div class="status" id="status">--:--:--</div>
+	</div>
+    <div style="position: absolute; bottom: 10px; right: 10px; color: white; z-index: 10;  display: flex; gap: 10px; align-items: right;">
+        <select name="size" id="sizeSelector">
+            <option value="xsmall">33%</option>
+            <option value="small">50%</option>
+            <option value="medium">75%</option>
+            <option value="" selected>100%</option>
+            <option value="large">150%</option>
+            <option value="xlarge">200%</option>
+        </select>
+        <button class="fullscreen-btn" id="fullscreenBtn">
+            <svg viewBox="0 0 36 36" width="25" height="25" xmlns="http://www.w3.org/2000/svg" fill="#fff">
+                <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 z"/>
+                <path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 z"/>
+                <path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 z"/>
+                <path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 z"/>
+            </svg>
+            Fullscreen
+        </button>
+        <button class="info-btn" id="minimize">
+            <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                <path d="M440-440v240h-80v-160H200v-80h240Zm160-320v160h160v80H520v-240h80Z"/>
+            </svg>
+        </button>
+    </div>
+	<script src="script.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js");
+            navigator.serviceWorker.ready.then(() => {
+                console.log("Service Worker is ready");
+            });
+        }
+    </script>
+</body>
+</html>
