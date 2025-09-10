@@ -3,10 +3,11 @@ self.addEventListener("install", event => {
         caches.open("simple-clock-cache").then(cache => {
         return cache.addAll([
             "./",
+            "./favicon.png",
             "./index.html",
-            "./style.css",
+            "./manifest.json",
             "./script.js",
-            "./manifest.json"
+            "./style.css"
         ]);
         })
     );

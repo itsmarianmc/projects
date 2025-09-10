@@ -1,6 +1,6 @@
 {
     "name": "Simple Clock Display",
-    "short_name": "TimeWords",
+    "short_name": "Simple Clock",
     "description": "Replaces the boring standard time with a lively written-out version.",
     "start_url": "./index.html",
     "display": "standalone",

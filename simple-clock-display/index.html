@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<title>Simple Clok Display</title>
+	<title>Simple Clock Display</title>
 	<link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png" />
     <meta name="description" content="Replaces the boring standard time with a lively written-out version.">
@@ -20,25 +20,27 @@
     <link rel="apple-touch-icon" href="favicon.png">
 </head>
 <body>
-	<div class="container" role="region" aria-live="polite" aria-label="Live clock">
+	<div class="container normal" role="region" aria-live="polite" aria-label="Live clock">
 		<div class="time"><span id="hourWord">--</span> <span id="minuteWord">--</span></div>
 		<div class="line">
             <div class="line-inner"></div>
-            <div class="line-slash">\\</div>
+            <div class="line-slash">
+                <span>\</span><span>\</span>
+            </div>
         </div>
 		<div class="status" id="status">--:--:--</div>
 	</div>
     <div style="position: absolute; bottom: 10px; right: 10px; color: white; z-index: 10;  display: flex; gap: 10px; align-items: right;">
-        <select name="size" id="sizeSelector">
+        <select disabled title="To use this feature read the Copyright notice!" name="size" id="sizeSelector">
             <option value="xsmall">33%</option>
             <option value="small">50%</option>
             <option value="medium">75%</option>
-            <option value="" selected>100%</option>
+            <option value="normal" selected>100%</option>
             <option value="large">150%</option>
             <option value="xlarge">200%</option>
         </select>
-        <button class="fullscreen-btn" id="fullscreenBtn">
-            <svg viewBox="0 0 36 36" width="25" height="25" xmlns="http://www.w3.org/2000/svg" fill="#fff">
+        <button disabled title="To use this feature read the Copyright notice!" class="btn" id="fullscreenBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="25" height="25" fill="#fff">
                 <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 z"/>
                 <path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 z"/>
                 <path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 z"/>
@@ -46,11 +48,40 @@
             </svg>
             Fullscreen
         </button>
-        <button class="info-btn" id="minimize">
+        <button class="btn" id="copyrightBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                <path d="M400-320h160q17 0 28.5-11.5T600-360v-80h-80v40h-80v-160h80v40h80v-80q0-17-11.5-28.5T560-640H400q-17 0-28.5 11.5T360-600v240q0 17 11.5 28.5T400-320Zm80 240q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+            </svg>
+        </button>
+        <button disabled title="To use this feature read the Copyright notice!" class="btn" id="minimize">
             <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
                 <path d="M440-440v240h-80v-160H200v-80h240Zm160-320v160h160v80H520v-240h80Z"/>
             </svg>
         </button>
+    </div>
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-container">
+            <button class="close-btn" onclick="closePopup()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#fff">
+                    <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                </svg>
+            </button>
+            <div class="popup-content">
+                <h2>About Copyright and Images</h2>
+                <p>The background image is not mine, it was created by someone else. The image is from Wikipedia and is distributed under the <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en" target="_blank">Creative Commons CC0 1.0 Universal Public Domain Dedication</a> license. For more information visit the <a href="https://en.wikipedia.org/wiki/File:Evening_over_a_bubbling_stream_(Unsplash).jpg" target="_blank">Wikipedia page</a>.</p>
+                <div style="background-color: #fff; height: 1px; margin: 15px 0px; width: 100%;"></div>
+                <p>Original Author: Karsten Würth</p>
+                <p>Original Name: Fließender Fluss zwischen hohen Bäumen</p>
+                <p>Original Source: <a href="https://unsplash.com/de/fotos/fliessender-fluss-zwischen-hohen-baumen-7BjhtdogU3A" target="_blank">Unsplash</a></p>
+                <button class="btn" id="understandBtn" style="margin: 20px auto 0px auto; width: 50%;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 -960 960 960" width="25" fill="#e3e3e3"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
+                    Understand
+                </button>
+                <div style="margin-top: 20px; text-align: center;">
+                    <p style="color: #ccc; font-size: 0.75em !important;">© 2025 itsmarian.is-a.dev | All rights reserved!</p>
+                </div>
+            </div>
+        </div>
     </div>
 	<script src="script.js"></script>
     <script>
