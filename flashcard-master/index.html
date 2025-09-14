@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Flashcard Master - Studying Made Easy!</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/fonts/font-awesome-6.7.2/css/all.min.css">
+	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/variables.css">
+	<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon_colored.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon_colored.png">
+	<link rel="stylesheet" href="share.css">
+	<link rel="stylesheet" href="styles.css">
+	<meta name="author" content="itsmarian">
+	<meta name="title" content="Flashcard Master">
+	<meta name="description" content="Flashcard Master is a simple and effective flashcard app to help you learn and memorize information quickly. Create, manage, and study your flashcards with ease.">
+	<meta name="keywords" content="flashcards, study app, learning tool, memorize, education, quiz, revision, study aid">
+	<meta name="referrer" content="no-referrer">
+	<meta name="robots" content="index, follow">
+	<meta property="og:title" content="Flashcard Master">
+	<meta property="og:type" content="website">
+	<meta property="og:description" content="Flashcard Master is a simple and effective flashcard app to help you learn and memorize information quickly. Create, manage, and study your flashcards with ease.">
+	<meta property="og:image" content="https://projects.itsmarian.is-a.dev/flashcard-master/favicon.png">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://projects.itsmarian.is-a.dev/flashcard-master/?utm_src=og_link">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://projects.itsmarian.is-a.dev/flashcard-master/favicon.png">
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCKLQD6DJY"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+
+		gtag('js', new Date());
+		gtag('config', 'G-ZCKLQD6DJY');
+	</script>
+</head>
+<body>
+    <div id="landing-page" class="container">
+        <header>
+            <div>
+                <div class="logo"></div>
+                <h1>Flashcard Master</h1>
+            </div>
+            <button id="theme-toggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+        <div class="action-header-buttons">
+            <button id="create-set-button" class="create-set-button">
+                <i class="fas fa-plus"></i> Neues Set erstellen
+            </button>
+            <button id="import-set-button" class="warning">
+                <i class="fas fa-file-import"></i> Set importieren
+            </button>
+            <button id="export-all-button" class="success">
+                <i class="fas fa-file-export"></i> Alle Sets exportieren
+            </button>
+        </div>
+        <h2><i class="fas fa-folder-open"></i> Deine Flashcard-Sets</h2>
+        <div id="sets-list" class="sets-list"></div>
+        <input type="file" id="import-file-input" class="file-input" accept=".json">
+    </div>
+    <div id="set-modal-overlay" class="modal-overlay hidden"></div>
+    <div id="set-modal" class="modal hidden">
+        <div class="modal-header">
+            <h2 id="modal-title"><i class="fas fa-folder-plus"></i> Neues Set erstellen</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="form-group">
+                <label for="set-name">Name des Sets</label>
+                <input type="text" id="set-name" placeholder="Meine Vokabeln">
+            </div>
+            <div class="form-group">
+                <label for="set-description">Beschreibung (optional)</label>
+                <textarea id="set-description" placeholder="Kurze Beschreibung deines Sets"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="set-category">Kategorie (optional)</label>
+                <input type="text" id="set-category" placeholder="z.B. Sprachen, Wissenschaft, etc.">
+            </div>
+            <div class="form-group">
+                <label>Farbe auswählen</label>
+                <div class="color-options">
+                    <div class="color-option selected" style="background-color: #4361ee;" data-color="#4361ee"></div>
+                    <div class="color-option" style="background-color: #06d6a0;" data-color="#06d6a0"></div>
+                    <div class="color-option" style="background-color: #ff6b6b;" data-color="#ff6b6b"></div>
+                    <div class="color-option" style="background-color: #ffd166;" data-color="#ffd166"></div>
+                    <div class="color-option" style="background-color: #9d4edd;" data-color="#9d4edd"></div>
+                </div>
+            </div>
+            <button id="modal-save-btn" class="success" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-save"></i> Speichern
+            </button>
+        </div>
+    </div>
+    <div id="card-modal-overlay" class="modal-overlay hidden"></div>
+    <div id="card-modal" class="modal hidden">
+        <div class="modal-header">
+            <h2 id="card-modal-title"><i class="fas fa-plus-circle"></i> Neue Karte erstellen</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="form-group">
+                <label for="card-question-input">Frage</label>
+                <textarea id="card-question-input" placeholder="Stelle eine Frage" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="card-answer-input">Antwort</label>
+                <textarea id="card-answer-input" placeholder="Gib die Antwort ein" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="card-hint-input">Hinweis (optional)</label>
+                <input type="text" id="card-hint-input" placeholder="Kurzer Hinweis zur Antwort">
+            </div>
+            <button id="card-modal-save-btn" class="success" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-save"></i> Karte speichern
+            </button>
+        </div>
+    </div>
+    <div id="overlay" class="overlay hidden"></div>
+    <div id="set-drawer" class="drawer" style="scrollbar-width: none; -ms-overflow-style: none;">
+        <div class="drawer-header">
+            <div class="drawer-title">
+                <h2 id="drawer-set-name"><i class="fas fa-list"></i> </h2>
+                <div class="drawer-category">
+                    <i class="fas fa-tag"></i> <span id="drawer-set-category"></span>
+                </div>
+            </div>
+            <button class="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p id="drawer-set-description" class="description"></p>
+        <button id="add-card-button" class="add-card-button">
+            <i class="fas fa-plus-circle"></i> Neue Karte hinzufügen
+        </button>
+        <h3><i class="fas fa-cards"></i> Karten in diesem Set</h3>
+        <div id="cards-list" class="cards-list"></div>
+        <div class="action-header-buttons" style="margin-top: 20px;">
+            <button id="export-set-btn" class="success" style="">
+                <i class="fas fa-file-export"></i> Set exportieren
+            </button>
+            <button id="share-set-btn" class="primary" style="">
+                <i class="fas fa-share-alt"></i> Set teilen
+            </button>
+        </div>
+        <button id="start-training-btn">
+            <i class="fas fa-play-circle"></i> Training starten
+        </button>
+        <button id="edit-set-btn" class="warning" style="margin-top: 15px;">
+            <i class="fas fa-edit"></i> Set bearbeiten
+        </button>
+        <button id="delete-set-btn" class="delete" style="margin-top: 10px;">
+            <i class="fas fa-trash"></i> Set löschen
+        </button>
+    </div>
+    <div id="training-container" class="training-container hidden">
+        <button id="back-button" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="flashcard-container">
+            <div class="drag-feedback known">
+                <i class="fas fa-check-circle"></i> Gekannt
+            </div>
+            <div class="drag-feedback unknown">
+                <i class="fas fa-times-circle"></i> Nicht gewusst
+            </div>
+            <div id="flashcard" class="flashcard">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <p id="card-question" class="card-text"></p>
+                        <div class="card-hint">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <p id="card-answer" class="card-text"></p>
+                        <p id="card-hint" class="card-hint-text"></p>
+                        <div class="card-hint">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="training-controls">
+            <button id="unknown-btn" class="control-btn delete">
+                <i class="fas fa-times-circle"></i> Nicht gewusst
+            </button>
+            <button id="known-btn" class="control-btn success">
+                <i class="fas fa-check-circle"></i> Gekannt
+            </button>
+        </div>
+        <div class="swipe-instruction">
+            <div class="swipe-hint">
+                <i class="fas fa-arrow-left"></i>
+                <span>Nicht gewusst</span>
+            </div>
+            <div class="swipe-hint">
+                <i class="fas fa-arrow-right"></i>
+                <span>Gekannt</span>
+            </div>
+        </div>
+        <div id="results" class="results">
+            <h2><i class="fas fa-trophy"></i> Training abgeschlossen!</h2>
+            <p>Du hast <span id="correct-count" style="color: var(--success); font-weight: bold;">0</span> von <span id="total-count" style="font-weight: bold;">0</span> Karten gewusst.</p>
+            <div class="results-buttons">
+                <button id="restart-training-btn">
+                    <i class="fas fa-redo"></i> Nochmal üben
+                </button>
+                <button id="retry-unknown-btn">
+                    <i class="fas fa-filter"></i> Nur nicht gewusste
+                </button>
+                <button id="back-to-sets-btn">
+                    <i class="fas fa-home"></i> Zurück zu Sets
+                </button>
+            </div>
+        </div>
+    </div>
+	<script>
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('service-worker.js')
+				.then(reg => console.log('✅ Service Worker registered.', reg))
+				.catch(err => console.error('❌ Service Worker Error:', err));
+		}
+	</script>
+    <script src="script.js"></script>
+    <script src="share.js"></script>
+</body>
+</html>

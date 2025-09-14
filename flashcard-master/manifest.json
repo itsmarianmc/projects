@@ -1,0 +1,13 @@
+{
+	"name": "Flashcard Master",
+	"short_name": "Flashcard Master",
+	"start_url": "/",
+	"display": "standalone",
+	"icons": [
+		{
+			"src": "/favicon.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		}
+	]
+}
