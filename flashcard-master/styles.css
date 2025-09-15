@@ -293,14 +293,23 @@ button.warning {
 	animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
+.fade-out {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
 
-	to {
-		opacity: 1;
-	}
+.fade-in {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .modal {
@@ -629,6 +638,11 @@ button.warning {
 	visibility: hidden;
 	transition: opacity 0.5s ease, visibility 0.5s ease;
 	z-index: 3000;
+	/* Disable Text Selection */
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 
 .training-container.active {
@@ -636,17 +650,43 @@ button.warning {
 	visibility: visible;
 }
 
+#progress-text {
+    position: relative;
+    z-index: 20;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
 .progress-bar {
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    max-width: 550px;
+    height: 12px;
+    background-color: var(--bg-card);
+    border-radius: 10px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.flashcard-container {
 	width: 100%;
 	max-width: 550px;
-	height: 12px;
-	background-color: var(--bg-card);
-	border-radius: 10px;
-	margin-bottom: 30px;
-	overflow: hidden;
-	box-shadow: 0 2px 8px var(--shadow);
+	height: 350px;
+	perspective: 1500px;
+	margin-bottom: 40px;
+    margin-top: -40px;
 	position: relative;
-	z-index: 5;
+	z-index: 10;
+}
+.training-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 .progress {
@@ -657,23 +697,24 @@ button.warning {
 	transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.flashcard-container {
-	width: 100%;
-	max-width: 550px;
-	height: 350px;
-	perspective: 1500px;
-	margin-bottom: 40px;
-	position: relative;
-	z-index: 5;
-}
 
 .flashcard {
 	width: 100%;
 	height: 100%;
+	border-radius: 20px;
 	position: relative;
 	transform-style: preserve-3d;
 	cursor: grab;
 	transition: transform 0.3s ease;
+}
+
+.flashcard.currentCard {
+	margin-top: 0% !important;
+}
+
+.flashcard:not(:first-child) {
+	margin-top: -86.2%;
+	z-index: 1;
 }
 
 .flashcard.flipped .flashcard-inner {
@@ -801,6 +842,7 @@ button.warning {
 }
 
 .drag-feedback {
+	border-radius: 20px;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -810,6 +852,7 @@ button.warning {
 	align-items: center;
 	justify-content: center;
 	font-size: 24px;
+	gap: 10px;
 	font-weight: bold;
 	opacity: 0;
 	transition: opacity 0.3s ease;
@@ -846,6 +889,15 @@ button.warning {
 		height: 300px;
 	}
 
+	.training-area {
+		width: 100%;
+	}
+
+	.flashcard:not(:first-child) {
+		margin-top: -84.5%;
+		z-index: 1;
+	}
+
 	.training-controls {
 		flex-direction: column;
 		gap: 15px;
@@ -873,9 +925,6 @@ button.warning {
 		padding: 20px;
 	}
 
-	.action-header-buttons {
-		flex-direction: column;
-	}
 }
 
 @media (max-width: 609px) {

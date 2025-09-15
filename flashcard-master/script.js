@@ -13,6 +13,8 @@ let isDragging = false;
 let startX = 0;
 let currentX = 0;
 let dragThreshold = 0.25;
+let dragSensitivity = 8;
+let lastTap = 0;
 
 const landingPage = document.getElementById('landing-page');
 const setsList = document.getElementById('sets-list');
@@ -42,6 +44,7 @@ const cardModalTitle = document.getElementById('card-modal-title');
 const modalSaveBtn = document.getElementById('modal-save-btn');
 const cardModalSaveBtn = document.getElementById('card-modal-save-btn');
 const backButton = document.getElementById('back-button');
+const trainingArea = document.getElementById('training-area');
 const addCardButton = document.getElementById('add-card-button');
 const importSetButton = document.getElementById('import-set-button');
 const importFileInput = document.getElementById('import-file-input');
@@ -50,106 +53,269 @@ const exportAllButton = document.getElementById('export-all-button');
 const knownFeedback = document.querySelector('.drag-feedback.known');
 const unknownFeedback = document.querySelector('.drag-feedback.unknown');
 
-document.getElementById('create-set-button').addEventListener('click', () => openSetModal());
-document.getElementById('start-training-btn').addEventListener('click', startTraining);
-document.querySelectorAll('.close-btn').forEach(btn => {
-	btn.addEventListener('click', closeDrawer);
-});
-document.querySelectorAll('.modal-close').forEach(btn => {
-	btn.addEventListener('click', closeModals);
-});
-setModalOverlay.addEventListener('click', closeModals);
-cardModalOverlay.addEventListener('click', closeModals);
-overlay.addEventListener('click', closeDrawer);
-flashcard.addEventListener('click', flipCard);
-document.getElementById('known-btn').addEventListener('click', () => handleSwipe('right'));
-document.getElementById('unknown-btn').addEventListener('click', () => handleSwipe('left'));
-document.getElementById('restart-training-btn').addEventListener('click', restartTraining);
-document.getElementById('retry-unknown-btn').addEventListener('click', retryUnknownCards);
-document.getElementById('back-to-sets-btn').addEventListener('click', backToSets);
-document.getElementById('back-button').addEventListener('click', backToSetsFromTraining);
-themeToggle.addEventListener('click', toggleTheme);
-modalSaveBtn.addEventListener('click', saveSetFromModal);
-cardModalSaveBtn.addEventListener('click', saveCardFromModal);
-document.getElementById('edit-set-btn').addEventListener('click', () => openSetModal(true));
-document.getElementById('delete-set-btn').addEventListener('click', deleteCurrentSet);
-addCardButton.addEventListener('click', () => openCardModal());
-importSetButton.addEventListener('click', () => importFileInput.click());
-importFileInput.addEventListener('change', handleFileImport);
-exportSetButton.addEventListener('click', exportCurrentSet);
-exportAllButton.addEventListener('click', exportAllSets);
-
-flashcard.addEventListener('mousedown', startDrag);
-flashcard.addEventListener('touchstart', startDrag, {
-	passive: false
-});
-
-document.addEventListener('mousemove', drag);
-document.addEventListener('touchmove', drag, {
-	passive: false
-});
-
-document.addEventListener('mouseup', endDrag);
-document.addEventListener('touchend', endDrag);
-
 function startDrag(e) {
-	if (!trainingContainer.classList.contains('active')) return;
+    if (!trainingContainer.classList.contains('active')) return;
+    
+    const currentCard = getCurrentCard();
+    if (!currentCard) return;
 
-	isDragging = true;
-	startX = e.clientX || e.touches[0].clientX;
-	flashcard.style.transition = 'none';
-	flashcardInner.style.transition = 'none';
-
-	flashcard.style.cursor = 'grabbing';
+    startX = e.clientX || e.touches[0].clientX;
+    currentX = startX;
+    isDragging = false;
+    
+    currentCard.dataset.startX = startX;
+    currentCard.dataset.startTime = Date.now();
 }
 
 function drag(e) {
-	if (!isDragging) return;
+    const currentCard = getCurrentCard();
+    if (!currentCard || !currentCard.dataset.startX) return;
 
-	e.preventDefault();
-	currentX = e.clientX || e.touches[0].clientX;
-	const dragX = currentX - startX;
-	const width = flashcard.offsetWidth;
+    currentX = e.clientX || e.touches[0].clientX;
+    const dragX = currentX - parseFloat(currentCard.dataset.startX);
+    
+    if (Math.abs(dragX) > dragSensitivity && !isDragging) {
+        isDragging = true;
+        e.preventDefault();
+        
+        currentCard.style.transition = 'none';
+        currentCard.querySelector('.flashcard-inner').style.transition = 'none';
+        currentCard.style.cursor = 'grabbing';
+        
+        currentCard.removeEventListener('click', flipCard);
+    }
 
-	flashcard.style.transform = `translateX(${dragX}px)`;
+    if (isDragging) {
+        e.preventDefault();
+        const width = currentCard.offsetWidth;
+        currentCard.style.transform = `translateX(${dragX}px) rotate(${dragX * 0.1}deg)`;
 
-	const rotate = dragX * 0.1;
-	flashcard.style.transform = `translateX(${dragX}px) rotate(${rotate}deg)`;
-
-	if (dragX > width * dragThreshold) {
-		knownFeedback.classList.add('visible');
-		unknownFeedback.classList.remove('visible');
-	} else if (dragX < -width * dragThreshold) {
-		unknownFeedback.classList.add('visible');
-		knownFeedback.classList.remove('visible');
-	} else {
-		knownFeedback.classList.remove('visible');
-		unknownFeedback.classList.remove('visible');
-	}
+        if (dragX > width * (dragThreshold / 2)) {
+            knownFeedback.classList.add('visible');
+            unknownFeedback.classList.remove('visible');
+        } else if (dragX < -width * (dragThreshold / 2)) {
+            unknownFeedback.classList.add('visible');
+            knownFeedback.classList.remove('visible');
+        } else {
+            knownFeedback.classList.remove('visible');
+            unknownFeedback.classList.remove('visible');
+        }
+    }
 }
 
 function endDrag(e) {
-	if (!isDragging) return;
+    const currentCard = getCurrentCard();
+    if (!currentCard || !currentCard.dataset.startX) return;
 
-	isDragging = false;
-	const dragX = (e.clientX || e.changedTouches[0].clientX) - startX;
-	const width = flashcard.offsetWidth;
+    const endTime = Date.now();
+    const startTime = parseInt(currentCard.dataset.startTime);
+    const timeDiff = endTime - startTime;
+    const dragX = (e.clientX || e.changedTouches[0].clientX) - parseFloat(currentCard.dataset.startX);
 
-	knownFeedback.classList.remove('visible');
-	unknownFeedback.classList.remove('visible');
+    delete currentCard.dataset.startX;
+    delete currentCard.dataset.startTime;
 
-	flashcard.style.cursor = 'grab';
+    knownFeedback.classList.remove('visible');
+    unknownFeedback.classList.remove('visible');
 
-	flashcard.style.transition = 'transform 0.3s ease';
-	flashcardInner.style.transition = 'transform 0.7s cubic-bezier(0.23, 1, 0.32, 1)';
+    if (isDragging) {
+        isDragging = false;
+        const width = currentCard.offsetWidth;
 
-	if (dragX > width * dragThreshold) {
-		handleSwipe('right');
-	} else if (dragX < -width * dragThreshold) {
-		handleSwipe('left');
-	} else {
-		flashcard.style.transform = '';
-	}
+        currentCard.style.cursor = 'grab';
+        currentCard.style.transition = 'transform 0.3s ease';
+        currentCard.querySelector('.flashcard-inner').style.transition = 'transform 0.7s cubic-bezier(0.23, 1, 0.32, 1)';
+
+        setTimeout(() => {
+            if (currentCard.parentNode) {
+                currentCard.addEventListener('click', flipCard);
+            }
+        }, 50);
+
+        if (dragX > width * dragThreshold) {
+            handleSwipe('right');
+        } else if (dragX < -width * dragThreshold) {
+            handleSwipe('left');
+        } else {
+            currentCard.style.transform = `translateY(${currentCardIndex * -2}px) scale(${1 - currentCardIndex * 0.02})`;
+        }
+    } else {
+        if (timeDiff < 50 && Math.abs(dragX) < dragSensitivity) {
+            setTimeout(() => {
+                flipCard();
+            }, 5);
+        }
+    }
+}
+
+function flipCard(e) {
+    if (e) {
+        e.stopPropagation();
+    }
+    
+    const currentCard = getCurrentCard();
+    if (currentCard && !isDragging) {
+        currentCard.classList.toggle('flipped');
+    }
+}
+
+function createAllCards() {
+    const flashcardContainer = document.querySelector('.flashcard-container');
+    
+    const existingCards = flashcardContainer.querySelectorAll('.flashcard');
+    existingCards.forEach(card => card.remove());
+    
+    trainingCards.forEach((cardData, index) => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'flashcard';
+        cardElement.setAttribute('data-index', index);
+        cardElement.style.zIndex = trainingCards.length - index;
+        cardElement.style.transform = `translateY(${index * -2}px) scale(${1 - index * 0.02})`;
+        
+        if (index === 0) {
+            cardElement.classList.add('currentCard');
+        }
+
+        if (index === currentCardIndex) {
+            cardElement.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <p class="card-text">${cardData.question}</p>
+                        <div class="card-hint">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <p class="card-text">${cardData.answer}</p>
+                        ${cardData.hint ? `<p class="card-hint-text">${cardData.hint}</p>` : ''}
+                        <div class="card-hint">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            cardElement.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <p class="card-text"></p>
+                        <div class="card-hint" style="visibility: hidden;">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <p class="card-text"></p>
+                        <div class="card-hint" style="visibility: hidden;">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (index === currentCardIndex) {
+            cardElement.addEventListener('mousedown', startDrag);
+            cardElement.addEventListener('touchstart', startDrag, { passive: false });
+            
+            setTimeout(() => {
+                cardElement.addEventListener('click', flipCard);
+            }, 10);
+        }
+        
+        flashcardContainer.appendChild(cardElement);
+    });
+}
+
+function updateCardContent() {
+    const cards = document.querySelectorAll('.flashcard');
+    cards.forEach((card, index) => {
+        const cardIndex = parseInt(card.getAttribute('data-index'));
+        const cardData = trainingCards[cardIndex];
+        
+        card.replaceWith(card.cloneNode(true));
+        const newCard = document.querySelector(`.flashcard[data-index="${cardIndex}"]`);
+        
+        if (cardIndex === currentCardIndex) {
+            newCard.classList.add('currentCard');
+            newCard.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <p class="card-text">${cardData.question}</p>
+                        <div class="card-hint">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <p class="card-text">${cardData.answer}</p>
+                        ${cardData.hint ? `<p class="card-hint-text">${cardData.hint}</p>` : ''}
+                        <div class="card-hint">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            newCard.addEventListener('mousedown', startDrag);
+            newCard.addEventListener('touchstart', startDrag, { passive: false });
+            
+            setTimeout(() => {
+                newCard.addEventListener('click', flipCard);
+            }, 10);
+            
+        } else if (cardIndex > currentCardIndex) {
+            newCard.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <p class="card-text"></p>
+                        <div class="card-hint" style="visibility: hidden;">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <p class="card-text"></p>
+                        <div class="card-hint" style="visibility: hidden;">
+                            <i class="fas fa-hand-point-up"></i> Klicken zum Umdrehen
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    });
+}
+
+function handleSwipe(direction) {
+    if (currentCardIndex >= trainingCards.length) return;
+
+    const card = trainingCards[currentCardIndex];
+    const currentCard = getCurrentCard();
+    
+    if (!currentCard) return;
+
+    if (direction === 'right') {
+        currentCard.style.transform = 'translateX(100%) rotate(10deg)';
+        currentCard.style.opacity = '0';
+        knownCards.push(card);
+    } else {
+        currentCard.style.transform = 'translateX(-100%) rotate(-10deg)';
+        currentCard.style.opacity = '0';
+        unknownCards.push(card);
+    }
+
+    setTimeout(() => {
+        currentCard.remove();
+        currentCardIndex++;
+        updateCardPositions();
+        updateCardContent();
+        updateProgress();
+        
+        if (currentCardIndex >= trainingCards.length) {
+            finishTraining();
+        }
+    }, 150);
+}
+
+function getCurrentCard() {
+    return document.querySelector(`.flashcard[data-index="${currentCardIndex}"]`);
 }
 
 function exportCurrentSet() {
@@ -290,7 +456,6 @@ function openSetModal(editing = false) {
 		});
 	}
 
-	// Event-Listener für Farbauswahl einrichten
 	setupColorSelection();
 
 	setModalOverlay.classList.remove('hidden');
@@ -562,111 +727,206 @@ function deleteCard(cardId) {
 }
 
 function startTraining() {
-	if (currentSetId) {
-		const set = sets.find(s => s.id === currentSetId);
+    trainingArea.classList.remove('hidden');
+    if (currentSetId) {
+        const set = sets.find(s => s.id === currentSetId);
 
-		if (set && set.cards.length > 0) {
-			trainingCards = [...set.cards];
-			currentCardIndex = 0;
-			knownCards = [];
-			unknownCards = [];
+        if (set && set.cards.length > 0) {
+            trainingCards = [...set.cards];
+            currentCardIndex = 0;
+            knownCards = [];
+            unknownCards = [];
 
-			showTrainingCard();
+            createAllCards();
 
-			setDrawer.classList.remove('open');
-			setTimeout(() => {
-				overlay.classList.add('hidden');
-			}, 300);
+            setDrawer.classList.remove('open');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
 
-			setTimeout(() => {
-				trainingContainer.classList.remove('hidden');
-				trainingContainer.classList.add('active');
-			}, 50);
+            setTimeout(() => {
+                trainingContainer.classList.remove('hidden');
+                trainingContainer.classList.add('active');
+            }, 50);
 
-			results.style.display = 'none';
-
-			updateProgress();
-		}
-	}
+            results.style.display = 'none';
+            updateProgress();
+        }
+    }
 }
 
 function showTrainingCard() {
-	if (currentCardIndex < trainingCards.length) {
-		const card = trainingCards[currentCardIndex];
-		cardQuestion.textContent = card.question;
-		cardAnswer.textContent = card.answer;
-		cardHint.textContent = card.hint || '';
+    if (currentCardIndex < trainingCards.length) {
+        const card = trainingCards[currentCardIndex];
+        cardQuestion.textContent = card.question;
+        cardAnswer.textContent = card.answer;
+        cardHint.textContent = card.hint || '';
 
-		flashcard.classList.remove('flipped');
-		flashcard.style.transform = '';
+        flashcard.classList.remove('flipped');
+        flashcard.style.transform = '';
 
-		flashcard.classList.add('pulse');
-		setTimeout(() => {
-			flashcard.classList.remove('pulse');
-		}, 2000);
-	} else {
-		finishTraining();
-	}
+        flashcard.classList.add('pulse');
+        setTimeout(() => {
+            flashcard.classList.remove('pulse');
+        }, 2000);
+    } else {
+        setTimeout(() => {
+			finishTraining();
+		}, 250);
+    }
 }
 
-function flipCard() {
-	if (isDragging) return;
-	flashcard.classList.toggle('flipped');
+function showTrainingCard() {
+    if (currentCardIndex < trainingCards.length) {
+        const card = trainingCards[currentCardIndex];
+        cardQuestion.textContent = card.question;
+        cardAnswer.textContent = card.answer;
+        cardHint.textContent = card.hint || '';
+
+        flashcard.classList.remove('flipped');
+        flashcard.style.transform = '';
+
+        updateProgress();
+    } else {
+        setTimeout(() => {
+			finishTraining();
+		}, 250);
+    }
 }
 
-function handleSwipe(direction) {
-	if (currentCardIndex >= trainingCards.length) return;
-
-	const card = trainingCards[currentCardIndex];
-
-	if (direction === 'right') {
-		flashcard.style.transform = 'translateX(100%) rotate(10deg)';
-		knownCards.push(card);
-	} else {
-		flashcard.style.transform = 'translateX(-100%) rotate(-10deg)';
-		unknownCards.push(card);
-	}
-
-	setTimeout(() => {
-		currentCardIndex++;
-		updateProgress();
-		showTrainingCard();
-	}, 300);
+function updateCardPositions() {
+    const remainingCards = document.querySelectorAll('.flashcard');
+    remainingCards.forEach((card, index) => {
+        const cardIndex = parseInt(card.getAttribute('data-index'));
+        const relativeIndex = cardIndex - currentCardIndex;
+        
+        if (relativeIndex >= 0) {
+            card.style.transform = `translateY(${relativeIndex * -2}px) scale(${1 - relativeIndex * 0.02})`;
+            card.style.zIndex = remainingCards.length - relativeIndex;
+        }
+    });
 }
 
 function updateProgress() {
-	const progressPercent = (currentCardIndex / trainingCards.length) * 100;
-	progress.style.width = `${progressPercent}%`;
+    const progressPercent = (currentCardIndex / trainingCards.length) * 100;
+    progress.style.width = `${progressPercent}%`;
+    
+    const progressText = document.getElementById('progress-text');
+    if (progressText) {
+        progressText.textContent = `${currentCardIndex} / ${trainingCards.length}`;
+    }
+}
+
+function showTrainingCard() {
+    updateProgress();
+    
+    if (currentCardIndex >= trainingCards.length) {
+        setTimeout(() => {
+			finishTraining();
+		}, 250);
+    }
+}
+
+function renderPieChart(known, total) {
+    let container = document.getElementById('pie-chart-container');
+    
+    if (!container) {
+        const resultsDiv = document.getElementById('results');
+        container = document.createElement('div');
+        container.id = 'pie-chart-container';
+        container.style.width = '200px';
+        container.style.height = '200px';
+        container.style.margin = '20px auto';
+        container.style.position = 'relative';
+        resultsDiv.insertBefore(container, resultsDiv.querySelector('.results-buttons'));
+    }
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', '200');
+    svg.setAttribute('height', '200');
+    svg.setAttribute('viewBox', '0 0 200 200');
+
+    const knownPercent = (known / total) * 100;
+    const unknown = total - known;
+    const unknownPercent = (unknown / total) * 100;
+
+    const backgroundCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    backgroundCircle.setAttribute('cx', '100');
+    backgroundCircle.setAttribute('cy', '100');
+    backgroundCircle.setAttribute('r', '90');
+    backgroundCircle.setAttribute('fill', 'transparent');
+    backgroundCircle.setAttribute('stroke', 'var(--secondary)');
+    backgroundCircle.setAttribute('stroke-width', '20');
+    backgroundCircle.setAttribute('stroke-dasharray', '565.48');
+    backgroundCircle.setAttribute('stroke-dashoffset', '0');
+    svg.appendChild(backgroundCircle);
+
+    const knownCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    knownCircle.setAttribute('cx', '100');
+    knownCircle.setAttribute('cy', '100');
+    knownCircle.setAttribute('r', '90');
+    knownCircle.setAttribute('fill', 'transparent');
+    knownCircle.setAttribute('stroke', 'var(--success)');
+    knownCircle.setAttribute('stroke-width', '20');
+    knownCircle.setAttribute('stroke-dasharray', '565.48');
+    knownCircle.setAttribute('stroke-dashoffset', '565.48');
+    knownCircle.setAttribute('transform', 'rotate(-90 100 100)');
+    knownCircle.style.transition = 'stroke-dashoffset 1s ease-in-out';
+    svg.appendChild(knownCircle);
+
+    setTimeout(() => {
+        knownCircle.style.strokeDashoffset = 565.48 - (565.48 * knownPercent / 100);
+    }, 100);
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '100');
+    text.setAttribute('y', '100');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('font-size', '24');
+    text.setAttribute('fill', 'var(--text)');
+    text.textContent = `${Math.round(knownPercent)}%`;
+    svg.appendChild(text);
+
+    container.innerHTML = '';
+    container.appendChild(svg);
 }
 
 function finishTraining() {
 	correctCount.textContent = knownCards.length;
 	totalCount.textContent = trainingCards.length;
 	results.style.display = 'block';
+	flashcard.style.transform = '';
+	trainingArea.classList.add('hidden');
+	
+	renderPieChart(knownCards.length, trainingCards.length);
 }
 
 function restartTraining() {
-	trainingCards = [...sets.find(s => s.id === currentSetId).cards];
-	currentCardIndex = 0;
-	knownCards = [];
-	unknownCards = [];
+    trainingArea.classList.remove('hidden');
+    
+    trainingCards = [...sets.find(s => s.id === currentSetId).cards];
+    currentCardIndex = 0;
+    knownCards = [];
+    unknownCards = [];
 
-	showTrainingCard();
-	results.style.display = 'none';
-	updateProgress();
+    createAllCards();
+    results.style.display = 'none';
+    updateProgress();
 }
 
 function retryUnknownCards() {
-	if (unknownCards.length > 0) {
-		trainingCards = [...unknownCards];
-		currentCardIndex = 0;
-		knownCards = [];
-		unknownCards = [];
+    if (unknownCards.length > 0) {
+        trainingArea.classList.remove('hidden');
+        trainingCards = [...unknownCards];
+        currentCardIndex = 0;
+        knownCards = [];
+        unknownCards = [];
 
-		showTrainingCard();
-		results.style.display = 'none';
-		updateProgress();
-	}
+        createAllCards();
+        results.style.display = 'none';
+        updateProgress();
+    }
 }
 
 function backToSets() {
@@ -678,6 +938,7 @@ function backToSets() {
 }
 
 function backToSetsFromTraining() {
+	trainingArea.classList.remove('hidden');
 	trainingContainer.classList.remove('active');
 	setTimeout(() => {
 		trainingContainer.classList.add('hidden');
@@ -697,3 +958,62 @@ document.addEventListener('DOMContentLoaded', function() {
 
 updateTheme();
 renderSets();
+
+document.getElementById('create-set-button').addEventListener('click', () => openSetModal());
+document.getElementById('start-training-btn').addEventListener('click', startTraining);
+document.querySelectorAll('.close-btn').forEach(btn => {
+	btn.addEventListener('click', closeDrawer);
+});
+document.querySelectorAll('.modal-close').forEach(btn => {
+	btn.addEventListener('click', closeModals);
+});
+setModalOverlay.addEventListener('click', closeModals);
+cardModalOverlay.addEventListener('click', closeModals);
+overlay.addEventListener('click', closeDrawer);
+flashcard.addEventListener('click', flipCard);
+document.getElementById('known-btn').addEventListener('click', () => handleSwipe('right'));
+document.getElementById('unknown-btn').addEventListener('click', () => handleSwipe('left'));
+document.getElementById('restart-training-btn').addEventListener('click', restartTraining);
+document.getElementById('retry-unknown-btn').addEventListener('click', retryUnknownCards);
+document.getElementById('back-to-sets-btn').addEventListener('click', backToSets);
+document.getElementById('back-button').addEventListener('click', backToSetsFromTraining);
+themeToggle.addEventListener('click', toggleTheme);
+modalSaveBtn.addEventListener('click', saveSetFromModal);
+cardModalSaveBtn.addEventListener('click', saveCardFromModal);
+document.getElementById('edit-set-btn').addEventListener('click', () => openSetModal(true));
+document.getElementById('delete-set-btn').addEventListener('click', deleteCurrentSet);
+addCardButton.addEventListener('click', () => openCardModal());
+importSetButton.addEventListener('click', () => importFileInput.click());
+importFileInput.addEventListener('change', handleFileImport);
+exportSetButton.addEventListener('click', exportCurrentSet);
+exportAllButton.addEventListener('click', exportAllSets);
+
+flashcard.addEventListener('mousedown', startDrag);
+flashcard.addEventListener('touchstart', startDrag, {
+	passive: false
+});
+
+document.addEventListener('mousemove', drag);
+document.addEventListener('touchmove', drag, {
+	passive: false
+});
+
+document.addEventListener('mouseup', endDrag);
+document.addEventListener('touchend', endDrag);
+
+document.querySelectorAll('.flashcard').forEach(card => {
+    card.addEventListener('touchmove', function(e) {
+        if (isDragging) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+});
+
+document.addEventListener('touchend', function(e) {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTap;
+    if (tapLength < 20 && tapLength > 0) {
+        e.preventDefault();
+    }
+    lastTap = currentTime;
+}, { passive: false });

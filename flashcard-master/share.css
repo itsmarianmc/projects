@@ -2,7 +2,7 @@
 	position: fixed;
 	top: 20px;
 	right: 20px;
-	background: var(--card-bg);
+	background: var(--bg-card);
 	border: 1px solid var(--border);
 	border-radius: 12px;
 	padding: 16px;
@@ -120,7 +120,7 @@
 }
 
 .import-dialog {
-	background: var(--card-bg);
+	background: var(--bg-card);
 	border-radius: 16px;
 	max-width: 500px;
 	width: 100%;

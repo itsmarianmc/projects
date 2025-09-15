@@ -150,7 +150,7 @@ function showImportDialog(sharedSet) {
     dialog.innerHTML = `
         <div class="import-dialog">
             <div class="import-dialog-header">
-                <h3><i class="fas fa-share-alt"></i> Geteiltes Set importieren</h3>
+                <h3><i class="fas fa-share-alt"></i> Geteiltes Set zu Sammlung hinzufügen?</h3>
             </div>
             <div class="import-dialog-content">
                 <div class="shared-set-preview">
@@ -166,7 +166,7 @@ function showImportDialog(sharedSet) {
                     <i class="fas fa-times"></i> Abbrechen
                 </button>
                 <button class="import-btn success">
-                    <i class="fas fa-plus"></i> Importieren
+                    <i class="fas fa-plus"></i> Hinzufügen
                 </button>
             </div>
         </div>
