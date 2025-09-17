@@ -1003,6 +1003,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const authId = urlParams.get('auth_id');
     if (authId && authId.length === 64) {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            console.log('URL copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy URL:', err);
+        });
         familyIdInput.value = authId;
         handleLogin();
         window.history.replaceState({}, document.title, window.location.pathname);
