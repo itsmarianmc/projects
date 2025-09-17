@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Clock</title>
+    <link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/variables.css">
+    <link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/style.css">
+    <link rel="stylesheet" href="https://itsmarian-static.is-a.dev/fonts/font-awesome-6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="itsmarian">
+    <meta name="description" content="An innovative word clock that displays the time and can highlight special events.">
+    <meta name="keywords" content="Wortuhr, Berlin-Uhr, itsmarian, Uhr, Zeit, Events">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Word Clock">
+    <meta property="og:description" content="An innovative word clock that displays the time and can highlight special events.">
+    <meta property="og:image" content="http://itsmarianmc.github.io/projects/hydrotrack/favicon.png">
+    <meta property="og:url" content="http://projects.itsmarianmc.is-a.dev/">
+    <meta property="og:type" content="website">
+    <!-- App / PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1E282E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2E9SPPVJFL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2E9SPPVJFL');
+    </script>
+</head>
+<body>
+    <div class="main-container">
+        <div class="cont-header">
+            <h1>Wortuhr mit Events</h1>
+            <div class="digital-clock" id="digitalClock">00:00:00</div>
+            <div class="date-display" id="dateDisplay">Montag, 1. Januar 2023</div>
+        </div>
+        
+        <div class="clock-container" id="clockContainer">
+        </div>
+        
+        <div class="event-indicator" id="eventIndicator"></div>
+        
+        <div class="controls">
+            <button class="event-btn birthday" data-event="birthday">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="#fff"><path d="M160-80v-440H80v-240h208q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q23 0 43 8.5t37 23.5q17-16 37-24t43-8q50 0 85 35t35 85q0 11-2 20.5t-6 19.5h208v240h-80v440H160Zm400-760q-17 0-28.5 11.5T520-800q0 17 11.5 28.5T560-760q17 0 28.5-11.5T600-800q0-17-11.5-28.5T560-840Zm-200 40q0 17 11.5 28.5T400-760q17 0 28.5-11.5T440-800q0-17-11.5-28.5T400-840q-17 0-28.5 11.5T360-800ZM160-680v80h280v-80H160Zm280 520v-360H240v360h200Zm80 0h200v-360H520v360Zm280-440v-80H520v80h280Z"/></svg>
+                Geburtstag
+            </button>
+            <button class="event-btn trash" data-event="trash">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg> 
+                Müll rausbringen
+            </button>
+            <button class="event-btn yellow-bag" data-event="yellow-bag">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="#333"><path d="m368-592 89-147-59-98q-12-20-34.5-20T329-837l-98 163 137 82Zm387 272-89-148 139-80 64 107q11 17 12 38t-9 39q-10 20-29.5 32T800-320h-45ZM640-40 480-200l160-160v80h190l-58 116q-11 20-30 32t-42 12h-60v80Zm-387-80q-20 0-36.5-10.5T192-158q-8-16-7.5-33.5T194-224l34-56h172v160H253Zm-99-114L89-364q-9-18-8.5-38.5T92-441l16-27-68-41 219-55 55 220-69-42-91 152Zm540-342-219-55 69-41-125-208h141q21 0 39.5 10.5T629-841l52 87 68-42-55 220Z"/></svg>
+                Gelber Sack
+            </button>
+            <button class="event-btn vacation" data-event="vacation">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="#fff"><path d="m354-334 356-94q15-4 22.5-18.5T736-476q-4-15-17.5-22.5T690-502l-98 26-160-150-56 14 96 168-96 24-50-38-38 10 66 114Zm446 174H160q-33 0-56.5-23.5T80-240v-160q33 0 56.5-23.5T160-480q0-33-23.5-56.5T80-560v-160q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160Zm0-80v-480H160v102q37 22 58.5 58.5T240-480q0 43-21.5 79.5T160-342v102h640ZM480-480Z"/></svg>
+                Urlaub
+            </button>
+            <button class="event-btn custom" data-event="custom">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="#fff"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                Benutzerdefiniert [BETA]
+            </button>
+            <button class="event-btn clear-events" id="clearEvents">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="#fff"><path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z"/></svg>
+                Events löschen
+            </button>
+        </div>
+        
+        <div class="settings-panel" id="settingsPanel">
+            <h3>Benutzerdefiniertes Event erstellen</h3>
+            <div class="custom-event-form">
+                <input type="text" id="eventName" placeholder="Eventname">
+                <select id="eventType">
+                    <option value="birthday">Geburtstag</option>
+                    <option value="trash">Müll rausbringen</option>
+                    <option value="yellow-bag">Gelber Sack</option>
+                    <option value="vacation">Urlaub</option>
+                    <option value="custom">Benutzerdefiniert</option>
+                </select>
+                <input type="datetime-local" id="eventDateTime">
+                <button id="saveEvent">Event speichern</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div>
+            <a class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/privacy" target="_blank">Privacy Policy</a>
+            <a>•</a>
+            <a class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/terms" target="_blank">Terms of Use</a>
+        </div>
+        <div>
+            <a class="linkout nodecoration" id="settingsPannelOpener">Change Cookie Preferences</a>
+            <a>•</a>
+            <a class="linkout nodecoration" href="https://status.itsmarian.is-a.dev/">Service status</a>
+        </div>
+        <div>
+            <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
+            <br>
+            <a>Made with <span class="heart">&hearts;</span> by itsmarian in <span>GERMANY</span></a>
+        </div>
+    </footer>
+    <button class="event-btn" id="showGUI" style="bottom: 10px; display: flex; padding: 10px 10px; position: absolute; right: 10px;">
+        <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="#fff"><path d="M200-200v-240h80v160h160v80H200Zm480-320v-160H520v-80h240v240h-80Z"/></svg>
+        HIDE UI
+    </button>
+    <script src="script.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js");
+            navigator.serviceWorker.ready.then(() => {
+                console.log("Service Worker is ready");
+            });
+        }
+    </script>
+</body>
+</html>

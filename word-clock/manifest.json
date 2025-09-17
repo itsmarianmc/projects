@@ -1,0 +1,17 @@
+{
+    "name": "Word Clock",
+    "short_name": "Word Clock",
+    "description": "An innovative word clock that displays the time and can highlight special events.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "any",
+    "icons": [
+        {
+        "src": "favicon.png",
+        "sizes": "320x320",
+        "type": "image/png"
+        }
+    ]
+}

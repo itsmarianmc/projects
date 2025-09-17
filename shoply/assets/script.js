@@ -22,6 +22,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 const logoutBtnMobile = document.getElementById('logoutBtnMobile');
 const connectionStatus = document.getElementById('connectionStatus');
 const splashScreen = document.getElementById('splashScreen');
+const hideLogoAnimBtn = document.getElementById('hideLogoAnim');
 
 const platformButtons = document.querySelectorAll('.platform-btn');
 const tutorialSections = document.querySelectorAll('.tutorial-section');
@@ -43,6 +44,7 @@ let REFRESH_TIMEOUT = 1387 - 10;
 
 let isSplashVisible = false;
 let lastHiddenTime = 0;
+let splashScreenEnabled = true;
 
 loginBtn.addEventListener('click', handleLogin);
 addItemBtn.addEventListener('click', addItem);
@@ -887,18 +889,6 @@ async function toggleItemDone(itemId, done) {
     }
 }
 
-function showSplashScreen() {
-    if (isSplashVisible) return;
-
-    isSplashVisible = true;
-    splashScreen.classList.remove('isHidden');
-
-    setTimeout(() => {
-        splashScreen.classList.add('isHidden');
-        isSplashVisible = false;
-    }, LOG_TIMEOUT);
-}
-
 async function updateCategoryItems(categoryId) {
     try {
         const {
@@ -944,16 +934,86 @@ async function updateCategoryItems(categoryId) {
     }
 }
 
-document.addEventListener('resume', function() {
-    showSplashScreen();
-});
-
 window.addEventListener('blur', function() {
     lastHiddenTime = Date.now();
 });
 
+function loadSplashScreenSettings() {
+    const savedSetting = localStorage.getItem('splashScreenEnabled');
+    if (savedSetting !== null) {
+        splashScreenEnabled = savedSetting === 'true';
+    } else {
+        splashScreenEnabled = true;
+    }
+    
+    if (!splashScreenEnabled && splashScreen) {
+        splashScreen.classList.add('isHidden');
+        isSplashVisible = false;
+    }
+    
+    updateSplashScreenButton();
+}
+
+function saveSplashScreenSettings() {
+    localStorage.setItem('splashScreenEnabled', splashScreenEnabled.toString());
+}
+
+function updateSplashScreenButton() {
+    if (hideLogoAnimBtn) {
+        hideLogoAnimBtn.textContent = splashScreenEnabled ? 'Disable Logo Animation' : 'Enable Logo Animation';
+        hideLogoAnimBtn.classList.toggle('disabled', !splashScreenEnabled);
+    }
+}
+
+function toggleSplashScreen() {
+    splashScreenEnabled = !splashScreenEnabled;
+    saveSplashScreenSettings();
+    updateSplashScreenButton();
+    
+    const message = splashScreenEnabled ? 
+        'Logo animation enabled' : 
+        'Logo animation disabled';
+    showStatusMessage(message, 'success');
+}
+
+function showSplashScreen() {
+    if (!splashScreenEnabled) {
+        console.log('Splash screen is disabled by user');
+        return;
+    }
+
+    if (isSplashVisible) return;
+
+    isSplashVisible = true;
+    splashScreen.classList.remove('isHidden');
+
+    setTimeout(() => {
+        splashScreen.classList.add('isHidden');
+        isSplashVisible = false;
+    }, LOG_TIMEOUT);
+}
+
+if (hideLogoAnimBtn) {
+    hideLogoAnimBtn.addEventListener('click', toggleSplashScreen);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    showSplashScreen();
+    loadSplashScreenSettings();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const authId = urlParams.get('auth_id');
+    if (authId && authId.length === 64) {
+        familyIdInput.value = authId;
+        handleLogin();
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setTimeout(() => {
+            location.reload();
+        }, REFRESH_TIMEOUT);
+    }
+
+    if (splashScreenEnabled) {
+        showSplashScreen();
+    }
 
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
@@ -966,23 +1026,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-	const userAgent = navigator.userAgent;
-	const isChrome = /Chrome/i.test(userAgent) && !/Edge/i.test(userAgent);
-	const isEdge = /Edge/i.test(userAgent);
-	const isFirefox = /Firefox/i.test(userAgent);
-	const isSafari = /Safari/i.test(userAgent) && !/Chrome/i.test(userAgent);
-	const isAndroid = /Android/i.test(userAgent);
-	const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+    const userAgent = navigator.userAgent;
+    const isChrome = /Chrome/i.test(userAgent) && !/Edge/i.test(userAgent);
+    const isEdge = /Edge/i.test(userAgent);
+    const isFirefox = /Firefox/i.test(userAgent);
+    const isSafari = /Safari/i.test(userAgent) && !/Chrome/i.test(userAgent);
+    const isAndroid = /Android/i.test(userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
 
-	if (isAndroid && isChrome) {
-		document.querySelector('[data-platform="android"]').click();
-	} else if (isIOS && isSafari) {
-		document.querySelector('[data-platform="safari"]').click();
-	} else if (isFirefox) {
-		document.querySelector('[data-platform="firefox"]').click();
-	} else if (isChrome || isEdge) {
-		document.querySelector('[data-platform="chrome"]').click();
-	}
+    if (isAndroid && isChrome) {
+        document.querySelector('[data-platform="android"]').click();
+    } else if (isIOS && isSafari) {
+        document.querySelector('[data-platform="safari"]').click();
+    } else if (isFirefox) {
+        document.querySelector('[data-platform="firefox"]').click();
+    } else if (isChrome || isEdge) {
+        document.querySelector('[data-platform="chrome"]').click();
+    }
+});
+
+document.addEventListener('resume', function() {
+    showSplashScreen();
 });
 
 platformButtons.forEach(button => {
