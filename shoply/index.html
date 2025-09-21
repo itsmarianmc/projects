@@ -39,6 +39,15 @@
 		gtag('js', new Date());
 		gtag('config', 'G-ZCKLQD6DJY');
 	</script>
+	<!-- PWA -->
+	<link rel="manifest" href="manifest.json">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<meta name="apple-mobile-web-app-title" content="Shoply">
+	<link rel="apple-touch-icon" href="/shoply/assets/icons/favicon_colored.png">
+	<meta name="msapplication-TileImage" content="/shoply/assets/icons/favicon_colored.png">
+	<meta name="msapplication-TileColor" content="#4f46e5">
+	<meta name="theme-color" content="#4f46e5">
 </head>
 <body>
 	<header>
@@ -132,6 +141,8 @@
 				<a class="linkout nodecoration" href="https://itsmarian.is-a.dev/" target="_blank">itsmarian.is-a.dev</a>
 			</p>
 				<a class="linkout nodecoration" id="hideLogoAnim">Hide Logo Animation</a>
+				<a>•</a>
+				<a class="linkout nodecoration" href="https://support.itsmarian.is-a.dev/?utm_origin=https://projects.itsmarian.is-a.dev&utm_page=shoply&page_pos=footer">Support</a>
 				<a>•</a>
 				<a class="linkout nodecoration" href="/shoply/legal/privacy" target="_blank">Privacy Policy</a>
 				<a>•</a>
@@ -669,22 +680,75 @@
 	<script src="assets/cb.js"></script>
 	<script>
 		const isPWA = () => {
-			return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+			return window.matchMedia('(display-mode: standalone)').matches || 
+				window.navigator.standalone || 
+				document.referrer.includes('android-app://');
 		};
+		
 		console.log('APP RUNNING AS PWA? \n⤷', isPWA());
 
-		if (!isPWA()) {
+		document.querySelector(".main-container").style.display = "block";
+
+		if (isPWA()) {
+			document.getElementById("install-popup").style.display = "none";
+			document.getElementById("install-popup").style.visibility = "hidden";
+			document.getElementById("install-popup").style.opacity = "0";
+			localStorage.setItem("browserChoice", "pwa");
+			localStorage.setItem("browserChoice", "keep");
+		} else if (localStorage.getItem("browserChoice") !== "keep") {
 			document.getElementById("install-popup").style.display = "flex";
 			document.getElementById("install-popup").style.visibility = "visible";
 			document.getElementById("install-popup").style.opacity = "1";
-		} else if (isPWA()) {
-			document.querySelector(".main-container").style.display = "block";
-			localStorage.setItem("browserChoice", "keep");
-
+		} else {
 			document.getElementById("install-popup").style.display = "none";
 			document.getElementById("install-popup").style.visibility = "hidden";
 			document.getElementById("install-popup").style.opacity = "0";
 		}
+
+		// Event-Listener für "Im Browser fortfahren"
+		document.getElementById("keepBrowser").addEventListener("click", function(e) {
+			e.preventDefault();
+			document.getElementById("install-popup").style.display = "none";
+			document.getElementById("install-popup").style.visibility = "hidden";
+			document.getElementById("install-popup").style.opacity = "0";
+			localStorage.setItem("browserChoice", "keep");
+		});
+
+		// PWA-Installations-Prompt
+		let deferredPrompt;
+
+		window.addEventListener('beforeinstallprompt', (e) => {
+			e.preventDefault();
+			deferredPrompt = e;
+			
+			// Zeige den Installations-Button an
+			document.getElementById('installPageBtn').style.display = 'block';
+			
+			// Event-Listener für den Installations-Button
+			document.getElementById('installPageBtn').addEventListener('click', () => {
+				deferredPrompt.prompt();
+				deferredPrompt.userChoice.then((choiceResult) => {
+					if (choiceResult.outcome === 'accepted') {
+						console.log('User accepted the install prompt');
+						// Nach erfolgreicher Installation Popup ausblenden
+						document.getElementById("install-popup").style.display = "none";
+						document.getElementById("install-popup").style.visibility = "hidden";
+						document.getElementById("install-popup").style.opacity = "0";
+						localStorage.setItem("browserChoice", "pwa");
+					}
+					deferredPrompt = null;
+				});
+			});
+		});
+
+		// Event wenn die App installiert wurde
+		window.addEventListener('appinstalled', (evt) => {
+			console.log('App was installed successfully');
+			document.getElementById("install-popup").style.display = "none";
+			document.getElementById("install-popup").style.visibility = "hidden";
+			document.getElementById("install-popup").style.opacity = "0";
+			localStorage.setItem("browserChoice", "pwa");
+		});
 	</script>
 	<script>
 		if ('serviceWorker' in navigator) {

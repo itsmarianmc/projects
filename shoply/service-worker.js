@@ -1,17 +1,18 @@
-const CACHE_NAME = 'shoply-v5';
+const CACHE_NAME = 'shoply-v6';
 const ASSETS_TO_CACHE = [
-    'assets/icons/favicon.png',
-    'assets/icons/favicon_colored.png',
-    'assets/catcard.css',
-    'assets/cb.css',
-    'assets/cb.js',
-    'assets/popup.css',
-    'assets/popup.js',
-    'assets/req.css',
-    'assets/script.js',
-    'assets/styles.css',
-    'index.html',
-    'manifest.json',
+    '/shoply/',
+    '/shoply/assets/icons/favicon.png',
+    '/shoply/assets/icons/favicon_colored.png',
+    '/shoply/assets/catcard.css',
+    '/shoply/assets/cb.css',
+    '/shoply/assets/cb.js',
+    '/shoply/assets/popup.css',
+    '/shoply/assets/popup.js',
+    '/shoply/assets/req.css',
+    '/shoply/assets/script.js',
+    '/shoply/assets/styles.css',
+    '/shoply/index.html',
+    '/shoply/manifest.json',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
     'https://itsmarian-static.is-a.dev/fonts/font-awesome-6.7.2/css/all.min.css',
     'https://itsmarian-static.is-a.dev/global/variables.css',
@@ -41,21 +42,22 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+    if (event.request.method !== 'GET') return;
+    
     event.respondWith(
-        caches.match(event.request).then(response => 
-            response || fetch(event.request)
-        )
-    );
-});
-
-self.addEventListener('push', event => {
-    const data = event.data.json();
-
-    event.waitUntil(
-        self.registration.showNotification(data.title, {
-        body: data.body,
-        icon: '/assets/icons/favicon_colored.png',
-        badge: '/assets/icons/favicon.png',
+        caches.match(event.request).then(response => {
+            return response || fetch(event.request).then(fetchResponse => {
+                if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+                    return fetchResponse;
+                }
+                
+                const responseToCache = fetchResponse.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, responseToCache);
+                });
+                
+                return fetchResponse;
+            });
         })
     );
 });
