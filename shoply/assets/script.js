@@ -46,6 +46,17 @@ let isSplashVisible = false;
 let lastHiddenTime = 0;
 let splashScreenEnabled = true;
 
+let users = [];
+let currentUserId = null;
+let currentUsersHash = null;
+
+const addUserBtn = document.getElementById('addUserBtn');
+const newUserNameInput = document.getElementById('newUserName');
+const itemUserSelect = document.getElementById('itemUser');
+const currentUserDisplay = document.getElementById('currentUserDisplay');
+
+addUserBtn.addEventListener('click', addUser);
+
 loginBtn.addEventListener('click', handleLogin);
 addItemBtn.addEventListener('click', addItem);
 addCategoryBtn.addEventListener('click', addCategory);
@@ -150,6 +161,23 @@ function stopPeriodicUpdate() {
 async function checkForUpdates() {
     try {
         const {
+            data: usersData,
+            error: usersError
+        } = await supabase
+            .from('users')
+            .select('*')
+            .eq('family_id', currentFamilyId)
+            .order('display_name');
+
+        if (!usersError && usersData) {
+            const newUsersHash = createDataHash(usersData);
+            if (currentUsersHash !== newUsersHash) {
+                console.log('Users have been updated');
+                await handleUserUpdates(usersData);
+            }
+        }
+
+        const {
             data: categoriesData,
             error: categoriesError
         } = await supabase
@@ -173,7 +201,8 @@ async function checkForUpdates() {
             .from('items')
             .select(`
                         *,
-                        category:categories(name)
+                        category:categories(name),
+                        user:users(display_name)
                     `)
             .eq('family_id', currentFamilyId)
             .order('created_at', {
@@ -296,8 +325,21 @@ function createItemElement(item) {
     listItem.className = `item ${item.done ? 'done' : ''}`;
     listItem.dataset.id = item.id;
 
+    const itemContent = document.createElement('div');
+    itemContent.className = 'item-content';
+
     const itemText = document.createElement('span');
+    itemText.className = 'item-text';
     itemText.textContent = item.quantity > 1 ? `${item.name} (${item.quantity}x)` : item.name;
+
+    const userText = document.createElement('span');
+    userText.className = 'item-user';
+    // Add user icon before the user name
+    userText.innerHTML = `<i class="fas fa-user"></i>&nbsp;` +
+        (item.user?.display_name || 'Unknown user');
+
+    itemContent.appendChild(itemText);
+    itemContent.appendChild(userText);
 
     const itemActions = document.createElement('div');
     itemActions.className = 'item-actions';
@@ -312,11 +354,13 @@ function createItemElement(item) {
 
     itemActions.appendChild(checkBtn);
     itemActions.appendChild(deleteBtn);
-    listItem.appendChild(itemText);
+    
+    listItem.appendChild(itemContent);
     listItem.appendChild(itemActions);
 
     return listItem;
 }
+
 
 function addEmptyCategory(category) {
     addCategoryWithItems(category, []);
@@ -403,6 +447,8 @@ async function handleLogin() {
 
         localStorage.setItem('familyId', familyId);
 
+        await loadUsers();
+        loadCurrentUser();
         await loadCategories();
         await loadItems();
         setupRealtimeSubscription();
@@ -418,17 +464,215 @@ async function handleLogin() {
     }
 }
 
+async function loadUsers() {
+    try {
+        console.log('Loading users for family:', currentFamilyId);
+        
+        const {
+            data,
+            error
+        } = await supabase
+            .from('users')
+            .select('*')
+            .eq('family_id', currentFamilyId)
+            .order('display_name');
+
+        if (error) {
+            console.error('Error loading users:', error);
+            throw error;
+        }
+
+        users = data || [];
+        currentUsersHash = createDataHash(users);
+        
+        console.log('Loaded users:', users.map(u => ({ id: u.id, name: u.display_name })));
+        
+        updateUserDropdown();
+
+    } catch (error) {
+        console.error('Error loading users:', error);
+        showStatusMessage('Error loading users.', 'error');
+        users = [];
+    }
+}
+
+async function handleUserUpdates(newUsersData) {
+    console.log('Handling user updates. New data:', newUsersData);
+    
+    const oldCurrentUserId = currentUserId;
+    const newUsersHash = createDataHash(newUsersData);
+    currentUsersHash = newUsersHash;
+    users = newUsersData;
+    
+    if (oldCurrentUserId) {
+        const userStillExists = users.find(u => u.id === oldCurrentUserId);
+        if (!userStillExists) {
+            console.log('Current user was deleted, clearing selection');
+            currentUserId = null;
+            localStorage.removeItem('currentUserId');
+        }
+    }
+    
+    if (!currentUserId && users.length > 0) {
+        currentUserId = users[0].id;
+        localStorage.setItem('currentUserId', currentUserId);
+        console.log('Set first user as current after update:', users[0].display_name);
+    }
+    
+    updateUserDropdown();
+    updateCurrentUserDisplay();
+    updateTime.textContent = new Date().toLocaleTimeString();
+}
+
+function updateUserDropdown() {
+    if (!itemUserSelect) {
+        console.log('itemUserSelect element not found');
+        return;
+    }
+    
+    console.log('Updating user dropdown. Users:', users.length);
+    
+    itemUserSelect.innerHTML = '<option value="">Choose...</option>';
+
+    users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.id;
+        option.textContent = user.display_name;
+        if (user.id === currentUserId) {
+            option.selected = true;
+        }
+        itemUserSelect.appendChild(option);
+    });
+    
+    console.log('User dropdown updated with', users.length, 'users');
+}
+
+async function addUser() {
+    const name = newUserNameInput.value.trim();
+
+    if (!name) {
+        showStatusMessage('Please enter a name for the user.', 'error');
+        return;
+    }
+
+    const duplicateUser = users.find(user => user.display_name.toLowerCase() === name.toLowerCase());
+    if (duplicateUser) {
+        showStatusMessage('A user with this name already exists.', 'error');
+        return;
+    }
+
+    try {
+        const {
+            data,
+            error
+        } = await supabase
+            .from('users')
+            .insert([{
+                display_name: name,
+                family_id: currentFamilyId
+            }])
+            .select();
+
+        if (error) {
+            if (error.code === '23505') {
+                showStatusMessage('A user with this name already exists.', 'error');
+            } else {
+                throw error;
+            }
+            return;
+        }
+
+        showStatusMessage(`User "${name}" has been added.`, 'success');
+        newUserNameInput.value = '';
+        await loadUsers();
+
+        if (users.length === 1) {
+            setCurrentUser(data[0].id);
+        }
+
+    } catch (error) {
+        console.error('Error adding user:', error);
+        showStatusMessage('Error adding user.', 'error');
+    }
+}
+
+function loadCurrentUser() {
+    const savedUserId = localStorage.getItem('currentUserId');
+    
+    console.log('Loading current user. Saved ID:', savedUserId);
+    console.log('Available users:', users);
+    
+    if (savedUserId) {
+        const userExists = users.find(user => user.id === savedUserId);
+        if (userExists) {
+            currentUserId = savedUserId;
+            console.log('Current user restored:', userExists.display_name);
+        } else {
+            console.log('Saved user ID not found, clearing localStorage');
+            localStorage.removeItem('currentUserId');
+            currentUserId = null;
+        }
+    }
+    
+    if (!currentUserId && users.length > 0) {
+        currentUserId = users[0].id;
+        localStorage.setItem('currentUserId', currentUserId);
+        console.log('Set first available user as current:', users[0].display_name);
+    }
+    
+    updateCurrentUserDisplay();
+    updateUserDropdown();
+}
+
+function setCurrentUser(userId) {
+    currentUserId = userId;
+    localStorage.setItem('currentUserId', userId);
+    updateCurrentUserDisplay();
+    updateUserDropdown();
+}
+
+function updateCurrentUserDisplay() {
+    if (!currentUserDisplay) {
+        console.log('currentUserDisplay element not found');
+        return;
+    }
+    
+    console.log('Updating current user display. Current user ID:', currentUserId);
+    
+    if (currentUserId) {
+        const user = users.find(u => u.id === currentUserId);
+        if (user) {
+            currentUserDisplay.textContent = `Active User: ${user.display_name}`;
+            currentUserDisplay.style.display = 'block';
+            console.log('Displaying current user:', user.display_name);
+        } else {
+            console.log('Current user ID not found in users array');
+            currentUserDisplay.style.display = 'none';
+            currentUserId = null;
+            localStorage.removeItem('currentUserId');
+        }
+    } else {
+        console.log('No current user set');
+        currentUserDisplay.style.display = 'none';
+    }
+}
+
 function handleLogout() {
+    console.log('Logging out and clearing all data');
+    
     stopPeriodicUpdate();
 
     currentFamilyId = null;
     currentFamilyData = null;
     categories = [];
+    users = [];
+    currentUserId = null;
 
     lastItemsUpdate = null;
     lastCategoriesUpdate = null;
     currentItemsHash = null;
     currentCategoriesHash = null;
+    currentUsersHash = null;
     itemsHashByCategory = {};
 
     if (realtimeSubscription) {
@@ -437,6 +681,7 @@ function handleLogout() {
     }
 
     localStorage.removeItem('familyId');
+    localStorage.removeItem('currentUserId');
 
     appScreen.style.display = 'none';
     loginScreen.style.display = 'block';
@@ -464,7 +709,7 @@ function setupRealtimeSubscription() {
     connectionStatus.className = 'connection-status connected';
 
     realtimeSubscription = supabase
-        .channel('items-changes')
+        .channel('family-changes')
         .on('postgres_changes', {
                 event: '*',
                 schema: 'public',
@@ -490,6 +735,18 @@ function setupRealtimeSubscription() {
             (payload) => {
                 console.log('Realtime change received!', payload);
                 currentCategoriesHash = null;
+                checkForUpdates();
+            }
+        )
+        .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'users',
+                filter: `family_id=eq.${currentFamilyId}`
+            },
+            (payload) => {
+                console.log('Users realtime change received!', payload);
+                currentUsersHash = null;
                 checkForUpdates();
             }
         )
@@ -654,28 +911,7 @@ function renderItems(items) {
             itemsList.appendChild(emptyMessage);
         } else {
             categoryData.items.forEach(item => {
-                const listItem = document.createElement('li');
-                listItem.className = `item ${item.done ? 'done' : ''}`;
-                listItem.dataset.id = item.id;
-
-                const itemText = document.createElement('span');
-                itemText.textContent = item.quantity > 1 ? `${item.name} (${item.quantity}x)` : item.name;
-
-                const itemActions = document.createElement('div');
-                itemActions.className = 'item-actions';
-
-                const checkBtn = document.createElement('button');
-                checkBtn.className = 'btn-check';
-                checkBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>';
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn-delete';
-                deleteBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
-
-                itemActions.appendChild(checkBtn);
-                itemActions.appendChild(deleteBtn);
-                listItem.appendChild(itemText);
-                listItem.appendChild(itemActions);
+                const listItem = createItemElement(item);
                 itemsList.appendChild(listItem);
             });
         }
@@ -703,7 +939,8 @@ async function loadItems() {
             .from('items')
             .select(`
                 *,
-                category:categories(name)
+                category:categories(name),
+                user:users(display_name)
             `)
             .eq('family_id', currentFamilyId)
             .order('created_at', {
@@ -747,6 +984,7 @@ async function addItem() {
     const name = itemNameInput.value.trim();
     const categoryId = itemCategorySelect.value;
     const quantity = parseInt(itemQuantityInput.value) || 1;
+    const userId = itemUserSelect.value || currentUserId;
 
     if (!name) {
         showStatusMessage('Please enter a name for the item.', 'error');
@@ -755,6 +993,11 @@ async function addItem() {
 
     if (!categoryId) {
         showStatusMessage('Please select a category.', 'error');
+        return;
+    }
+
+    if (!userId) {
+        showStatusMessage('Please select a user.', 'error');
         return;
     }
 
@@ -769,6 +1012,7 @@ async function addItem() {
                 category_id: categoryId,
                 family_id: currentFamilyId,
                 quantity: quantity,
+                user_id: userId,
                 done: false
             }])
             .select();
@@ -778,6 +1022,10 @@ async function addItem() {
         }
 
         showStatusMessage(`"${name}" has been added to the shopping list.`, 'success');
+
+        if (userId !== currentUserId) {
+            setCurrentUser(userId);
+        }
 
         itemNameInput.value = '';
         itemQuantityInput.value = '1';
@@ -898,7 +1146,8 @@ async function updateCategoryItems(categoryId) {
             .from('items')
             .select(`
                 *,
-                category:categories(name)
+                category:categories(name),
+                user:users(display_name)
             `)
             .eq('category_id', categoryId)
             .order('created_at', {
@@ -932,6 +1181,15 @@ async function updateCategoryItems(categoryId) {
         console.error('Error updating category items:', error);
         showStatusMessage('Error updating category.', 'error');
     }
+}
+
+if (itemUserSelect) {
+    itemUserSelect.addEventListener('change', function() {
+        const selectedUserId = this.value;
+        if (selectedUserId && selectedUserId !== currentUserId) {
+            setCurrentUser(selectedUserId);
+        }
+    });
 }
 
 window.addEventListener('blur', function() {
@@ -996,6 +1254,16 @@ function showSplashScreen() {
 if (hideLogoAnimBtn) {
     hideLogoAnimBtn.addEventListener('click', toggleSplashScreen);
 }
+
+document.getElementById('open-user-popup-btn').addEventListener("click", function() {
+    const popup = document.getElementById('add-user-popup');
+    popup.classList.remove('hidden');
+})
+
+document.getElementById('close-user-popup-btn').addEventListener("click", function() {
+    const popup = document.getElementById('add-user-popup');
+    popup.classList.add('hidden');
+})
 
 document.addEventListener('DOMContentLoaded', function() {
     loadSplashScreenSettings();

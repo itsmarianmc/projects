@@ -129,11 +129,15 @@
 				<div class="last-update" id="lastUpdate">
 					Last refresh: <span id="updateTime">--:--:--</span>
 				</div>
-			<button class="btn" id="logoutBtnMobile" class="btn-secondary"><i class="fas fa-sign-out-alt"></i> Sign out</button>
+				<div style="margin: 2rem auto !important; max-width: 800px;">
+					<button class="btn" id="open-user-popup-btn" class="btn-secondary" style="margin-bottom: 1rem; width: 100%;"><i class="fas fa-user-group"></i> Change User</button>
+					<button class="btn" id="logoutBtnMobile" class="btn-secondary"><i class="fas fa-sign-out-alt"></i> Sign out</button>
+				</div>
 			</section>
 		</div>
 		<footer id="footer">
 			<span id="connectionStatus" class="connection-status disconnected" title="Connectivity Status"></span>
+			<div id="currentUserDisplay" class="current-user" style="display: none;"></div>
 			<p>
 				Site developed and created by
 				<a class="linkout nodecoration" href="https://github.com/itsmarianmc" target="_blank">itsmarian</a>
@@ -552,6 +556,29 @@
 			<div class="quick-install">
 				<h3>Quick Install Available</h3>
 				<p>Most modern browsers will automatically prompt you to install Shoply when you visit the app. Look for install notifications!</p>
+			</div>
+		</div>
+	</div>
+	<div id="add-user-popup" class="hidden">
+		<div id="add-user-popup-main">
+			<div id="close-user-popup-btn">
+				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#fff">
+					<path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+				</svg>
+			</div>
+			<div class="add-user-form">
+				<h3>Add new user</h3>
+				<div class="form-group">
+					<label for="newUserName">User Name:</label>
+					<input type="text" id="newUserName" placeholder="User name">
+				</div>
+				<button class="btn" id="addUserBtn"><i class="fas fa-plus"></i> Add user</button>
+			</div>
+			<div class="form-group">
+				<label for="itemUser">Select current user:</label>
+				<select id="itemUser">
+					<option value="">Choose...</option>
+				</select>
 			</div>
 		</div>
 	</div>
