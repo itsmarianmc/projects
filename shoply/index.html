@@ -166,7 +166,7 @@
 				
 				<div class="add-category-form">
 					<h3>Data Management</h3>
-					<div class="form-group" style="display: flex; gap: 10px; margin-bottom: 0rem;">
+					<div class="form-group" id="impExpGr" style="display: flex; gap: 10px; margin-bottom: 0rem;">
 						<input style="display: none;" type="file" id="localDataFile" accept=".json" style="color: var(--text-primary);">
 						<button class="btn" onclick="document.getElementById('localDataFile').click()"><i class="fas fa-upload"></i> Import Data </button>
 						<button class="btn" id="localExportBtn"><i class="fas fa-download"></i> Export Data</button>
@@ -216,6 +216,8 @@
 				<a class="linkout nodecoration" href="https://github.com/itsmarianmc" target="_blank">itsmarian</a>
 				via
 				<a class="linkout nodecoration" href="https://itsmarian.is-a.dev/" target="_blank">itsmarian.is-a.dev</a>
+				<br>
+				<a>Fonts and Icons powered by <a class="linkout nodecoration" href="https://fontawesome.com/" target="_blank">Font Awesome</a> and <a class="linkout nodecoration" href="https://fonts.google.com/" target="_blank">Google Fonts</a>
 			</p>
 				<a class="linkout nodecoration" id="hideLogoAnim">Hide Logo Animation</a>
 				<a>•</a>
@@ -233,7 +235,6 @@
 	</div>
 	<div class="status-message isHidden hidden" id="appStatus"></div>
 	<fieldset class="switcher hidden">
-		<legend class="switcher__legend">Choose theme</legend>
 		<label class="switcher__option">
 			<input class="switcher__input" type="radio" name="section" value="shared" c-option="1" checked />
 				<i class="fas fa-user-group"></i>
@@ -274,7 +275,7 @@
 				<div class="hero-content">
 					<div class="logo">Shoply</div>
 					<h1>Your All-in-One Shopping List App</h1>
-					<p>Organize your shopping lists effortlessly with cloud sync, real-time collaboration, and smart categorization. Never forget an item again!</p>
+					<p>Organize your shopping lists effortlessly with cloud sync, real-time collaboration, different users and smart categorization. Never forget an item again!</p>
 					<div class="cta-buttons">
 						<a class="btn btn-primary ripple-btn" id="installPageBtn">
 							<i class="fas fa-download"></i>
@@ -298,14 +299,21 @@
 							<i class="fas fa-cloud"></i>
 						</div>
 						<h3>Cloud Synchronization</h3>
-						<p>Access your shopping lists from any device anywhere. Your data is automatically synced across all your devices in real-time&sup1;.</p>
+						<p>Access your shopping lists from any device anywhere. Your data is automatically synced across all your devices in real-time&#185;.</p>
 					</div>
 					<div class="feature-card">
 						<div class="feature-icon">
 							<i class="fas fa-users"></i>
 						</div>
 						<h3>Real-time Collaboration</h3>
-						<p>Share lists with family and friends. Edit together in real-time&sup1; and see changes instantly as they happen.</p>
+						<p>Share lists with family and friends. Edit together in real-time&#185; and see changes instantly as they happen.</p>
+					</div>
+					<div class="feature-card">
+						<div class="feature-icon">
+							<i class="fas fa-computer"></i>
+						</div>
+						<h3>Local List</h3>
+						<p>Create a local list just for you and your own tasks.</p>
 					</div>
 					<div class="feature-card">
 						<div class="feature-icon">
@@ -330,10 +338,17 @@
 					</div>
 					<div class="feature-card">
 						<div class="feature-icon">
+							<i class="fas fa-television"></i>
+						</div>
+						<h3>Modern and unique look with Liquid Glass&#178;</h3>
+						<p>Experience Shoply in a new, smooth, and clean look with the new Liquid Glass.</p>
+					</div>
+					<div class="feature-card">
+						<div class="feature-icon">
 							<i class="fas fa-bell"></i>
 						</div>
 						<h3>Smart Reminders</h3>
-						<p>Get notified when you're near stores with items on your list&sup2;. Never forget to buy what you need.</p>
+						<p>Get notified when you're near stores with items on your list&#179;. Never forget to buy what you need.</p>
 					</div>
 					<div class="feature-card">
 						<div class="feature-icon">
@@ -347,7 +362,14 @@
 							<i class="fas fa-history"></i>
 						</div>
 						<h3>Purchase History</h3>
-						<p>Access your previously bought items&sup3; for quick reordering. Your shopping memory at your fingertips.</p>
+						<p>Access your previously bought items&#8308; for quick reordering. Your shopping memory at your fingertips.</p>
+					</div>
+					<div class="feature-card">
+						<div class="feature-icon">
+							<i class="fas fa-user"></i>
+						</div>
+						<h3>User Accounts</h3>
+						<p>Add user accounts, select your account and start adding</p>
 					</div>
 					<div class="feature-card">
 						<div class="feature-icon">
@@ -412,11 +434,13 @@
 				</div>
 			</div>
 			<div style="color: var(--text-secondary); font-size: 10px; text-align: center; margin-top: 1rem;">
-				<a>&sup1; Active internet connection required. Cost may apply!</a>
+				<a>&#185; Active internet connection required. Cost may apply!</a>
 				<br>
-				<a>&sup2; Notifications are currently in developement and are not avaible as of now!</a>
+				<a>&#178; Liquid Glass and its design and functionality are the property of Apple Inc.! The designs on this websites are provided by third parties.</a>
 				<br>
-				<a>&sup3; Purchase history is only avaible, when not deleting the selected item!</a>
+				<a>&#179; Notifications are currently in developement and are not avaible as of now!</a>
+				<br>
+				<a>&#8308; Purchase history is only avaible, when not deleting the selected item!</a>
 			</div>
 		</div>
 		<div class="container hidden" id="install-container">
@@ -468,6 +492,10 @@
 					<li>
 						<i class="fas fa-check"></i>
 						Full-screen experience
+					</li>
+					<li>
+						<i class="fas fa-check"></i>
+						Better and more intuitive UI
 					</li>
 				</ul>
 			</div>

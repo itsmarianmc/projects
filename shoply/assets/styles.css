@@ -844,7 +844,20 @@ input::placeholder {
 	.add-item-form,
 	#interacUserForm {
 		padding: 1.5rem;
-		margin: 1rem 0;
+		margin: 1rem auto;
+	}
+
+	#impExpGr {
+		flex-direction: column;
+	}
+
+	#impExpGr button {
+		max-width: unset;
+		width: 100%;
+	}
+
+	.return-btn {
+		margin-top: 50px !important;
 	}
 
 	h2 {
@@ -869,7 +882,7 @@ input::placeholder {
 
 	#footer {
 		font-size: 0.75rem;
-		padding: 15px 0px;
+		padding: 15px 0px 100px 0px;
 	}
 }
 

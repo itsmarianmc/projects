@@ -335,7 +335,6 @@ function createItemElement(item) {
 
     const userText = document.createElement('span');
     userText.className = 'item-user';
-    // Add user icon before the user name
     userText.innerHTML = `<i class="fas fa-user"></i>&nbsp;` +
         (item.user?.display_name || 'Unknown user');
 

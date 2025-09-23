@@ -16,8 +16,8 @@ body {
 
 	--saturation: 150%;
 
-	transition: background 400ms cubic-bezier(1, 0, 0.4, 1),
-		color 400ms cubic-bezier(1, 0, 0.4, 1);
+	transition: background 250ms cubic-bezier(1, 0, 0.4, 1),
+		color 250ms cubic-bezier(1, 0, 0.4, 1);
 }
 
 .switcher {
@@ -63,8 +63,8 @@ body {
 		0px 6px 16px 0px color-mix(in srgb,
 			var(--c-dark) calc(var(--glass-reflex-dark) * 8%),
 			transparent);
-	transition: background-color 400ms cubic-bezier(1, 0, 0.4, 1),
-		box-shadow 400ms cubic-bezier(1, 0, 0.4, 1);
+	transition: background-color 250ms cubic-bezier(1, 0, 0.4, 1),
+		box-shadow 250ms cubic-bezier(1, 0, 0.4, 1);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -178,17 +178,17 @@ body {
 .switcher:has(input[c-option="1"]:checked)::after {
 	translate: 0 0;
 	transform-origin: right;
-	transition: background-color 400ms cubic-bezier(1, 0, 0.4, 1),
-		box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
-		translate 400ms cubic-bezier(1, 0, 0.4, 1);
+	transition: background-color 250ms cubic-bezier(1, 0, 0.4, 1),
+		box-shadow 250ms cubic-bezier(1, 0, 0.4, 1),
+		translate 250ms cubic-bezier(1, 0, 0.4, 1);
 	animation: scaleToggle 440ms ease;
 }
 
 .switcher:has(input[c-option="2"]:checked)::after {
 	translate: 76px 0;
-	transition: background-color 400ms cubic-bezier(1, 0, 0.4, 1),
-		box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
-		translate 400ms cubic-bezier(1, 0, 0.4, 1);
+	transition: background-color 250ms cubic-bezier(1, 0, 0.4, 1),
+		box-shadow 250ms cubic-bezier(1, 0, 0.4, 1),
+		translate 250ms cubic-bezier(1, 0, 0.4, 1);
 	animation: scaleToggle2 440ms ease;
 }
 
@@ -203,9 +203,9 @@ body {
 .switcher:has(input[c-option="3"]:checked)::after {
 	translate: 152px 0;
 	transform-origin: left;
-	transition: background-color 400ms cubic-bezier(1, 0, 0.4, 1),
-		box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
-		translate 400ms cubic-bezier(1, 0, 0.4, 1);
+	transition: background-color 250ms cubic-bezier(1, 0, 0.4, 1),
+		box-shadow 250ms cubic-bezier(1, 0, 0.4, 1),
+		translate 250ms cubic-bezier(1, 0, 0.4, 1);
 	animation: scaleToggle3 440ms ease;
 }
 
@@ -290,5 +290,5 @@ img {
 	border-top: 4px solid color-mix(in srgb, var(--c-action) 50%, transparent);
 	border-radius: 0.8em;
 	background-color: color-mix(in srgb, var(--c-action) 8%, var(--c-bg));
-	transition: background 400ms cubic-bezier(1, 0, 0.4, 1);
+	transition: background 250ms cubic-bezier(1, 0, 0.4, 1);
 }

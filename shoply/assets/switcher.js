@@ -19,6 +19,7 @@ const trackPrevious = (el) => {
                 el.setAttribute("c-previous", previousValue ?? "");
                 previousValue = radio.getAttribute("c-option");
                 showSection(radio.value);
+                window.scrollTo({ top: 0, behavior: "smooth" });
             }
         });
     });
