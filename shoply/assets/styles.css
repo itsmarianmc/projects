@@ -95,18 +95,6 @@ header {
 	display: flex;
 }
 
-.user-info {
-	text-align: center;
-	right: 0;
-	display: none;
-	position: absolute;
-	padding: 9.4px 1rem;
-}
-
-#logoutBtnMobile {
-    display: none;
-}
-
 @keyframes slideInFromTop {
 	0% {
 		transform: translateY(-100%);
@@ -228,6 +216,16 @@ header h1 i {
 	min-height: calc(100vh - 65px - 2 * var(--body-padding));
 }
 
+#account {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#local:not(.hidden) .card-header, #local:not(.hidden) .app-screen {
+	display: block;
+}
+
 .login-screen,
 .app-screen {
 	animation: fadeInScale 0.6s ease-out;
@@ -237,7 +235,8 @@ header h1 i {
 .add-item-form,
 .category-list,
 .card-header,
-.status-message {
+.status-message,
+#interacUserForm {
 	margin: 2rem auto !important;
 	max-width: 800px;
 }
@@ -285,7 +284,8 @@ header h1 i {
 }
 
 .add-category-form,
-.add-item-form {
+.add-item-form,
+#interacUserForm {
 	background: rgba(20, 20, 30, 0.3);
 	backdrop-filter: blur(10px);
 	border: 1px solid var(--border-glass);
@@ -295,12 +295,14 @@ header h1 i {
 	box-shadow: var(--shadow);
 	position: relative;
 	overflow: hidden;
+	width: 100%;
 }
 
 .login-screen::before,
 .add-category-form::before,
 .add-item-form::before,
-.category-card::before {
+.category-card::before ,
+#interacUserForm::before {
 	content: '';
 	position: absolute;
 	top: 0;
@@ -314,7 +316,8 @@ header h1 i {
 .login-screen:hover::before,
 .add-category-form:hover::before,
 .add-item-form:hover::before,
-.category-card:hover::before {
+.category-card:hover::before,
+#interacUserForm:hover::before {
 	left: 100%;
 }
 
@@ -473,7 +476,8 @@ input::placeholder {
 #loginBtn,
 #registerBtn,
 #addCategoryBtn,
-#addItemBtn {
+#addItemBtn,
+.generalBtn {
 	color: white;
 	width: 100%;
 	justify-content: center;
@@ -482,11 +486,12 @@ input::placeholder {
 #loginBtn:hover,
 #registerBtn:hover,
 #addCategoryBtn:hover,
-#addItemBtn:hover {
+#addItemBtn:hover,
+.generalBtn:hover {
 	transform: translateY(-2px);
 }
 
-#logoutBtn, #logoutBtnMobile {
+#logoutBtn {
 	background: rgba(20, 20, 30, 0.6);
 	color: var(--text-primary);
 	border: 1px solid var(--border-glass);
@@ -559,24 +564,51 @@ input::placeholder {
 }
 
 .status-message {
-	padding: 0.875rem 1rem;
+	position: fixed;
+	top: 32px;
+	left: 32px;
+	z-index: 99999;
+	padding: 0.875rem 1.5rem;
 	border-radius: var(--border-radius);
-	margin: 1rem 0;
+	margin: 0;
 	display: block;
 	opacity: 1;
 	font-weight: 500;
-	animation: slideUp 0.4s ease-out;
+	animation: flyInLeft 0.5s cubic-bezier(.7,.2,.3,1) forwards, flyOutRight 0.5s cubic-bezier(.7,.2,.3,1) 3.5s forwards;
 	border-left: 4px solid;
+	box-shadow: 0 8px 32px rgba(0,0,0,1);
+}
+
+@keyframes flyInLeft {
+	0% {
+		transform: translateX(-100vw);
+		opacity: 0;
+	}
+	100% {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+@keyframes flyOutRight {
+	0% {
+		transform: translateX(0);
+		opacity: 1;
+	}
+	100% {
+		transform: translateX(100vw);
+		opacity: 0;
+	}
 }
 
 .status-message.success {
-	background: rgba(76, 175, 80, 0.1);
+	background: rgba(76, 175, 80, 1);
 	color: var(--dsgn-g-light);
 	border-left-color: var(--dsgn-g);
 }
 
 .status-message.error {
-	background: rgba(255, 71, 87, 0.1);
+	background: rgba(255, 71, 87, 1);
 	color: #ffcdd2;
 	border-left-color: #ff4757;
 }
@@ -807,17 +839,10 @@ input::placeholder {
 		padding: 0.5rem;
 	}
 
-    .user-info {
-        display: none !important;
-    }
-
-    #logoutBtnMobile {
-        display: block !important;
-    }
-
     .login-screen,
 	.add-category-form,
-	.add-item-form {
+	.add-item-form,
+	#interacUserForm {
 		padding: 1.5rem;
 		margin: 1rem 0;
 	}
@@ -860,7 +885,8 @@ input::placeholder {
 
 	.login-screen,
 	.add-category-form,
-	.add-item-form {
+	.add-item-form,
+	#interacUserForm {
 		padding: 1rem;
 		border-radius: 8px;
 	}
@@ -934,16 +960,6 @@ input::placeholder {
 	width: 24px;
 	height: 24px;
 	display: block;
-}
-
-#add-user-popup-main {
-	background: rgba(20, 20, 30, 0.95);
-	border-radius: var(--border-radius);
-	box-shadow: var(--shadow);
-	padding: 2rem 2rem 1.5rem 2rem;
-	max-width: 400px;
-	width: 100%;
-	position: relative;
 }
 
 #add-user-popup h3 {

@@ -19,13 +19,15 @@ const categoryList = document.getElementById('categoryList');
 const appStatus = document.getElementById('appStatus');
 const updateTime = document.getElementById('updateTime');
 const logoutBtn = document.getElementById('logoutBtn');
-const logoutBtnMobile = document.getElementById('logoutBtnMobile');
 const connectionStatus = document.getElementById('connectionStatus');
 const splashScreen = document.getElementById('splashScreen');
 const hideLogoAnimBtn = document.getElementById('hideLogoAnim');
 
 const platformButtons = document.querySelectorAll('.platform-btn');
 const tutorialSections = document.querySelectorAll('.tutorial-section');
+
+const interacUserForm = document.getElementById('interacUserForm');
+const accountSwitcherBox = document.getElementById('accountSwitcher');
 
 let currentFamilyId = null;
 let currentFamilyData = null;
@@ -61,7 +63,6 @@ loginBtn.addEventListener('click', handleLogin);
 addItemBtn.addEventListener('click', addItem);
 addCategoryBtn.addEventListener('click', addCategory);
 logoutBtn.addEventListener('click', handleLogout);
-logoutBtnMobile.addEventListener('click', handleLogout);
 
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -444,6 +445,8 @@ async function handleLogin() {
         familyName.textContent = data.display_name;
         loginScreen.style.display = 'none';
         appScreen.style.display = 'block';
+        interacUserForm.classList.remove('hidden');
+        accountSwitcherBox.disabled = false;
 
         localStorage.setItem('familyId', familyId);
 
@@ -456,7 +459,6 @@ async function handleLogin() {
         startPeriodicUpdate();
 
         document.querySelector(".card-header").style.display = "block";
-        document.querySelector(".user-info").style.display = "block";
 
     } catch (error) {
         showLoginStatus('An error occurred. Please try again later.', 'error');
@@ -685,7 +687,6 @@ function handleLogout() {
 
     appScreen.style.display = 'none';
     loginScreen.style.display = 'block';
-    document.querySelector(".user-info").style.display = "none";
 
     familyIdInput.value = '';
 
@@ -1254,16 +1255,6 @@ function showSplashScreen() {
 if (hideLogoAnimBtn) {
     hideLogoAnimBtn.addEventListener('click', toggleSplashScreen);
 }
-
-document.getElementById('open-user-popup-btn').addEventListener("click", function() {
-    const popup = document.getElementById('add-user-popup');
-    popup.classList.remove('hidden');
-})
-
-document.getElementById('close-user-popup-btn').addEventListener("click", function() {
-    const popup = document.getElementById('add-user-popup');
-    popup.classList.add('hidden');
-})
 
 document.addEventListener('DOMContentLoaded', function() {
     loadSplashScreenSettings();

@@ -14,6 +14,7 @@ document.getElementById("keepBrowser").addEventListener("click", function() {
 	document.body.style.overflow = 'unset';
 	document.documentElement.style.overflow = 'unset';
 	document.querySelector(".main-container").style.display = "block";
+	switcher.classList.remove("hidden");
 });
 
 function checkBrowserChoice() {
@@ -22,6 +23,7 @@ function checkBrowserChoice() {
 		document.querySelector(".main-container").style.display = "block";
 		document.body.style.overflow = 'unset';
 		document.documentElement.style.overflow = 'unset';
+		switcher.classList.remove("hidden");
 		setTimeout(() => {
 			document.getElementById("install-popup").remove();
 		}, 1000);
