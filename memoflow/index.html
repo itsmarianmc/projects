@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoFlow - A minimalist and fast note-taking app that focuses on productivity and organization.</title>
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+    <link rel="stylesheet" href="styles.css">
+	<meta name="author" content="itsmarian">
+	<meta name="title" content="MemoFlow">
+	<meta name="description" content="A minimalist and fast note-taking app that focuses on productivity and organization.">
+	<meta name="keywords" content="notes, note-taking, productivity, organization, minimalist, fast, app, web app">
+	<meta name="referrer" content="no-referrer">
+	<meta name="robots" content="index, follow">
+	<meta property="og:title" content="MemoFlow">
+	<meta property="og:type" content="website">
+	<meta property="og:description" content="A minimalist and fast note-taking app that focuses on productivity and organization.">
+	<meta property="og:image" content="https://projects.itsmarian.is-a.dev/memoflow/favicon.png">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://projects.itsmarian.is-a.dev/?utm_src=og_link">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://projects.itsmarian.is-a.dev/memoflow/favicon.png">
+	<!-- PWA -->
+	<link rel="manifest" href="manifest.json">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<meta name="apple-mobile-web-app-title" content="MemoFlow">
+	<link rel="apple-touch-icon" href="/memoflow/favicon.png">
+	<meta name="msapplication-TileImage" content="/memoflow/favicon.png">
+	<meta name="msapplication-TileColor" content="#1A1A1A">
+	<meta name="theme-color" content="#1A1A1A">
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <div class="header">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <img alt="" id="flexHeadImg" draggable="false" src="favicon.png" height="52" width="52">
+                <h1>MemoFlow</h1>
+            </div>
+            <p>Your smart note-taking app with auto-formatting</p>
+            <div id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                <div class="toggle-knob">
+                    <div class="icon sun">☀️</div>
+                    <div class="icon moon">🌙</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div>
+                <button class="btn" onclick="formatText('bold')" title="Bold (Ctrl+B)">
+                    <strong>B</strong>
+                    <span class="keyboard-hint">Ctrl+B</span>
+                </button>
+                <button class="btn" onclick="formatText('italic')" title="Italic (Ctrl+I)">
+                    <em>I</em>
+                    <span class="keyboard-hint">Ctrl+I</span>
+                </button>
+                <button class="btn" onclick="formatText('underline')" title="Underline (Ctrl+U)">
+                    <u>U</u>
+                    <span class="keyboard-hint">Ctrl+U</span>
+                </button>
+            </div>
+            
+            <div>
+                <button class="btn" onclick="clearFormatting()" title="Clear formatting">
+                    ✨ Clear Formatting
+                </button>
+                <button class="btn btn-primary" onclick="saveNotes()" title="Save (Ctrl+S)">
+                    💾 Save
+                </button>
+            </div>
+            
+        </div>
+
+        <div class="editor-container">
+            <div id="editor" contenteditable="true" placeholder="Start writing..."></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span>📊</span>
+                <span class="stat-value" id="charCount">0</span>
+                <span>Characters</span>
+            </div>
+            <div class="stat-item">
+                <span>📖</span>
+                <span class="stat-value" id="wordCount">0</span>
+                <span>Words</span>
+            </div>
+            <div class="stat-item">
+                <span>📄</span>
+                <span class="stat-value" id="lineCount">0</span>
+                <span>Lines</span>
+            </div>
+            <div class="save-status">
+                <div class="save-indicator"></div>
+                <span id="saveStatus">Saved</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <strong>✓ Saved!</strong>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
