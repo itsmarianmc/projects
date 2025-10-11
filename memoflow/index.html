@@ -37,7 +37,7 @@
                 <img alt="" id="flexHeadImg" draggable="false" src="favicon.png" height="52" width="52">
                 <h1>MemoFlow</h1>
             </div>
-            <p>Your smart note-taking app with auto-formatting</p>
+            <p>A minimalist and fast note-taking app that focuses on productivity and organization.</p>
             <div id="themeToggle" class="theme-toggle" title="Toggle Theme">
                 <div class="toggle-knob">
                     <div class="icon sun">☀️</div>
@@ -48,15 +48,15 @@
 
         <div class="toolbar">
             <div>
-                <button class="btn" onclick="formatText('bold')" title="Bold (Ctrl+B)">
+                <button class="btn" id="boldBtn" onclick="formatText('bold')" title="Bold (Ctrl+B)">
                     <strong>B</strong>
                     <span class="keyboard-hint">Ctrl+B</span>
                 </button>
-                <button class="btn" onclick="formatText('italic')" title="Italic (Ctrl+I)">
+                <button class="btn" id="italicBtn" onclick="formatText('italic')" title="Italic (Ctrl+I)">
                     <em>I</em>
                     <span class="keyboard-hint">Ctrl+I</span>
                 </button>
-                <button class="btn" onclick="formatText('underline')" title="Underline (Ctrl+U)">
+                <button class="btn" id="underlineBtn" onclick="formatText('underline')" title="Underline (Ctrl+U)">
                     <u>U</u>
                     <span class="keyboard-hint">Ctrl+U</span>
                 </button>

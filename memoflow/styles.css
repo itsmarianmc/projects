@@ -172,13 +172,17 @@ body {
 	transform: translateY(-1px);
 }
 
-.btn-primary {
+body:not(.dark-mode) .active .keyboard-hint {
+	color: #ffffff !important;
+}
+
+.btn-primary, .active {
 	background: var(--accent-color);
-	color: white;
+	color: #ffffff;
 	border-color: var(--accent-color);
 }
 
-.btn-primary:hover {
+.btn-primary:hover, .active:hover {
 	background: var(--accent-hover);
 	border-color: var(--accent-hover);
 	transform: translateY(-1px);
@@ -281,7 +285,7 @@ body {
 	right: 20px;
 	padding: 12px 20px;
 	background: var(--notification-bg);
-	color: white;
+	color: #ffffff;
 	border-radius: 8px;
 	box-shadow: var(--shadow);
 	transform: translateX(150%);

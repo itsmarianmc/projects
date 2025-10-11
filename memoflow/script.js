@@ -65,10 +65,9 @@ function updateStats() {
     const words = text.trim() ? text.trim().split(/\s+/).length : 0;
     document.getElementById('wordCount').textContent = words;
 
-    // Korrigierte Zeilenzählung
     const lines = text ? 
         text.split('\n')
-            .filter(line => line.trim() !== '') // Entfernt wirklich leere Zeilen
+            .filter(line => line.trim() !== '')
             .length : 0;
     document.getElementById('lineCount').textContent = lines;
 }
@@ -77,6 +76,24 @@ function formatText(format) {
     document.execCommand(format, false, null);
     editor.focus();
     resetAutoSave();
+
+    let btnId;
+    switch (format) {
+        case 'bold':
+            btnId = 'boldBtn';
+            break;
+        case 'italic':
+            btnId = 'italicBtn';
+            break;
+        case 'underline':
+            btnId = 'underlineBtn';
+            break;
+        default:
+            btnId = null;
+    }
+    if (btnId) {
+        document.getElementById(btnId).classList.toggle('active', document.queryCommandState(format));
+    }
 }
 
 function clearFormatting() {
