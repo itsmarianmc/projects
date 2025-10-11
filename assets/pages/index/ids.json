@@ -29,9 +29,15 @@
 			}
 		}
 	},
+	"https://cookiebannerblocker.itsmarian.is-a.dev": {
+		"id": "3d0m"
+	},
 	"https://github.com/itsmarianmc": {
 		"id": "GtHb",
 		"paths": {
+			"/CookieBannerBlocker": {
+				"id": "do30"
+			},
 			"/itsmarianmc.github.io": {
 				"id": "devP"
 			},
