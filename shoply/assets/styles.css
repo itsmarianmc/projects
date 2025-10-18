@@ -379,7 +379,6 @@ header h1 i {
 }
 
 .add-user-form {
-	background-color: var(--bg-card);
 	border-radius: 12px;
 	margin-bottom: 20px;
 }
