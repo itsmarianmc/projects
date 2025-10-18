@@ -57,1259 +57,1478 @@ const newUserNameInput = document.getElementById('newUserName');
 const itemUserSelect = document.getElementById('itemUser');
 const currentUserDisplay = document.getElementById('currentUserDisplay');
 
-addUserBtn.addEventListener('click', addUser);
+let savedAccounts = [];
+let currentAccountId = null;
+const savedAccountsList = document.getElementById('savedAccountsList');
+const newAccountFamilyIdInput = document.getElementById('newAccountFamilyId');
+const addAccountBtn = document.getElementById('addAccountBtn');
+const currentAccountDisplay = document.getElementById('currentAccountDisplay');
 
+addUserBtn.addEventListener('click', addUser);
 loginBtn.addEventListener('click', handleLogin);
 addItemBtn.addEventListener('click', addItem);
 addCategoryBtn.addEventListener('click', addCategory);
 logoutBtn.addEventListener('click', handleLogout);
+addAccountBtn.addEventListener('click', addNewAccount);
 
 document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const authId = urlParams.get('auth_id');
-    if (authId && authId.length === 64) {
-        familyIdInput.value = authId;
-        handleLogin();
-        window.history.replaceState({}, document.title, window.location.pathname);
-        setTimeout(() => {
-            location.reload();
-        }, REFRESH_TIMEOUT);
-    }
+	loadSplashScreenSettings();
+	loadSavedAccounts();
+
+	const urlParams = new URLSearchParams(window.location.search);
+	const authId = urlParams.get('auth_id');
+	if (authId && authId.length === 64) {
+		navigator.clipboard.writeText(window.location.href).then(() => {
+			console.log('URL copied to clipboard');
+		}).catch(err => {
+			console.error('Failed to copy URL:', err);
+		});
+		familyIdInput.value = authId;
+		handleLogin();
+		window.history.replaceState({}, document.title, window.location.pathname);
+		setTimeout(() => {
+			location.reload();
+		}, REFRESH_TIMEOUT);
+	}
+
+	if (splashScreenEnabled) {
+		showSplashScreen();
+	}
+
+	document.addEventListener('visibilitychange', function() {
+		if (document.hidden) {
+			lastHiddenTime = Date.now();
+		} else {
+			const timeAway = Date.now() - lastHiddenTime;
+			if (timeAway > 1000) {
+				showSplashScreen();
+			}
+		}
+	});
+
+	const userAgent = navigator.userAgent;
+	const isChrome = /Chrome/i.test(userAgent) && !/Edge/i.test(userAgent);
+	const isEdge = /Edge/i.test(userAgent);
+	const isFirefox = /Firefox/i.test(userAgent);
+	const isSafari = /Safari/i.test(userAgent) && !/Chrome/i.test(userAgent);
+	const isAndroid = /Android/i.test(userAgent);
+	const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+
+	if (isAndroid && isChrome) {
+		document.querySelector('[data-platform="android"]').click();
+	} else if (isIOS && isSafari) {
+		document.querySelector('[data-platform="safari"]').click();
+	} else if (isFirefox) {
+		document.querySelector('[data-platform="firefox"]').click();
+	} else if (isChrome || isEdge) {
+		document.querySelector('[data-platform="chrome"]').click();
+	}
 });
 
 categoryList.addEventListener('click', (e) => {
-    const clickedElement = e.target;
-    const checkBtn = clickedElement.closest('.btn-check');
-    const deleteBtn = clickedElement.closest('.btn-delete');
-    const deleteCategoryBtn = clickedElement.closest('.btn-delete-category');
+	const clickedElement = e.target;
+	const checkBtn = clickedElement.closest('.btn-check');
+	const deleteBtn = clickedElement.closest('.btn-delete');
+	const deleteCategoryBtn = clickedElement.closest('.btn-delete-category');
 
-    if (checkBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const itemElement = checkBtn.closest('.item');
-        const itemId = itemElement.dataset.id;
-        const isDone = itemElement.classList.contains('done');
-        toggleItemDone(itemId, !isDone);
-    } else if (deleteBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const itemElement = deleteBtn.closest('.item');
-        const itemId = itemElement.dataset.id;
-        if (confirm('Are you sure you want to delete this item?')) {
-            deleteItem(itemId);
-        }
-    } else if (deleteCategoryBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const categoryCard = deleteCategoryBtn.closest('.category-card');
-        const categoryId = categoryCard.dataset.categoryId;
-        const categoryName = categoryCard.querySelector('h4').textContent;
-        if (confirm(`Are you sure you want to delete the category "${categoryName}"? All items in this category will also be deleted.`)) {
-            deleteCategory(categoryId);
-        }
-    }
+	if (checkBtn) {
+		e.preventDefault();
+		e.stopPropagation();
+		const itemElement = checkBtn.closest('.item');
+		const itemId = itemElement.dataset.id;
+		const isDone = itemElement.classList.contains('done');
+		toggleItemDone(itemId, !isDone);
+	} else if (deleteBtn) {
+		e.preventDefault();
+		e.stopPropagation();
+		const itemElement = deleteBtn.closest('.item');
+		const itemId = itemElement.dataset.id;
+		if (confirm('Are you sure you want to delete this item?')) {
+			deleteItem(itemId);
+		}
+	} else if (deleteCategoryBtn) {
+		e.preventDefault();
+		e.stopPropagation();
+		const categoryCard = deleteCategoryBtn.closest('.category-card');
+		const categoryId = categoryCard.dataset.categoryId;
+		const categoryName = categoryCard.querySelector('h4').textContent;
+		if (confirm(`Are you sure you want to delete the category "${categoryName}"? All items in this category will also be deleted.`)) {
+			deleteCategory(categoryId);
+		}
+	}
 });
 
 window.addEventListener('load', () => {
-    const savedFamilyId = localStorage.getItem('familyId');
-    if (savedFamilyId) {
-        familyIdInput.value = savedFamilyId;
-        handleLogin();
-    }
+	const savedFamilyId = localStorage.getItem('familyId');
+	if (savedFamilyId) {
+		familyIdInput.value = savedFamilyId;
+		handleLogin();
+	}
 });
 
 function showStatusMessage(message, type) {
-    appStatus.textContent = message;
-    appStatus.className = `status-message ${type}`;
-    appStatus.classList.remove('isHidden');
-    appStatus.classList.remove('hidden');
+	appStatus.textContent = message;
+	appStatus.className = `status-message ${type}`;
+	appStatus.classList.remove('isHidden');
+	appStatus.classList.remove('hidden');
 
-    setTimeout(() => {
-        appStatus.classList.add('isHidden');
-        setTimeout(() => {
-            appStatus.textContent = '';
-            appStatus.classList.add('hidden');
-        }, 900);
-    }, 3000);
+	setTimeout(() => {
+		appStatus.classList.add('isHidden');
+		setTimeout(() => {
+			appStatus.textContent = '';
+			appStatus.classList.add('hidden');
+		}, 900);
+	}, 3000);
 }
 
 function createDataHash(data) {
-    return JSON.stringify(data).split('').reduce((a, b) => {
-        a = ((a << 5) - a) + b.charCodeAt(0);
-        return a & a;
-    }, 0);
+	return JSON.stringify(data).split('').reduce((a, b) => {
+		a = ((a << 5) - a) + b.charCodeAt(0);
+		return a & a;
+	}, 0);
 }
 
 function startPeriodicUpdate() {
-    if (periodicUpdateInterval) {
-        clearInterval(periodicUpdateInterval);
-    }
+	if (periodicUpdateInterval) {
+		clearInterval(periodicUpdateInterval);
+	}
 
-    periodicUpdateInterval = setInterval(async () => {
-        if (currentFamilyId) {
-            await checkForUpdates();
-        }
-    }, 1787);
+	periodicUpdateInterval = setInterval(async () => {
+		if (currentFamilyId) {
+			await checkForUpdates();
+		}
+	}, 1787);
 }
 
 function stopPeriodicUpdate() {
-    if (periodicUpdateInterval) {
-        clearInterval(periodicUpdateInterval);
-        periodicUpdateInterval = null;
-    }
+	if (periodicUpdateInterval) {
+		clearInterval(periodicUpdateInterval);
+		periodicUpdateInterval = null;
+	}
 }
 
 async function checkForUpdates() {
-    try {
-        const {
-            data: usersData,
-            error: usersError
-        } = await supabase
-            .from('users')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .order('display_name');
+	try {
+		const {
+			data: usersData,
+			error: usersError
+		} = await supabase
+			.from('users')
+			.select('*')
+			.eq('family_id', currentFamilyId)
+			.order('display_name');
 
-        if (!usersError && usersData) {
-            const newUsersHash = createDataHash(usersData);
-            if (currentUsersHash !== newUsersHash) {
-                console.log('Users have been updated');
-                await handleUserUpdates(usersData);
-            }
-        }
+		if (!usersError && usersData) {
+			const newUsersHash = createDataHash(usersData);
+			if (currentUsersHash !== newUsersHash) {
+				console.log('Users have been updated');
+				await handleUserUpdates(usersData);
+			}
+		}
 
-        const {
-            data: categoriesData,
-            error: categoriesError
-        } = await supabase
-            .from('categories')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .order('name');
+		const {
+			data: categoriesData,
+			error: categoriesError
+		} = await supabase
+			.from('categories')
+			.select('*')
+			.eq('family_id', currentFamilyId)
+			.order('name');
 
-        if (!categoriesError && categoriesData) {
-            const newCategoriesHash = createDataHash(categoriesData);
-            if (currentCategoriesHash !== newCategoriesHash) {
-                console.log('Categories have been updated');
-                await handleCategoryUpdates(categoriesData);
-            }
-        }
+		if (!categoriesError && categoriesData) {
+			const newCategoriesHash = createDataHash(categoriesData);
+			if (currentCategoriesHash !== newCategoriesHash) {
+				console.log('Categories have been updated');
+				await handleCategoryUpdates(categoriesData);
+			}
+		}
 
-        const {
-            data: itemsData,
-            error: itemsError
-        } = await supabase
-            .from('items')
-            .select(`
+		const {
+			data: itemsData,
+			error: itemsError
+		} = await supabase
+			.from('items')
+			.select(`
                         *,
                         category:categories(name),
                         user:users(display_name)
                     `)
-            .eq('family_id', currentFamilyId)
-            .order('created_at', {
-                ascending: false
-            });
+			.eq('family_id', currentFamilyId)
+			.order('created_at', {
+				ascending: false
+			});
 
-        if (!itemsError && itemsData) {
-            await handleItemUpdates(itemsData || []);
-        }
+		if (!itemsError && itemsData) {
+			await handleItemUpdates(itemsData || []);
+		}
 
-    } catch (error) {
-        console.error('Error checking for updates:', error);
-    }
+	} catch (error) {
+		console.error('Error checking for updates:', error);
+	}
 }
 
 async function handleCategoryUpdates(newCategoriesData) {
-    const oldCategories = [...categories];
-    const newCategoriesHash = createDataHash(newCategoriesData);
+	const oldCategories = [...categories];
+	const newCategoriesHash = createDataHash(newCategoriesData);
 
-    currentCategoriesHash = newCategoriesHash;
-    categories = newCategoriesData;
+	currentCategoriesHash = newCategoriesHash;
+	categories = newCategoriesData;
 
-    updateCategoryDropdown();
+	updateCategoryDropdown();
 
-    const deletedCategories = oldCategories.filter(oldCat =>
-        !newCategoriesData.find(newCat => newCat.id === oldCat.id)
-    );
+	const deletedCategories = oldCategories.filter(oldCat =>
+		!newCategoriesData.find(newCat => newCat.id === oldCat.id)
+	);
 
-    deletedCategories.forEach(deletedCat => {
-        const categoryCard = document.querySelector(`[data-category-id="${deletedCat.id}"]`);
-        if (categoryCard) {
-            categoryCard.remove();
-            console.log(`Removed category card for: ${deletedCat.name}`);
-        }
-        delete itemsHashByCategory[deletedCat.id];
-    });
+	deletedCategories.forEach(deletedCat => {
+		const categoryCard = document.querySelector(`[data-category-id="${deletedCat.id}"]`);
+		if (categoryCard) {
+			categoryCard.remove();
+			console.log(`Removed category card for: ${deletedCat.name}`);
+		}
+		delete itemsHashByCategory[deletedCat.id];
+	});
 
-    const addedCategories = newCategoriesData.filter(newCat =>
-        !oldCategories.find(oldCat => oldCat.id === newCat.id)
-    );
+	const addedCategories = newCategoriesData.filter(newCat =>
+		!oldCategories.find(oldCat => oldCat.id === newCat.id)
+	);
 
-    addedCategories.forEach(addedCat => {
-        addEmptyCategory(addedCat);
-        console.log(`Added new category: ${addedCat.name}`);
-    });
+	addedCategories.forEach(addedCat => {
+		addEmptyCategory(addedCat);
+		console.log(`Added new category: ${addedCat.name}`);
+	});
 
-    updateTime.textContent = new Date().toLocaleTimeString();
+	updateTime.textContent = new Date().toLocaleTimeString();
 }
 
 async function handleItemUpdates(itemsData) {
-    const itemsByCategory = {};
+	const itemsByCategory = {};
 
-    categories.forEach(category => {
-        itemsByCategory[category.id] = [];
-    });
+	categories.forEach(category => {
+		itemsByCategory[category.id] = [];
+	});
 
-    itemsData.forEach(item => {
-        const categoryId = item.category_id || 'uncategorized';
-        if (!itemsByCategory[categoryId]) {
-            itemsByCategory[categoryId] = [];
-        }
-        itemsByCategory[categoryId].push(item);
-    });
+	itemsData.forEach(item => {
+		const categoryId = item.category_id || 'uncategorized';
+		if (!itemsByCategory[categoryId]) {
+			itemsByCategory[categoryId] = [];
+		}
+		itemsByCategory[categoryId].push(item);
+	});
 
-    for (const categoryId in itemsByCategory) {
-        const categoryItems = itemsByCategory[categoryId];
-        const newHash = createDataHash(categoryItems);
-        const oldHash = itemsHashByCategory[categoryId];
+	for (const categoryId in itemsByCategory) {
+		const categoryItems = itemsByCategory[categoryId];
+		const newHash = createDataHash(categoryItems);
+		const oldHash = itemsHashByCategory[categoryId];
 
-        if (oldHash !== newHash) {
-            console.log(`Items updated in category: ${categoryId}`);
-            itemsHashByCategory[categoryId] = newHash;
-            updateCategoryItems(categoryId, categoryItems);
-        }
-    }
+		if (oldHash !== newHash) {
+			console.log(`Items updated in category: ${categoryId}`);
+			itemsHashByCategory[categoryId] = newHash;
+			updateCategoryItems(categoryId, categoryItems);
+		}
+	}
 
-    Object.keys(itemsHashByCategory).forEach(categoryId => {
-        if (!itemsByCategory[categoryId] && itemsHashByCategory[categoryId]) {
-            console.log(`Category ${categoryId} now empty`);
-            itemsHashByCategory[categoryId] = createDataHash([]);
-            updateCategoryItems(categoryId, []);
-        }
-    });
+	Object.keys(itemsHashByCategory).forEach(categoryId => {
+		if (!itemsByCategory[categoryId] && itemsHashByCategory[categoryId]) {
+			console.log(`Category ${categoryId} now empty`);
+			itemsHashByCategory[categoryId] = createDataHash([]);
+			updateCategoryItems(categoryId, []);
+		}
+	});
 
-    updateTime.textContent = new Date().toLocaleTimeString();
+	updateTime.textContent = new Date().toLocaleTimeString();
 }
 
 function updateCategoryItems(categoryId, items) {
-    const categoryCard = document.querySelector(`[data-category-id="${categoryId}"]`);
-    if (!categoryCard) {
-        const category = categories.find(cat => cat.id === categoryId);
-        if (category) {
-            addCategoryWithItems(category, items);
-        }
-        return;
-    }
+	const categoryCard = document.querySelector(`[data-category-id="${categoryId}"]`);
+	if (!categoryCard) {
+		const category = categories.find(cat => cat.id === categoryId);
+		if (category) {
+			addCategoryWithItems(category, items);
+		}
+		return;
+	}
 
-    const itemsList = categoryCard.querySelector('.items-list');
-    if (!itemsList) return;
+	const itemsList = categoryCard.querySelector('.items-list');
+	if (!itemsList) return;
 
-    itemsList.innerHTML = '';
+	itemsList.innerHTML = '';
 
-    if (items.length === 0) {
-        const emptyMessage = document.createElement('li');
-        emptyMessage.className = 'empty-category';
-        emptyMessage.textContent = 'No items in this category';
-        itemsList.appendChild(emptyMessage);
-    } else {
-        items.forEach(item => {
-            const listItem = createItemElement(item);
-            itemsList.appendChild(listItem);
-        });
-    }
+	if (items.length === 0) {
+		const emptyMessage = document.createElement('li');
+		emptyMessage.className = 'empty-category';
+		emptyMessage.textContent = 'No items in this category';
+		itemsList.appendChild(emptyMessage);
+	} else {
+		items.forEach(item => {
+			const listItem = createItemElement(item);
+			itemsList.appendChild(listItem);
+		});
+	}
 
-    console.log(`Updated ${items.length} items in category ${categoryId}`);
+	console.log(`Updated ${items.length} items in category ${categoryId}`);
 }
 
 function createItemElement(item) {
-    const listItem = document.createElement('li');
-    listItem.className = `item ${item.done ? 'done' : ''}`;
-    listItem.dataset.id = item.id;
+	const listItem = document.createElement('li');
+	listItem.className = `item ${item.done ? 'done' : ''}`;
+	listItem.dataset.id = item.id;
 
-    const itemContent = document.createElement('div');
-    itemContent.className = 'item-content';
+	const itemContent = document.createElement('div');
+	itemContent.className = 'item-content';
 
-    const itemText = document.createElement('span');
-    itemText.className = 'item-text';
-    itemText.textContent = item.quantity > 1 ? `${item.name} (${item.quantity}x)` : item.name;
+	const itemText = document.createElement('span');
+	itemText.className = 'item-text';
+	itemText.textContent = item.quantity > 1 ? `${item.name} (${item.quantity}x)` : item.name;
 
-    const userText = document.createElement('span');
-    userText.className = 'item-user';
-    userText.innerHTML = `<i class="fas fa-user"></i>&nbsp;` +
-        (item.user?.display_name || 'Unknown user');
+	const userText = document.createElement('span');
+	userText.className = 'item-user';
+	userText.innerHTML = `<i class="fas fa-user"></i>&nbsp;` +
+		(item.user?.display_name || 'Unknown user');
 
-    itemContent.appendChild(itemText);
-    itemContent.appendChild(userText);
+	itemContent.appendChild(itemText);
+	itemContent.appendChild(userText);
 
-    const itemActions = document.createElement('div');
-    itemActions.className = 'item-actions';
+	const itemActions = document.createElement('div');
+	itemActions.className = 'item-actions';
 
-    const checkBtn = document.createElement('button');
-    checkBtn.className = 'btn-check';
-    checkBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>';
+	const checkBtn = document.createElement('button');
+	checkBtn.className = 'btn-check';
+	checkBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>';
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'btn-delete';
-    deleteBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
+	const deleteBtn = document.createElement('button');
+	deleteBtn.className = 'btn-delete';
+	deleteBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
 
-    itemActions.appendChild(checkBtn);
-    itemActions.appendChild(deleteBtn);
-    
-    listItem.appendChild(itemContent);
-    listItem.appendChild(itemActions);
+	itemActions.appendChild(checkBtn);
+	itemActions.appendChild(deleteBtn);
 
-    return listItem;
+	listItem.appendChild(itemContent);
+	listItem.appendChild(itemActions);
+
+	return listItem;
 }
 
-
 function addEmptyCategory(category) {
-    addCategoryWithItems(category, []);
+	addCategoryWithItems(category, []);
 }
 
 function addCategoryWithItems(category, items) {
-    const categoryCard = document.createElement('div');
-    categoryCard.className = 'category-card';
-    categoryCard.dataset.categoryId = category.id;
+	const categoryCard = document.createElement('div');
+	categoryCard.className = 'category-card';
+	categoryCard.dataset.categoryId = category.id;
 
-    const categoryHeader = document.createElement('div');
-    categoryHeader.className = 'category-header';
+	const categoryHeader = document.createElement('div');
+	categoryHeader.className = 'category-header';
 
-    const categoryTitle = document.createElement('h4');
-    categoryTitle.textContent = category.name;
+	const categoryTitle = document.createElement('h4');
+	categoryTitle.textContent = category.name;
 
-    const deleteCategoryBtn = document.createElement('button');
-    deleteCategoryBtn.className = 'btn-delete-category';
-    deleteCategoryBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
-    deleteCategoryBtn.title = 'Delete category';
-    categoryHeader.appendChild(categoryTitle);
-    categoryHeader.appendChild(deleteCategoryBtn);
+	const deleteCategoryBtn = document.createElement('button');
+	deleteCategoryBtn.className = 'btn-delete-category';
+	deleteCategoryBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
+	deleteCategoryBtn.title = 'Delete category';
+	categoryHeader.appendChild(categoryTitle);
+	categoryHeader.appendChild(deleteCategoryBtn);
 
-    categoryCard.appendChild(categoryHeader);
+	categoryCard.appendChild(categoryHeader);
 
-    const itemsList = document.createElement('ul');
-    itemsList.className = 'items-list';
+	const itemsList = document.createElement('ul');
+	itemsList.className = 'items-list';
 
-    if (items.length === 0) {
-        const emptyMessage = document.createElement('li');
-        emptyMessage.className = 'empty-category';
-        emptyMessage.textContent = 'No items in this category';
-        itemsList.appendChild(emptyMessage);
-    } else {
-        items.forEach(item => {
-            const listItem = createItemElement(item);
-            itemsList.appendChild(listItem);
-        });
-    }
+	if (items.length === 0) {
+		const emptyMessage = document.createElement('li');
+		emptyMessage.className = 'empty-category';
+		emptyMessage.textContent = 'No items in this category';
+		itemsList.appendChild(emptyMessage);
+	} else {
+		items.forEach(item => {
+			const listItem = createItemElement(item);
+			itemsList.appendChild(listItem);
+		});
+	}
 
-    categoryCard.appendChild(itemsList);
-    categoryList.appendChild(categoryCard);
+	categoryCard.appendChild(itemsList);
+	categoryList.appendChild(categoryCard);
 
-    setTimeout(() => {
-        categoryCard.classList.add('fadeIn');
+	setTimeout(() => {
+		categoryCard.classList.add('fadeIn');
 
-        setTimeout(() => {
-            categoryCard.classList.remove('fadeIn');
-            categoryCard.classList.add('animated');
-        }, 600);
-    }, 50);
+		setTimeout(() => {
+			categoryCard.classList.remove('fadeIn');
+			categoryCard.classList.add('animated');
+		}, 600);
+	}, 50);
 
-    itemsHashByCategory[category.id] = createDataHash(items);
+	itemsHashByCategory[category.id] = createDataHash(items);
+}
+
+function loadSavedAccounts() {
+	const saved = localStorage.getItem('savedAccounts');
+	if (saved) {
+		savedAccounts = JSON.parse(saved);
+	}
+
+	const current = localStorage.getItem('currentAccountId');
+	if (current) {
+		currentAccountId = current;
+	}
+
+	renderSavedAccounts();
+	updateCurrentAccountDisplay();
+}
+
+function saveAccountsToStorage() {
+	localStorage.setItem('savedAccounts', JSON.stringify(savedAccounts));
+	if (currentAccountId) {
+		localStorage.setItem('currentAccountId', currentAccountId);
+	}
+}
+
+function renderSavedAccounts() {
+	if (!savedAccountsList) return;
+
+	savedAccountsList.innerHTML = '';
+
+	if (savedAccounts.length === 0) {
+		const noAccounts = document.createElement('div');
+		noAccounts.className = 'no-accounts';
+		noAccounts.textContent = 'No saved accounts yet';
+		savedAccountsList.appendChild(noAccounts);
+		return;
+	}
+
+	savedAccounts.forEach(account => {
+		const accountElement = createAccountElement(account);
+		savedAccountsList.appendChild(accountElement);
+	});
+}
+
+function createAccountElement(account) {
+	const accountDiv = document.createElement('div');
+	accountDiv.className = `account-item ${account.id === currentAccountId ? 'current' : ''}`;
+
+	accountDiv.innerHTML = `
+        <div class="account-info">
+            <div class="account-name">${account.displayName || 'Unnamed Account'}</div>
+            <div class="account-id">${account.familyId.substring(0, 48)}…</div>
+        </div>
+        <div class="account-actions">
+            <button class="account-btn btn-copy btn" onclick="copyToClipboard('${account.familyId}')" title="Copy Family ID to clipboard">
+                <i class="fas fa-copy"></i> <span class="mobile">Copy</span>
+            </button>
+            <button class="account-btn btn-switch" data-id="${account.id}" title="Switch to this account">
+                <i class="fas fa-sign-in-alt"></i> <span>Switch</span>
+            </button>
+            <button class="account-btn btn-remove" data-id="${account.id}" title="Remove this account" >
+                <i class="fas fa-trash"></i> Remove
+            </button>
+        </div>
+    `;
+	accountDiv.dataset.familyId = account.familyId;
+
+	const switchBtn = accountDiv.querySelector('.btn-switch');
+	const removeBtn = accountDiv.querySelector('.btn-remove');
+
+	switchBtn.addEventListener('click', () => switchToAccount(account.id));
+	removeBtn.addEventListener('click', () => removeAccount(account.id));
+
+	return accountDiv;
+}
+
+function copyToClipboard(text) {
+	if (navigator.clipboard && window.isSecureContext) {
+		navigator.clipboard.writeText(text).then(() => {
+			showStatusMessage('Copied to clipboard!', 'success');
+		}).catch(() => {
+			showStatusMessage('Failed to copy to clipboard', 'error');
+		});
+	} else {
+		const textarea = document.createElement('textarea');
+		textarea.value = text;
+		textarea.style.position = 'fixed';
+		textarea.style.opacity = '0';
+		document.body.appendChild(textarea);
+		textarea.select();
+		try {
+			document.execCommand('copy');
+			showStatusMessage('Copied to clipboard!', 'success');
+		} catch (err) {
+			showStatusMessage('Failed to copy to clipboard', 'error');
+		}
+		document.body.removeChild(textarea);
+	}
+}
+
+async function addNewAccount() {
+	const familyId = newAccountFamilyIdInput.value.trim();
+
+	if (familyId.length !== 64) {
+		showStatusMessage('The family ID must be exactly 64 characters long.', 'error');
+		return;
+	}
+
+	if (savedAccounts.find(acc => acc.familyId === familyId)) {
+		showStatusMessage('This account is already saved.', 'error');
+		return;
+	}
+
+	try {
+		const {
+			data,
+			error
+		} = await supabase
+			.from('families')
+			.select('display_name')
+			.eq('id', familyId)
+			.single();
+
+		if (error || !data) {
+			showStatusMessage('Invalid family ID. Please check the ID and try again.', 'error');
+			return;
+		}
+
+		const newAccount = {
+			id: generateAccountId(),
+			familyId: familyId,
+			displayName: data.display_name,
+			addedAt: new Date().toISOString()
+		};
+
+		savedAccounts.push(newAccount);
+		saveAccountsToStorage();
+		renderSavedAccounts();
+
+		showStatusMessage(`Account "${data.display_name}" has been added.`, 'success');
+		newAccountFamilyIdInput.value = '';
+
+	} catch (error) {
+		console.error('Error adding account:', error);
+		showStatusMessage('Error adding account.', 'error');
+	}
+}
+
+function switchToAccount(accountId) {
+	const account = savedAccounts.find(acc => acc.id === accountId);
+	if (!account) return;
+
+	currentAccountId = accountId;
+	saveAccountsToStorage();
+
+	familyIdInput.value = account.familyId;
+	handleLogin();
+
+	showStatusMessage(`Switched to account: ${account.displayName}`, 'success');
+	renderSavedAccounts();
+	updateCurrentAccountDisplay();
+}
+
+function removeAccount(accountId) {
+	if (confirm('Are you sure you want to remove this account?')) {
+		savedAccounts = savedAccounts.filter(acc => acc.id !== accountId);
+
+		if (currentAccountId === accountId) {
+			currentAccountId = null;
+		}
+
+		saveAccountsToStorage();
+		renderSavedAccounts();
+		updateCurrentAccountDisplay();
+
+		showStatusMessage('Account has been removed.', 'success');
+	}
+}
+
+function updateCurrentAccountDisplay() {
+	if (!currentAccountDisplay) return;
+
+	if (currentAccountId) {
+		const currentAccount = savedAccounts.find(acc => acc.id === currentAccountId);
+		if (currentAccount) {
+			currentAccountDisplay.textContent = `${currentAccount.displayName}`;
+			return;
+		}
+	}
+	currentAccountDisplay.textContent = 'No account selected';
+}
+
+function generateAccountId() {
+	return 'acc_' + Math.random().toString(36).substr(2, 9);
 }
 
 async function handleLogin() {
-    const familyId = familyIdInput.value.trim();
+	const familyId = familyIdInput.value.trim();
 
-    if (familyId.length !== 64) {
-        showLoginStatus('The family ID must be exactly 64 characters long.', 'error');
-        return;
-    }
+	if (familyId.length !== 64) {
+		showLoginStatus('The family ID must be exactly 64 characters long.', 'error');
+		return;
+	}
 
-    try {
-        const {
-            data,
-            error
-        } = await supabase
-            .from('families')
-            .select('*')
-            .eq('id', familyId)
-            .single();
+	try {
+		const {
+			data,
+			error
+		} = await supabase
+			.from('families')
+			.select('*')
+			.eq('id', familyId)
+			.single();
 
-        if (error || !data) {
-            showLoginStatus('Invalid family ID. Please check the ID and try again.', 'error');
-            return;
-        }
+		if (error || !data) {
+			showLoginStatus('Invalid family ID. Please check the ID and try again.', 'error');
+			return;
+		}
 
-        currentFamilyId = familyId;
-        currentFamilyData = data;
-        familyName.textContent = data.display_name;
-        loginScreen.style.display = 'none';
-        appScreen.style.display = 'block';
-        interacUserForm.classList.remove('hidden');
-        accountSwitcherBox.disabled = false;
+		currentFamilyId = familyId;
+		currentFamilyData = data;
+		familyName.textContent = data.display_name;
+		loginScreen.style.display = 'none';
+		appScreen.style.display = 'block';
+		interacUserForm.classList.remove('hidden');
+		accountSwitcherBox.disabled = false;
 
-        localStorage.setItem('familyId', familyId);
+		localStorage.setItem('familyId', familyId);
 
-        await loadUsers();
-        loadCurrentUser();
-        await loadCategories();
-        await loadItems();
-        setupRealtimeSubscription();
+		// Check if account exists and update/create it
+		let accountIndex = savedAccounts.findIndex(acc => acc.familyId === familyId);
+		const accountData = {
+			id: accountIndex >= 0 ? savedAccounts[accountIndex].id : generateAccountId(),
+			familyId: familyId,
+			displayName: data.display_name,
+			addedAt: accountIndex >= 0 ? savedAccounts[accountIndex].addedAt : new Date().toISOString()
+		};
 
-        startPeriodicUpdate();
+		if (accountIndex >= 0) {
+			savedAccounts[accountIndex] = accountData;
+		} else {
+			savedAccounts.push(accountData);
+		}
 
-        document.querySelector(".card-header").style.display = "block";
+		currentAccountId = accountData.id;
+		saveAccountsToStorage();
+		renderSavedAccounts();
+		updateCurrentAccountDisplay();
 
-    } catch (error) {
-        showLoginStatus('An error occurred. Please try again later.', 'error');
-        console.error('Login error:', error);
-    }
+		await loadUsers();
+		loadCurrentUser();
+		await loadCategories();
+		await loadItems();
+		setupRealtimeSubscription();
+
+		startPeriodicUpdate();
+
+		document.querySelector(".card-header").style.display = "block";
+
+	} catch (error) {
+		showLoginStatus('An error occurred. Please try again later.', 'error');
+		console.error('Login error:', error);
+	}
 }
 
 async function loadUsers() {
-    try {
-        console.log('Loading users for family:', currentFamilyId);
-        
-        const {
-            data,
-            error
-        } = await supabase
-            .from('users')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .order('display_name');
+	try {
+		console.log('Loading users for family:', currentFamilyId);
 
-        if (error) {
-            console.error('Error loading users:', error);
-            throw error;
-        }
+		const {
+			data,
+			error
+		} = await supabase
+			.from('users')
+			.select('*')
+			.eq('family_id', currentFamilyId)
+			.order('display_name');
 
-        users = data || [];
-        currentUsersHash = createDataHash(users);
-        
-        console.log('Loaded users:', users.map(u => ({ id: u.id, name: u.display_name })));
-        
-        updateUserDropdown();
+		if (error) {
+			console.error('Error loading users:', error);
+			throw error;
+		}
 
-    } catch (error) {
-        console.error('Error loading users:', error);
-        showStatusMessage('Error loading users.', 'error');
-        users = [];
-    }
+		users = data || [];
+		currentUsersHash = createDataHash(users);
+
+		console.log('Loaded users:', users.map(u => ({
+			id: u.id,
+			name: u.display_name
+		})));
+
+		updateUserDropdown();
+
+	} catch (error) {
+		console.error('Error loading users:', error);
+		showStatusMessage('Error loading users.', 'error');
+		users = [];
+	}
 }
 
 async function handleUserUpdates(newUsersData) {
-    console.log('Handling user updates. New data:', newUsersData);
-    
-    const oldCurrentUserId = currentUserId;
-    const newUsersHash = createDataHash(newUsersData);
-    currentUsersHash = newUsersHash;
-    users = newUsersData;
-    
-    if (oldCurrentUserId) {
-        const userStillExists = users.find(u => u.id === oldCurrentUserId);
-        if (!userStillExists) {
-            console.log('Current user was deleted, clearing selection');
-            currentUserId = null;
-            localStorage.removeItem('currentUserId');
-        }
-    }
-    
-    if (!currentUserId && users.length > 0) {
-        currentUserId = users[0].id;
-        localStorage.setItem('currentUserId', currentUserId);
-        console.log('Set first user as current after update:', users[0].display_name);
-    }
-    
-    updateUserDropdown();
-    updateCurrentUserDisplay();
-    updateTime.textContent = new Date().toLocaleTimeString();
+	console.log('Handling user updates. New data:', newUsersData);
+
+	const oldCurrentUserId = currentUserId;
+	const newUsersHash = createDataHash(newUsersData);
+	currentUsersHash = newUsersHash;
+	users = newUsersData;
+
+	if (oldCurrentUserId) {
+		const userStillExists = users.find(u => u.id === oldCurrentUserId);
+		if (!userStillExists) {
+			console.log('Current user was deleted, clearing selection');
+			currentUserId = null;
+			localStorage.removeItem('currentUserId');
+		}
+	}
+
+	if (!currentUserId && users.length > 0) {
+		currentUserId = users[0].id;
+		localStorage.setItem('currentUserId', currentUserId);
+		console.log('Set first user as current after update:', users[0].display_name);
+	}
+
+	updateUserDropdown();
+	updateCurrentUserDisplay();
+	updateTime.textContent = new Date().toLocaleTimeString();
 }
 
 function updateUserDropdown() {
-    if (!itemUserSelect) {
-        console.log('itemUserSelect element not found');
-        return;
-    }
-    
-    console.log('Updating user dropdown. Users:', users.length);
-    
-    itemUserSelect.innerHTML = '<option value="">Choose...</option>';
+	if (!itemUserSelect) {
+		console.log('itemUserSelect element not found');
+		return;
+	}
 
-    users.forEach(user => {
-        const option = document.createElement('option');
-        option.value = user.id;
-        option.textContent = user.display_name;
-        if (user.id === currentUserId) {
-            option.selected = true;
-        }
-        itemUserSelect.appendChild(option);
-    });
-    
-    console.log('User dropdown updated with', users.length, 'users');
+	console.log('Updating user dropdown. Users:', users.length);
+
+	itemUserSelect.innerHTML = '<option value="">Choose...</option>';
+
+	users.forEach(user => {
+		const option = document.createElement('option');
+		option.value = user.id;
+		option.textContent = user.display_name;
+		if (user.id === currentUserId) {
+			option.selected = true;
+		}
+		itemUserSelect.appendChild(option);
+	});
+
+	console.log('User dropdown updated with', users.length, 'users');
 }
 
 async function addUser() {
-    const name = newUserNameInput.value.trim();
+	const name = newUserNameInput.value.trim();
 
-    if (!name) {
-        showStatusMessage('Please enter a name for the user.', 'error');
-        return;
-    }
+	if (!name) {
+		showStatusMessage('Please enter a name for the user.', 'error');
+		return;
+	}
 
-    const duplicateUser = users.find(user => user.display_name.toLowerCase() === name.toLowerCase());
-    if (duplicateUser) {
-        showStatusMessage('A user with this name already exists.', 'error');
-        return;
-    }
+	const duplicateUser = users.find(user => user.display_name.toLowerCase() === name.toLowerCase());
+	if (duplicateUser) {
+		showStatusMessage('A user with this name already exists.', 'error');
+		return;
+	}
 
-    try {
-        const {
-            data,
-            error
-        } = await supabase
-            .from('users')
-            .insert([{
-                display_name: name,
-                family_id: currentFamilyId
-            }])
-            .select();
+	try {
+		const {
+			data,
+			error
+		} = await supabase
+			.from('users')
+			.insert([{
+				display_name: name,
+				family_id: currentFamilyId
+			}])
+			.select();
 
-        if (error) {
-            if (error.code === '23505') {
-                showStatusMessage('A user with this name already exists.', 'error');
-            } else {
-                throw error;
-            }
-            return;
-        }
+		if (error) {
+			if (error.code === '23505') {
+				showStatusMessage('A user with this name already exists.', 'error');
+			} else {
+				throw error;
+			}
+			return;
+		}
 
-        showStatusMessage(`User "${name}" has been added.`, 'success');
-        newUserNameInput.value = '';
-        await loadUsers();
+		showStatusMessage(`User "${name}" has been added.`, 'success');
+		newUserNameInput.value = '';
+		await loadUsers();
 
-        if (users.length === 1) {
-            setCurrentUser(data[0].id);
-        }
+		if (users.length === 1) {
+			setCurrentUser(data[0].id);
+		}
 
-    } catch (error) {
-        console.error('Error adding user:', error);
-        showStatusMessage('Error adding user.', 'error');
-    }
+	} catch (error) {
+		console.error('Error adding user:', error);
+		showStatusMessage('Error adding user.', 'error');
+	}
 }
 
 function loadCurrentUser() {
-    const savedUserId = localStorage.getItem('currentUserId');
-    
-    console.log('Loading current user. Saved ID:', savedUserId);
-    console.log('Available users:', users);
-    
-    if (savedUserId) {
-        const userExists = users.find(user => user.id === savedUserId);
-        if (userExists) {
-            currentUserId = savedUserId;
-            console.log('Current user restored:', userExists.display_name);
-        } else {
-            console.log('Saved user ID not found, clearing localStorage');
-            localStorage.removeItem('currentUserId');
-            currentUserId = null;
-        }
-    }
-    
-    if (!currentUserId && users.length > 0) {
-        currentUserId = users[0].id;
-        localStorage.setItem('currentUserId', currentUserId);
-        console.log('Set first available user as current:', users[0].display_name);
-    }
-    
-    updateCurrentUserDisplay();
-    updateUserDropdown();
+	const savedUserId = localStorage.getItem('currentUserId');
+
+	console.log('Loading current user. Saved ID:', savedUserId);
+	console.log('Available users:', users);
+
+	if (savedUserId) {
+		const userExists = users.find(user => user.id === savedUserId);
+		if (userExists) {
+			currentUserId = savedUserId;
+			console.log('Current user restored:', userExists.display_name);
+		} else {
+			console.log('Saved user ID not found, clearing localStorage');
+			localStorage.removeItem('currentUserId');
+			currentUserId = null;
+		}
+	}
+
+	if (!currentUserId && users.length > 0) {
+		currentUserId = users[0].id;
+		localStorage.setItem('currentUserId', currentUserId);
+		console.log('Set first available user as current:', users[0].display_name);
+	}
+
+	updateCurrentUserDisplay();
+	updateUserDropdown();
 }
 
 function setCurrentUser(userId) {
-    currentUserId = userId;
-    localStorage.setItem('currentUserId', userId);
-    updateCurrentUserDisplay();
-    updateUserDropdown();
+	currentUserId = userId;
+	localStorage.setItem('currentUserId', userId);
+	updateCurrentUserDisplay();
+	updateUserDropdown();
 }
 
 function updateCurrentUserDisplay() {
-    if (!currentUserDisplay) {
-        console.log('currentUserDisplay element not found');
-        return;
-    }
-    
-    console.log('Updating current user display. Current user ID:', currentUserId);
-    
-    if (currentUserId) {
-        const user = users.find(u => u.id === currentUserId);
-        if (user) {
-            currentUserDisplay.textContent = `Active User: ${user.display_name}`;
-            currentUserDisplay.style.display = 'block';
-            console.log('Displaying current user:', user.display_name);
-        } else {
-            console.log('Current user ID not found in users array');
-            currentUserDisplay.style.display = 'none';
-            currentUserId = null;
-            localStorage.removeItem('currentUserId');
-        }
-    } else {
-        console.log('No current user set');
-        currentUserDisplay.style.display = 'none';
-    }
+	if (!currentUserDisplay) {
+		console.log('currentUserDisplay element not found');
+		return;
+	}
+
+	console.log('Updating current user display. Current user ID:', currentUserId);
+
+	if (currentUserId) {
+		const user = users.find(u => u.id === currentUserId);
+		if (user) {
+			currentUserDisplay.textContent = `Active User: ${user.display_name}`;
+			currentUserDisplay.style.display = 'block';
+			console.log('Displaying current user:', user.display_name);
+		} else {
+			console.log('Current user ID not found in users array');
+			currentUserDisplay.style.display = 'none';
+			currentUserId = null;
+			localStorage.removeItem('currentUserId');
+		}
+	} else {
+		console.log('No current user set');
+		currentUserDisplay.style.display = 'none';
+	}
 }
 
 function handleLogout() {
-    console.log('Logging out and clearing all data');
-    
-    stopPeriodicUpdate();
+	console.log('Logging out and clearing all data');
 
-    currentFamilyId = null;
-    currentFamilyData = null;
-    categories = [];
-    users = [];
-    currentUserId = null;
+	stopPeriodicUpdate();
 
-    lastItemsUpdate = null;
-    lastCategoriesUpdate = null;
-    currentItemsHash = null;
-    currentCategoriesHash = null;
-    currentUsersHash = null;
-    itemsHashByCategory = {};
+	currentFamilyId = null;
+	currentFamilyData = null;
+	categories = [];
+	users = [];
+	currentUserId = null;
 
-    if (realtimeSubscription) {
-        supabase.removeChannel(realtimeSubscription);
-        realtimeSubscription = null;
-    }
+	lastItemsUpdate = null;
+	lastCategoriesUpdate = null;
+	currentItemsHash = null;
+	currentCategoriesHash = null;
+	currentUsersHash = null;
+	itemsHashByCategory = {};
 
-    localStorage.removeItem('familyId');
-    localStorage.removeItem('currentUserId');
+	savedAccounts = [];
+	currentAccountId = null;
+	localStorage.removeItem('savedAccounts');
+	localStorage.removeItem('currentAccountId');
 
-    appScreen.style.display = 'none';
-    loginScreen.style.display = 'block';
+	if (realtimeSubscription) {
+		supabase.removeChannel(realtimeSubscription);
+		realtimeSubscription = null;
+	}
 
-    familyIdInput.value = '';
+	localStorage.removeItem('familyId');
+	localStorage.removeItem('currentUserId');
 
-    connectionStatus.className = 'connection-status disconnected';
-    setTimeout(() => {
-        location.reload();
-    }, 100);
+	appScreen.style.display = 'none';
+	loginScreen.style.display = 'block';
+
+	familyIdInput.value = '';
+
+	connectionStatus.className = 'connection-status disconnected';
+	setTimeout(() => {
+		location.reload();
+	}, 100);
 }
 
 function showLoginStatus(message, type) {
-    loginStatus.textContent = message;
-    loginStatus.className = `status-message ${type}`;
-    loginStatus.style.display = 'block';
+	loginStatus.textContent = message;
+	loginStatus.className = `status-message ${type}`;
+	loginStatus.style.display = 'block';
 }
 
 function setupRealtimeSubscription() {
-    if (realtimeSubscription) {
-        supabase.removeChannel(realtimeSubscription);
-    }
+	if (realtimeSubscription) {
+		supabase.removeChannel(realtimeSubscription);
+	}
 
-    connectionStatus.className = 'connection-status connected';
+	connectionStatus.className = 'connection-status connected';
 
-    realtimeSubscription = supabase
-        .channel('family-changes')
-        .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'items',
-                filter: `family_id=eq.${currentFamilyId}`
-            },
-            (payload) => {
-                console.log('Realtime change received!', payload);
-                if (payload.eventType === 'DELETE' && payload.old?.category_id) {
-                    delete itemsHashByCategory[payload.old.category_id];
-                } else {
-                    itemsHashByCategory = {};
-                }
-                checkForUpdates();
-            }
-        )
-        .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'categories',
-                filter: `family_id=eq.${currentFamilyId}`
-            },
-            (payload) => {
-                console.log('Realtime change received!', payload);
-                currentCategoriesHash = null;
-                checkForUpdates();
-            }
-        )
-        .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'users',
-                filter: `family_id=eq.${currentFamilyId}`
-            },
-            (payload) => {
-                console.log('Users realtime change received!', payload);
-                currentUsersHash = null;
-                checkForUpdates();
-            }
-        )
-        .subscribe((status) => {
-            console.log('Realtime status:', status);
-            if (status === 'SUBSCRIBED') {
-                connectionStatus.className = 'connection-status connected';
-            } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-                connectionStatus.className = 'connection-status disconnected';
-            }
-        });
+	realtimeSubscription = supabase
+		.channel('family-changes')
+		.on('postgres_changes', {
+				event: '*',
+				schema: 'public',
+				table: 'items',
+				filter: `family_id=eq.${currentFamilyId}`
+			},
+			(payload) => {
+				console.log('Realtime change received!', payload);
+				if (payload.eventType === 'DELETE' && payload.old?.category_id) {
+					delete itemsHashByCategory[payload.old.category_id];
+				} else {
+					itemsHashByCategory = {};
+				}
+				checkForUpdates();
+			}
+		)
+		.on('postgres_changes', {
+				event: '*',
+				schema: 'public',
+				table: 'categories',
+				filter: `family_id=eq.${currentFamilyId}`
+			},
+			(payload) => {
+				console.log('Realtime change received!', payload);
+				currentCategoriesHash = null;
+				checkForUpdates();
+			}
+		)
+		.on('postgres_changes', {
+				event: '*',
+				schema: 'public',
+				table: 'users',
+				filter: `family_id=eq.${currentFamilyId}`
+			},
+			(payload) => {
+				console.log('Users realtime change received!', payload);
+				currentUsersHash = null;
+				checkForUpdates();
+			}
+		)
+		.subscribe((status) => {
+			console.log('Realtime status:', status);
+			if (status === 'SUBSCRIBED') {
+				connectionStatus.className = 'connection-status connected';
+			} else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+				connectionStatus.className = 'connection-status disconnected';
+			}
+		});
 }
 
 function updateCategoryDropdown() {
-    itemCategorySelect.innerHTML = '<option value="">Choose...</option>';
+	itemCategorySelect.innerHTML = '<option value="">Choose...</option>';
 
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = category.name;
-        itemCategorySelect.appendChild(option);
-    });
+	categories.forEach(category => {
+		const option = document.createElement('option');
+		option.value = category.id;
+		option.textContent = category.name;
+		itemCategorySelect.appendChild(option);
+	});
 }
 
 async function loadCategories() {
-    try {
-        const {
-            data,
-            error
-        } = await supabase
-            .from('categories')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .order('name');
+	try {
+		const {
+			data,
+			error
+		} = await supabase
+			.from('categories')
+			.select('*')
+			.eq('family_id', currentFamilyId)
+			.order('name');
 
-        if (error) {
-            throw error;
-        }
+		if (error) {
+			throw error;
+		}
 
-        categories = data || [];
+		categories = data || [];
 
-        currentCategoriesHash = createDataHash(categories);
+		currentCategoriesHash = createDataHash(categories);
 
-        updateCategoryDropdown();
+		updateCategoryDropdown();
 
-        categories.forEach(category => {
-            itemsHashByCategory[category.id] = null;
-        });
+		categories.forEach(category => {
+			itemsHashByCategory[category.id] = null;
+		});
 
-    } catch (error) {
-        console.error('Error loading categories:', error);
-        showStatusMessage('Error loading categories.', 'error');
-    }
+	} catch (error) {
+		console.error('Error loading categories:', error);
+		showStatusMessage('Error loading categories.', 'error');
+	}
 }
 
 async function addCategory() {
-    const name = newCategoryNameInput.value.trim();
+	const name = newCategoryNameInput.value.trim();
 
-    if (!name) {
-        showStatusMessage('Please enter a name for the category.', 'error');
-        return;
-    }
+	if (!name) {
+		showStatusMessage('Please enter a name for the category.', 'error');
+		return;
+	}
 
-    const duplicateCategory = categories.find(cat => cat.name.toLowerCase() === name.toLowerCase());
-    if (duplicateCategory) {
-        showStatusMessage('A category with this name already exists.', 'error');
-        return;
-    }
+	const duplicateCategory = categories.find(cat => cat.name.toLowerCase() === name.toLowerCase());
+	if (duplicateCategory) {
+		showStatusMessage('A category with this name already exists.', 'error');
+		return;
+	}
 
-    try {
-        const {
-            data,
-            error
-        } = await supabase
-            .from('categories')
-            .insert([{
-                name: name,
-                family_id: currentFamilyId
-            }])
-            .select();
+	try {
+		const {
+			data,
+			error
+		} = await supabase
+			.from('categories')
+			.insert([{
+				name: name,
+				family_id: currentFamilyId
+			}])
+			.select();
 
-        if (error) {
-            if (error.code === '23505') {
-                showStatusMessage('A category with this name already exists.', 'error');
-            } else {
-                throw error;
-            }
-            return;
-        }
+		if (error) {
+			if (error.code === '23505') {
+				showStatusMessage('A category with this name already exists.', 'error');
+			} else {
+				throw error;
+			}
+			return;
+		}
 
-        showStatusMessage(`Category "${name}" has been added.`, 'success');
+		showStatusMessage(`Category "${name}" has been added.`, 'success');
 
-        newCategoryNameInput.value = '';
+		newCategoryNameInput.value = '';
 
-        await loadCategories();
-        await loadItems();
+		await loadCategories();
+		await loadItems();
 
-    } catch (error) {
-        console.error('Error adding category:', error);
-        showStatusMessage('Error adding category.', 'error');
-    }
+	} catch (error) {
+		console.error('Error adding category:', error);
+		showStatusMessage('Error adding category.', 'error');
+	}
 }
 
 function renderItems(items) {
-    const itemsByCategory = {};
+	const itemsByCategory = {};
 
-    categories.forEach(category => {
-        itemsByCategory[category.name] = {
-            items: [],
-            categoryId: category.id
-        };
-    });
+	categories.forEach(category => {
+		itemsByCategory[category.name] = {
+			items: [],
+			categoryId: category.id
+		};
+	});
 
-    if (items) {
-        items.forEach(item => {
-            const categoryName = item.category?.name || 'Uncategorized';
-            if (!itemsByCategory[categoryName]) {
-                itemsByCategory[categoryName] = {
-                    items: [],
-                    categoryId: null
-                };
-            }
-            itemsByCategory[categoryName].items.push(item);
-        });
-    }
+	if (items) {
+		items.forEach(item => {
+			const categoryName = item.category?.name || 'Uncategorized';
+			if (!itemsByCategory[categoryName]) {
+				itemsByCategory[categoryName] = {
+					items: [],
+					categoryId: null
+				};
+			}
+			itemsByCategory[categoryName].items.push(item);
+		});
+	}
 
-    categoryList.innerHTML = '<div id="emptyCatList" style="text-align: center; width: 100%"><p>No categories or items added yet</p><p>Add an item or category with "<i class="fas fa-plus"></i>".</p></div>';
+	categoryList.innerHTML = '<div id="emptyCatList" style="text-align: center; width: 100%"><p>No categories or items added yet</p><p>Add an item or category with "<i class="fas fa-plus"></i>".</p></div>';
 
-    for (const categoryName in itemsByCategory) {
-        document.getElementById("emptyCatList").style.display = 'none';
-        const categoryData = itemsByCategory[categoryName];
-        const categoryCard = document.createElement('div');
-        categoryCard.className = 'category-card';
-        categoryCard.dataset.categoryId = categoryData.categoryId;
+	for (const categoryName in itemsByCategory) {
+		document.getElementById("emptyCatList").style.display = 'none';
+		const categoryData = itemsByCategory[categoryName];
+		const categoryCard = document.createElement('div');
+		categoryCard.className = 'category-card';
+		categoryCard.dataset.categoryId = categoryData.categoryId;
 
-        const categoryHeader = document.createElement('div');
-        categoryHeader.className = 'category-header';
+		const categoryHeader = document.createElement('div');
+		categoryHeader.className = 'category-header';
 
-        const categoryTitle = document.createElement('h4');
-        categoryTitle.textContent = categoryName;
+		const categoryTitle = document.createElement('h4');
+		categoryTitle.textContent = categoryName;
 
-        if (categoryName !== 'Uncategorized' && categoryData.categoryId) {
-            const deleteCategoryBtn = document.createElement('button');
-            deleteCategoryBtn.className = 'btn-delete-category';
-            deleteCategoryBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
-            deleteCategoryBtn.title = 'Delete category';
-            categoryHeader.appendChild(categoryTitle);
-            categoryHeader.appendChild(deleteCategoryBtn);
-        } else {
-            categoryHeader.appendChild(categoryTitle);
-        }
+		if (categoryName !== 'Uncategorized' && categoryData.categoryId) {
+			const deleteCategoryBtn = document.createElement('button');
+			deleteCategoryBtn.className = 'btn-delete-category';
+			deleteCategoryBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
+			deleteCategoryBtn.title = 'Delete category';
+			categoryHeader.appendChild(categoryTitle);
+			categoryHeader.appendChild(deleteCategoryBtn);
+		} else {
+			categoryHeader.appendChild(categoryTitle);
+		}
 
-        categoryCard.appendChild(categoryHeader);
+		categoryCard.appendChild(categoryHeader);
 
-        const itemsList = document.createElement('ul');
-        itemsList.className = 'items-list';
+		const itemsList = document.createElement('ul');
+		itemsList.className = 'items-list';
 
-        if (categoryData.items.length === 0) {
-            const emptyMessage = document.createElement('li');
-            emptyMessage.className = 'empty-category';
-            emptyMessage.textContent = 'No items in this category';
-            itemsList.appendChild(emptyMessage);
-        } else {
-            categoryData.items.forEach(item => {
-                const listItem = createItemElement(item);
-                itemsList.appendChild(listItem);
-            });
-        }
+		if (categoryData.items.length === 0) {
+			const emptyMessage = document.createElement('li');
+			emptyMessage.className = 'empty-category';
+			emptyMessage.textContent = 'No items in this category';
+			itemsList.appendChild(emptyMessage);
+		} else {
+			categoryData.items.forEach(item => {
+				const listItem = createItemElement(item);
+				itemsList.appendChild(listItem);
+			});
+		}
 
-        categoryCard.appendChild(itemsList);
-        categoryList.appendChild(categoryCard);
+		categoryCard.appendChild(itemsList);
+		categoryList.appendChild(categoryCard);
 
-        setTimeout(() => {
-            categoryCard.classList.add('fadeIn');
+		setTimeout(() => {
+			categoryCard.classList.add('fadeIn');
 
-            setTimeout(() => {
-                categoryCard.classList.remove('fadeIn');
-                categoryCard.classList.add('animated');
-            }, 600);
-        }, 50);
-    }
+			setTimeout(() => {
+				categoryCard.classList.remove('fadeIn');
+				categoryCard.classList.add('animated');
+			}, 600);
+		}, 50);
+	}
 }
 
 async function loadItems() {
-    try {
-        const {
-            data: items,
-            error
-        } = await supabase
-            .from('items')
-            .select(`
+	try {
+		const {
+			data: items,
+			error
+		} = await supabase
+			.from('items')
+			.select(`
                 *,
                 category:categories(name),
                 user:users(display_name)
             `)
-            .eq('family_id', currentFamilyId)
-            .order('created_at', {
-                ascending: false
-            });
+			.eq('family_id', currentFamilyId)
+			.order('created_at', {
+				ascending: false
+			});
 
-        if (error) {
-            throw error;
-        }
+		if (error) {
+			throw error;
+		}
 
-        const itemsByCategory = {};
-        categories.forEach(category => {
-            itemsByCategory[category.id] = [];
-        });
+		const itemsByCategory = {};
+		categories.forEach(category => {
+			itemsByCategory[category.id] = [];
+		});
 
-        if (items) {
-            items.forEach(item => {
-                const categoryId = item.category_id || 'uncategorized';
-                if (!itemsByCategory[categoryId]) {
-                    itemsByCategory[categoryId] = [];
-                }
-                itemsByCategory[categoryId].push(item);
-            });
-        }
+		if (items) {
+			items.forEach(item => {
+				const categoryId = item.category_id || 'uncategorized';
+				if (!itemsByCategory[categoryId]) {
+					itemsByCategory[categoryId] = [];
+				}
+				itemsByCategory[categoryId].push(item);
+			});
+		}
 
-        for (const categoryId in itemsByCategory) {
-            itemsHashByCategory[categoryId] = createDataHash(itemsByCategory[categoryId]);
-        }
+		for (const categoryId in itemsByCategory) {
+			itemsHashByCategory[categoryId] = createDataHash(itemsByCategory[categoryId]);
+		}
 
-        renderItems(items);
+		renderItems(items);
 
-        updateTime.textContent = new Date().toLocaleTimeString();
+		updateTime.textContent = new Date().toLocaleTimeString();
 
-    } catch (error) {
-        console.error('Error loading items:', error);
-        showStatusMessage('Error loading shopping list.', 'error');
-    }
+	} catch (error) {
+		console.error('Error loading items:', error);
+		showStatusMessage('Error loading shopping list.', 'error');
+	}
 }
 
 async function addItem() {
-    const name = itemNameInput.value.trim();
-    const categoryId = itemCategorySelect.value;
-    const quantity = parseInt(itemQuantityInput.value) || 1;
-    const userId = itemUserSelect.value || currentUserId;
+	const name = itemNameInput.value.trim();
+	const categoryId = itemCategorySelect.value;
+	const quantity = parseInt(itemQuantityInput.value) || 1;
+	const userId = itemUserSelect.value || currentUserId;
 
-    if (!name) {
-        showStatusMessage('Please enter a name for the item.', 'error');
-        return;
-    }
+	if (!name) {
+		showStatusMessage('Please enter a name for the item.', 'error');
+		return;
+	}
 
-    if (!categoryId) {
-        showStatusMessage('Please select a category.', 'error');
-        return;
-    }
+	if (!categoryId) {
+		showStatusMessage('Please select a category.', 'error');
+		return;
+	}
 
-    if (!userId) {
-        showStatusMessage('Please select a user.', 'error');
-        return;
-    }
+	if (!userId) {
+		showStatusMessage('Please select a user.', 'error');
+		return;
+	}
 
-    try {
-        const {
-            data,
-            error
-        } = await supabase
-            .from('items')
-            .insert([{
-                name: name,
-                category_id: categoryId,
-                family_id: currentFamilyId,
-                quantity: quantity,
-                user_id: userId,
-                done: false
-            }])
-            .select();
+	try {
+		const {
+			data,
+			error
+		} = await supabase
+			.from('items')
+			.insert([{
+				name: name,
+				category_id: categoryId,
+				family_id: currentFamilyId,
+				quantity: quantity,
+				user_id: userId,
+				done: false
+			}])
+			.select();
 
-        if (error) {
-            throw error;
-        }
+		if (error) {
+			throw error;
+		}
 
-        showStatusMessage(`"${name}" has been added to the shopping list.`, 'success');
+		showStatusMessage(`"${name}" has been added to the shopping list.`, 'success');
 
-        if (userId !== currentUserId) {
-            setCurrentUser(userId);
-        }
+		if (userId !== currentUserId) {
+			setCurrentUser(userId);
+		}
 
-        itemNameInput.value = '';
-        itemQuantityInput.value = '1';
+		itemNameInput.value = '';
+		itemQuantityInput.value = '1';
 
-        await updateCategoryItems(categoryId);
+		await updateCategoryItems(categoryId);
 
-    } catch (error) {
-        console.error('Error adding item:', error);
-        showStatusMessage('Error adding item.', 'error');
-    }
+	} catch (error) {
+		console.error('Error adding item:', error);
+		showStatusMessage('Error adding item.', 'error');
+	}
 }
 
 async function deleteItem(itemId) {
-    try {
-        const {
-            data: item,
-            error: fetchError
-        } = await supabase
-            .from('items')
-            .select('category_id')
-            .eq('id', itemId)
-            .single();
+	try {
+		const {
+			data: item,
+			error: fetchError
+		} = await supabase
+			.from('items')
+			.select('category_id')
+			.eq('id', itemId)
+			.single();
 
-        if (fetchError) throw fetchError;
+		if (fetchError) throw fetchError;
 
-        const categoryId = item.category_id;
+		const categoryId = item.category_id;
 
-        const {
-            error
-        } = await supabase
-            .from('items')
-            .delete()
-            .eq('id', itemId);
+		const {
+			error
+		} = await supabase
+			.from('items')
+			.delete()
+			.eq('id', itemId);
 
-        if (error) {
-            throw error;
-        }
+		if (error) {
+			throw error;
+		}
 
-        await updateCategoryItems(categoryId);
+		await updateCategoryItems(categoryId);
 
-    } catch (error) {
-        console.error('Error deleting item:', error);
-        showStatusMessage('Error deleting item.', 'error');
-    }
+	} catch (error) {
+		console.error('Error deleting item:', error);
+		showStatusMessage('Error deleting item.', 'error');
+	}
 }
 
 async function deleteCategory(categoryId) {
-    try {
-        const {
-            error: itemsError
-        } = await supabase
-            .from('items')
-            .delete()
-            .eq('category_id', categoryId);
+	try {
+		const {
+			error: itemsError
+		} = await supabase
+			.from('items')
+			.delete()
+			.eq('category_id', categoryId);
 
-        if (itemsError) {
-            throw itemsError;
-        }
+		if (itemsError) {
+			throw itemsError;
+		}
 
-        const {
-            error: categoryError
-        } = await supabase
-            .from('categories')
-            .delete()
-            .eq('id', categoryId);
+		const {
+			error: categoryError
+		} = await supabase
+			.from('categories')
+			.delete()
+			.eq('id', categoryId);
 
-        if (categoryError) {
-            throw categoryError;
-        }
+		if (categoryError) {
+			throw categoryError;
+		}
 
-        showStatusMessage('Category has been successfully deleted.', 'success');
+		showStatusMessage('Category has been successfully deleted.', 'success');
 
-        await loadCategories();
-        await loadItems();
+		await loadCategories();
+		await loadItems();
 
-    } catch (error) {
-        console.error('Error deleting category:', error);
-        showStatusMessage('Error deleting category.', 'error');
-    }
+	} catch (error) {
+		console.error('Error deleting category:', error);
+		showStatusMessage('Error deleting category.', 'error');
+	}
 }
 
 async function toggleItemDone(itemId, done) {
-    try {
-        const {
-            error
-        } = await supabase
-            .from('items')
-            .update({
-                done: done
-            })
-            .eq('id', itemId);
+	try {
+		const {
+			error
+		} = await supabase
+			.from('items')
+			.update({
+				done: done
+			})
+			.eq('id', itemId);
 
-        if (error) {
-            throw error;
-        }
+		if (error) {
+			throw error;
+		}
 
-        const itemElement = document.querySelector(`.item[data-id="${itemId}"]`);
-        if (itemElement) {
-            if (done) {
-                itemElement.classList.add('done');
-            } else {
-                itemElement.classList.remove('done');
-            }
-        }
+		const itemElement = document.querySelector(`.item[data-id="${itemId}"]`);
+		if (itemElement) {
+			if (done) {
+				itemElement.classList.add('done');
+			} else {
+				itemElement.classList.remove('done');
+			}
+		}
 
-    } catch (error) {
-        console.error('Error toggling item done status:', error);
-        showStatusMessage('Error updating item status.', 'error');
-    }
+	} catch (error) {
+		console.error('Error toggling item done status:', error);
+		showStatusMessage('Error updating item status.', 'error');
+	}
 }
 
 async function updateCategoryItems(categoryId) {
-    try {
-        const {
-            data: items,
-            error
-        } = await supabase
-            .from('items')
-            .select(`
+	try {
+		const {
+			data: items,
+			error
+		} = await supabase
+			.from('items')
+			.select(`
                 *,
                 category:categories(name),
                 user:users(display_name)
             `)
-            .eq('category_id', categoryId)
-            .order('created_at', {
-                ascending: false
-            });
+			.eq('category_id', categoryId)
+			.order('created_at', {
+				ascending: false
+			});
 
-        if (error) throw error;
+		if (error) throw error;
 
-        itemsHashByCategory[categoryId] = createDataHash(items || []);
+		itemsHashByCategory[categoryId] = createDataHash(items || []);
 
-        const categoryCard = document.querySelector(`[data-category-id="${categoryId}"]`);
-        if (categoryCard) {
-            const itemsList = categoryCard.querySelector('.items-list');
-            if (itemsList) {
-                itemsList.innerHTML = '';
+		const categoryCard = document.querySelector(`[data-category-id="${categoryId}"]`);
+		if (categoryCard) {
+			const itemsList = categoryCard.querySelector('.items-list');
+			if (itemsList) {
+				itemsList.innerHTML = '';
 
-                if (!items || items.length === 0) {
-                    const emptyMessage = document.createElement('li');
-                    emptyMessage.className = 'empty-category';
-                    emptyMessage.textContent = 'No items in this category';
-                    itemsList.appendChild(emptyMessage);
-                } else {
-                    items.forEach(item => {
-                        const listItem = createItemElement(item);
-                        itemsList.appendChild(listItem);
-                    });
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Error updating category items:', error);
-        showStatusMessage('Error updating category.', 'error');
-    }
+				if (!items || items.length === 0) {
+					const emptyMessage = document.createElement('li');
+					emptyMessage.className = 'empty-category';
+					emptyMessage.textContent = 'No items in this category';
+					itemsList.appendChild(emptyMessage);
+				} else {
+					items.forEach(item => {
+						const listItem = createItemElement(item);
+						itemsList.appendChild(listItem);
+					});
+				}
+			}
+		}
+	} catch (error) {
+		console.error('Error updating category items:', error);
+		showStatusMessage('Error updating category.', 'error');
+	}
 }
 
 if (itemUserSelect) {
-    itemUserSelect.addEventListener('change', function() {
-        const selectedUserId = this.value;
-        if (selectedUserId && selectedUserId !== currentUserId) {
-            setCurrentUser(selectedUserId);
-        }
-    });
+	itemUserSelect.addEventListener('change', function() {
+		const selectedUserId = this.value;
+		if (selectedUserId && selectedUserId !== currentUserId) {
+			setCurrentUser(selectedUserId);
+		}
+	});
 }
 
 window.addEventListener('blur', function() {
-    lastHiddenTime = Date.now();
+	lastHiddenTime = Date.now();
 });
 
 function loadSplashScreenSettings() {
-    const savedSetting = localStorage.getItem('splashScreenEnabled');
-    if (savedSetting !== null) {
-        splashScreenEnabled = savedSetting === 'true';
-    } else {
-        splashScreenEnabled = true;
-    }
-    
-    if (!splashScreenEnabled && splashScreen) {
-        splashScreen.classList.add('isHidden');
-        isSplashVisible = false;
-    }
-    
-    updateSplashScreenButton();
+	const savedSetting = localStorage.getItem('splashScreenEnabled');
+	if (savedSetting !== null) {
+		splashScreenEnabled = savedSetting === 'true';
+	} else {
+		splashScreenEnabled = true;
+	}
+
+	if (!splashScreenEnabled && splashScreen) {
+		splashScreen.classList.add('isHidden');
+		isSplashVisible = false;
+	}
+
+	updateSplashScreenButton();
 }
 
 function saveSplashScreenSettings() {
-    localStorage.setItem('splashScreenEnabled', splashScreenEnabled.toString());
+	localStorage.setItem('splashScreenEnabled', splashScreenEnabled.toString());
 }
 
 function updateSplashScreenButton() {
-    if (hideLogoAnimBtn) {
-        hideLogoAnimBtn.textContent = splashScreenEnabled ? 'Disable Logo Animation' : 'Enable Logo Animation';
-        hideLogoAnimBtn.classList.toggle('disabled', !splashScreenEnabled);
-    }
+	if (hideLogoAnimBtn) {
+		hideLogoAnimBtn.textContent = splashScreenEnabled ? 'Disable Logo Animation' : 'Enable Logo Animation';
+		hideLogoAnimBtn.classList.toggle('disabled', !splashScreenEnabled);
+	}
 }
 
 function toggleSplashScreen() {
-    splashScreenEnabled = !splashScreenEnabled;
-    saveSplashScreenSettings();
-    updateSplashScreenButton();
-    
-    const message = splashScreenEnabled ? 
-        'Logo animation enabled' : 
-        'Logo animation disabled';
-    showStatusMessage(message, 'success');
+	splashScreenEnabled = !splashScreenEnabled;
+	saveSplashScreenSettings();
+	updateSplashScreenButton();
+
+	const message = splashScreenEnabled ?
+		'Logo animation enabled' :
+		'Logo animation disabled';
+	showStatusMessage(message, 'success');
 }
 
 function showSplashScreen() {
-    if (!splashScreenEnabled) {
-        console.log('Splash screen is disabled by user');
-        return;
-    }
+	if (!splashScreenEnabled) {
+		console.log('Splash screen is disabled by user');
+		return;
+	}
 
-    if (isSplashVisible) return;
+	if (isSplashVisible) return;
 
-    isSplashVisible = true;
-    splashScreen.classList.remove('isHidden');
+	isSplashVisible = true;
+	splashScreen.classList.remove('isHidden');
+	document.documentElement.classList.add('no-scroll');
+	document.body.classList.add('no-scroll');
 
-    setTimeout(() => {
-        splashScreen.classList.add('isHidden');
-        isSplashVisible = false;
-    }, LOG_TIMEOUT);
+	setTimeout(() => {
+		splashScreen.classList.add('isHidden');
+		document.documentElement.classList.remove('no-scroll');
+		document.body.classList.remove('no-scroll');
+		isSplashVisible = false;
+	}, LOG_TIMEOUT);
 }
 
 if (hideLogoAnimBtn) {
-    hideLogoAnimBtn.addEventListener('click', toggleSplashScreen);
+	hideLogoAnimBtn.addEventListener('click', toggleSplashScreen);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadSplashScreenSettings();
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const authId = urlParams.get('auth_id');
-    if (authId && authId.length === 64) {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            console.log('URL copied to clipboard');
-        }).catch(err => {
-            console.error('Failed to copy URL:', err);
-        });
-        familyIdInput.value = authId;
-        handleLogin();
-        window.history.replaceState({}, document.title, window.location.pathname);
-        setTimeout(() => {
-            location.reload();
-        }, REFRESH_TIMEOUT);
-    }
-
-    if (splashScreenEnabled) {
-        showSplashScreen();
-    }
-
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            lastHiddenTime = Date.now();
-        } else {
-            const timeAway = Date.now() - lastHiddenTime;
-            if (timeAway > 1000) {
-                showSplashScreen();
-            }
-        }
-    });
-
-    const userAgent = navigator.userAgent;
-    const isChrome = /Chrome/i.test(userAgent) && !/Edge/i.test(userAgent);
-    const isEdge = /Edge/i.test(userAgent);
-    const isFirefox = /Firefox/i.test(userAgent);
-    const isSafari = /Safari/i.test(userAgent) && !/Chrome/i.test(userAgent);
-    const isAndroid = /Android/i.test(userAgent);
-    const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
-
-    if (isAndroid && isChrome) {
-        document.querySelector('[data-platform="android"]').click();
-    } else if (isIOS && isSafari) {
-        document.querySelector('[data-platform="safari"]').click();
-    } else if (isFirefox) {
-        document.querySelector('[data-platform="firefox"]').click();
-    } else if (isChrome || isEdge) {
-        document.querySelector('[data-platform="chrome"]').click();
-    }
-});
-
 document.addEventListener('resume', function() {
-    showSplashScreen();
+	showSplashScreen();
 });
 
 platformButtons.forEach(button => {

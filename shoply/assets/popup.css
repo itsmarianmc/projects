@@ -1,16 +1,25 @@
 :root {
-	--bg-card: rgba(30, 30, 45, 0.6);
-	--bg-secondary: #1a1a2e;
-	--border-glass: rgba(255, 255, 255, 0.1);
+	--accent-primary: #10B981;
+	--accent-secondary: #059669;
+	--bg-card: rgba(30, 30, 46, 0.5);
+	--bg-glass: rgba(240, 240, 240, 0.5);
+	--bg-primary: #0A0A0A;
+	--bg-secondary: #151515;
+	--border-glass: rgba(255, 255, 255, 0.08);
 	--border-radius: 12px;
-	--dsgn-b: #5fc7ff;
-	--dsgn-g: #4CAF50;
-	--dsgn-p: #de1dbe;
-	--dsgn-p-light: #ff5aeb;
-	--shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-	--text-primary: #ffffff;
-	--text-secondary: #a0aec0;
+	--dsgn-b: #10B981;
+	--dsgn-b-light: #6EE7B7;
+	--dsgn-g: #10B981;
+	--dsgn-g-light: #A7F3D0;
+	--dsgn-p: #10B981;
+	--dsgn-p-light: #6EE7B7;
+	--shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+	--shadow-splash: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--text-primary: #FAFAFA;
+	--text-secondary: #A3A3A3;
 	--transition: all 0.3s ease;
+	--body-padding: 2rem;
+	--dark-bg: #0A0A0A;
 }
 
 .container {
@@ -73,7 +82,7 @@
 }
 
 .logo {
-	background: linear-gradient(45deg, var(--dsgn-b), var(--dsgn-p));
+	background: linear-gradient(45deg, var(--dsgn-b), var(--dsgn-b-light));
 	background-clip: text;
 	font-weight: 700;
 	margin-bottom: 1rem;
@@ -136,7 +145,7 @@
 }
 
 .btn-primary {
-	background: linear-gradient(45deg, var(--dsgn-b), var(--dsgn-p));
+	background: linear-gradient(45deg, var(--dsgn-b), var(--dsgn-b-light));
 	box-shadow: 0 4px 20px rgba(95, 199, 255, 0.3);
 	color: white;
 }
@@ -198,7 +207,7 @@
 }
 
 .feature-card::before {
-	background: linear-gradient(90deg, var(--dsgn-b), var(--dsgn-p));
+	background: linear-gradient(90deg, var(--dsgn-b), var(--dsgn-b-light));
 	content: '';
 	height: 3px;
 	left: 0;
@@ -224,7 +233,6 @@
 	line-height: 1.6;
 }
 
-/* Tutorial Section */
 .return-btn {
 	position: relative;
 	margin: 16px 0px 16px 0px !important;
@@ -424,7 +432,6 @@
 	margin-bottom: 1rem;
 }
 
-/* How It Works Section */
 .how-it-works {
 	background: rgba(20, 20, 30, 0.3);
 	margin: 2rem 0 0rem 0;
@@ -448,7 +455,7 @@
 }
 
 .how-it-works .step-number {
-	background: linear-gradient(45deg, var(--dsgn-b), var(--dsgn-p));
+	background: linear-gradient(45deg, var(--dsgn-b), var(--dsgn-b-light));
 	font-size: 1.5rem;
 	height: 60px;
 	margin: 0 auto 1rem;
@@ -464,7 +471,6 @@
 	line-height: 1.5;
 }
 
-/* Demo Section */
 .demo-section {
 	margin: 0 auto;
 	max-width: 800px;
@@ -504,7 +510,6 @@
 	color: white;
 }
 
-/* Animations & Effects */
 @keyframes fadeInUp {
 	from {
 		opacity: 0;
@@ -541,7 +546,6 @@
 	}
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
 	.platform-selector {
 		align-items: center;
