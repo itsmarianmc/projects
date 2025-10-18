@@ -109,3 +109,9 @@ h1 {
 	width: 0.8rem;
 	height: 100%
 }
+
+@media (max-width: 480px) {
+	.glass-container {
+		background: rgba(31, 61, 95, 0.67);
+	}
+}
