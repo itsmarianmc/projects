@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>JADR - 3D Dice Roller</title>
+	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/fonts/font-awesome-6.7.2/css/all.min.css">
+	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/variables.css">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+	<link rel="stylesheet" href="styles.css">
+	<meta name="author" content="itsmarian">
+	<meta name="title" content="3D Dice Roller">
+	<meta name="description" content="Just a dice roller (JADR) is a simple dice roller which gives the result as a number to use it in other projects!">
+	<meta name="keywords" content="shopping app, shopping list, shoply, shopping app, cloud list, online shopping list">
+	<meta name="referrer" content="no-referrer">
+	<meta name="robots" content="index, follow">
+	<meta property="og:title" content="3D Dice Roller">
+	<meta property="og:type" content="website">
+	<meta property="og:description" content="Just a dice roller (JADR) is a simple dice roller which gives the result as a number to use it in other projects!">
+	<meta property="og:image" content="https://projects.itsmarian.is-a.dev/dice-roller/favicon.png">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://projects.itsmarian.is-a.dev/dice-roller?utm_src=og_link">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://projects.itsmarian.is-a.dev/assets/icons/favicon.png">
+	<!-- PWA -->
+	<link rel="manifest" href="manifest.json">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<meta name="apple-mobile-web-app-title" content="3D Dice Roller">
+	<link rel="apple-touch-icon" href="/shoply/assets/icons/favicon.png">
+	<meta name="msapplication-TileImage" content="/shoply/assets/icons/favicon.png">
+	<meta name="msapplication-TileColor" content="#121212">
+	<meta name="theme-color" content="#121212">
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCKLQD6DJY"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+		gtag('config', 'G-ZCKLQD6DJY');
+	</script>
+</head>
+<body>
+    <div class="container">
+        <div class="cube" id="cube">
+            <div class="face front">
+                <div class="pins">
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                </div>
+            </div>
+            <div class="face back">
+                <div class="pins">
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                </div>
+            </div>
+            <div class="face right">
+                <div class="pins">
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                </div>
+            </div>
+            <div class="face left">
+                <div class="pins">
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                </div>
+            </div>
+            <div class="face top">
+                <div class="pins">
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                </div>
+            </div>
+            <div class="face bottom">
+                <div class="pins">
+                    <div class="pin active"></div>
+                    <div class="pin "></div>
+                    <div class="pin active"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                    <div class="pin active"></div>
+                    <div class="pin"></div>
+                    <div class="pin active"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="diceBtn">&#127922; Roll dice</button>
+    <div style="display: none;">
+        Sound Effect by <a href="https://pixabay.com/de/users/freesound_community-46691455/">freesound_community</a> from Pixabay
+        <br>
+        Sound Effect by <a href="https://pixabay.com/users/dheerajakam4jor-36410348/">Dheeraj M4JOR</a> from Pixabay
+    </div>
+    <div class="result" id="result"></div>
+    <script src="script.js"></script>
+</body>
+</html>
