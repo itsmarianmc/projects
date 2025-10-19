@@ -52,8 +52,8 @@ function rollDice() {
 	const randomIndex = Math.floor(Math.random() * 6);
 	const rotation = rotations[randomIndex];
 
-	const finalX = rotation.x + (360 * randomIndex);
-	const finalY = rotation.y + (360 * randomIndex);
+	const finalX = rotation.x + (360 * randomIndex) + 30;
+	const finalY = rotation.y + (360 * randomIndex) + 30;
 
     container.classList.add('rolling');
 	cube.style.transform = `rotateX(${finalX}deg) rotateY(${finalY}deg)`;
