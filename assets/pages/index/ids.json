@@ -68,6 +68,9 @@
 							"/elementarium": {
 								"id": "d2Lm"
 							},
+							"/flashcard-master": {
+								"id": "28sd"
+							},
 							"/hydrotrack": {
 								"id": "Bq0f"
 							},
@@ -77,14 +80,32 @@
 							"/ios-clock-tools": {
 								"id": "mY9C"
 							},
+							"/jadr": {
+								"id": "ep30"
+							},
+							"/mediaplayer": {
+								"id": "201d"
+							},
+							"/memoflow": {
+								"id": "3k32"
+							},
 							"/ntrack": {
 								"id": "Vb7p"
 							},
 							"/royalmatch": {
 								"id": "T4qA"
 							},
+							"/shoply": {
+								"id": "2ore"
+							},
+							"/simple-clock-display": {
+								"id": "1her"
+							},
 							"/sonicbloom": {
 								"id": "Rj6n"
+							},
+							"/word-clock": {
+								"id": "3dme"
 							}
 						}
 					}
@@ -120,7 +141,15 @@
 		"id": "lEk0",
 		"paths": {
 			"/index": {
-				"id": "kuDc-5VIk-r2sQ"
+				"id": "r2sQ"
+			}
+		}
+	},
+	"/flashcard-master": {
+		"id": "293m",
+		"paths": {
+			"/index": {
+				"id": "3id2"
 			}
 		}
 	},
@@ -148,6 +177,22 @@
 			}
 		}
 	},
+	"/jadr": {
+		"id": "23d3",
+		"paths": {
+			"/index": {
+				"id": "h659"
+			}
+		}
+	},
+	"/memoflow": {
+		"id": "h84n",
+		"paths": {
+			"/index": {
+				"id": "gm9m"
+			}
+		}
+	},
 	"/ntrack": {
 		"id": "GgYZ",
 		"paths": {
@@ -164,11 +209,35 @@
 			}
 		}
 	},
+	"/shoply": {
+		"id": "dn48",
+		"paths": {
+			"/index": {
+				"id": "gi4m"
+			}
+		}
+	},
+	"/simple-clock-display": {
+		"id": "gk49",
+		"paths": {
+			"/index": {
+				"id": "1032"
+			}
+		}
+	},
 	"/sonicbloom": {
 		"id": "D58R",
 		"paths": {
 			"/index": {
 				"id": "DRE2"
+			}
+		}
+	},
+	"/word-clock": {
+		"id": "39dm",
+		"paths": {
+			"/index": {
+				"id": "3mro"
 			}
 		}
 	}

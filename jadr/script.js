@@ -49,11 +49,13 @@ function rollDice() {
     diceBtn.disabled = true;
     diceBtn.innerHTML = "Rolling...";
 
-	const randomIndex = Math.floor(Math.random() * 6);
+	const randomDice = Math.floor(Math.random() * 6);
+	const randomRotation = Math.floor(Math.random() * 6);
+	const randomIndex = randomDice;
 	const rotation = rotations[randomIndex];
 
-	const finalX = rotation.x + (360 * randomIndex) + 30;
-	const finalY = rotation.y + (360 * randomIndex) + 30;
+	const finalX = rotation.x + (360 * randomIndex);
+	const finalY = rotation.y + (360 * randomRotation);
 
     container.classList.add('rolling');
 	cube.style.transform = `rotateX(${finalX}deg) rotateY(${finalY}deg)`;

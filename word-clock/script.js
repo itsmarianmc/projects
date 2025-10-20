@@ -44,10 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		},
 		"ZWEI": {
 			positions: [
-				[13, 9],
-				[13, 10],
 				[13, 11],
-				[13, 12]
+				[13, 12],
+				[13, 13],
+				[13, 14]
 			]
 		},
 		"DREI": {
@@ -471,6 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		} else if (minutes < 30) {
 			minuteText = 'FÜNF';
 			relationText = 'HALBNACH';
+			activateWord('VOR');
 			hourText = getHourText((hourToShow % 12) + 1);
 		} else if (minutes < 35) {
 			minuteText = 'HALB';
