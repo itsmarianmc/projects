@@ -107,7 +107,7 @@ function showAnimation(title, artists) {
 
 	setTimeout(() => {
 		lowerThird.classList.remove('show');
-	}, 6800);
+	}, 12800);
 }
 
 async function monitorPlayback(token) {
