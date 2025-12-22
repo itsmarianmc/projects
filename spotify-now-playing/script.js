@@ -70,7 +70,7 @@ async function exchangeCode(code) {
 
 	sessionStorage.setItem("token", data.access_token);
 	sessionStorage.setItem("refresh_token", data.refresh_token);
-	localStorage.setItem("refresh_token", data.refresh_token); // Persistent speichern
+	localStorage.setItem("refresh_token", data.refresh_token);
 	sessionStorage.setItem("expires_at", Date.now() + data.expires_in * 1000);
 }
 
@@ -190,7 +190,6 @@ async function refreshAccessToken() {
 	const refreshToken = sessionStorage.getItem("refresh_token") || localStorage.getItem("refresh_token");
 
 	if (!refreshToken) {
-		// Kein Refresh Token verfügbar, Benutzer muss sich neu anmelden
 		clearAuthData();
 		window.location.reload();
 		return null;
@@ -212,7 +211,6 @@ async function refreshAccessToken() {
 		});
 
 		if (!res.ok) {
-			// Refresh Token ist ungültig
 			clearAuthData();
 			window.location.reload();
 			return null;
@@ -223,7 +221,6 @@ async function refreshAccessToken() {
 		sessionStorage.setItem("token", data.access_token);
 		sessionStorage.setItem("expires_at", Date.now() + data.expires_in * 1000);
 		
-		// Refresh Token aktualisieren, falls ein neuer zurückgegeben wird
 		if (data.refresh_token) {
 			sessionStorage.setItem("refresh_token", data.refresh_token);
 			localStorage.setItem("refresh_token", data.refresh_token);
@@ -231,7 +228,6 @@ async function refreshAccessToken() {
 
 		return data.access_token;
 	} catch (error) {
-		// Bei Fehler Auth-Daten löschen
 		clearAuthData();
 		window.location.reload();
 		return null;
@@ -270,7 +266,6 @@ async function getValidToken() {
 		monitorPlayback(token);
 		handleAutoPopup();
 	} else if (refreshToken) {
-		// Versuche mit gespeichertem Refresh Token einen neuen Access Token zu bekommen
 		sessionStorage.setItem("refresh_token", refreshToken);
 		const newToken = await getValidToken();
 		if (newToken) {
@@ -278,7 +273,6 @@ async function getValidToken() {
 			monitorPlayback(newToken);
 			handleAutoPopup();
 		} else {
-			// Refresh Token war ungültig, Login-Button anzeigen
 			document.getElementById("login").onclick = login;
 		}
 	} else {
