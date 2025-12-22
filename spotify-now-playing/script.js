@@ -66,23 +66,31 @@ async function exchangeCode(code) {
 	});
 
 	const data = await res.json();
+
 	sessionStorage.setItem("token", data.access_token);
+	sessionStorage.setItem("refresh_token", data.refresh_token);
+	sessionStorage.setItem("expires_at", Date.now() + data.expires_in * 1000);
 }
 
 async function fetchCurrentSong(token) {
+	const validToken = await getValidToken();
+
 	const res = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
 		headers: {
-			Authorization: "Bearer " + token
+			Authorization: "Bearer " + validToken
 		}
 	});
+
 	if (res.status === 204) return null;
 	return await res.json();
 }
 
 function showAnimation(title, artists) {
-	const lowerThird = document.getElementById('lowerThird');
-	const whiteBox = document.getElementById('whiteBox');
+	const musicContainer = document.getElementById('musicContainer');
+	const precursorVertical = document.getElementById('precursorVertical');
+	const leftBox = document.getElementById('leftBox');
 	const arrow = document.getElementById('arrow');
+	const precursorHorizontal = document.getElementById('precursorHorizontal');
 	const bar = document.getElementById('bar');
 	const text = document.getElementById('text');
 	const titleText = document.getElementById('titleText');
@@ -91,23 +99,27 @@ function showAnimation(title, artists) {
 	titleText.textContent = title;
 	subtitleText.textContent = artists;
 
-	whiteBox.classList.remove('animate');
+	precursorVertical.classList.remove('animate');
+	leftBox.classList.remove('animate');
 	arrow.classList.remove('animate');
+	precursorHorizontal.classList.remove('animate');
 	bar.classList.remove('animate');
 	text.classList.remove('animate');
 
-	lowerThird.classList.add('show');
+	musicContainer.classList.add('show');
 
 	setTimeout(() => {
-		whiteBox.classList.add('animate');
+		precursorVertical.classList.add('animate');
+		leftBox.classList.add('animate');
 		arrow.classList.add('animate');
+		precursorHorizontal.classList.add('animate');
 		bar.classList.add('animate');
 		text.classList.add('animate');
 	}, 50);
 
 	setTimeout(() => {
-		lowerThird.classList.remove('show');
-	}, 12800);
+		musicContainer.classList.remove('show');
+	}, 13000);
 }
 
 async function monitorPlayback(token) {
@@ -146,6 +158,57 @@ async function monitorPlayback(token) {
 	}, 2000);
 }
 
+const understandBtn = document.getElementById('understandBtn');
+
+function handleAutoPopup() {
+	setTimeout(() => {
+		document.body.classList.add('popup-active');
+		setTimeout(() => {
+			document.body.classList.remove('popup-active');
+			setTimeout(() => {
+				document.getElementById('popupOverlay').remove();
+			}, 500);
+		}, 5000);
+	}, 1000);
+}
+
+function isTokenExpired() {
+	const expiresAt = sessionStorage.getItem("expires_at");
+	return !expiresAt || Date.now() > Number(expiresAt);
+}
+
+async function refreshAccessToken() {
+	const refreshToken = sessionStorage.getItem("refresh_token");
+
+	const body = new URLSearchParams({
+		client_id: clientId,
+		grant_type: "refresh_token",
+		refresh_token: refreshToken
+	});
+
+	const res = await fetch("https://accounts.spotify.com/api/token", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		body
+	});
+
+	const data = await res.json();
+
+	sessionStorage.setItem("token", data.access_token);
+	sessionStorage.setItem("expires_at", Date.now() + data.expires_in * 1000);
+
+	return data.access_token;
+}
+
+async function getValidToken() {
+	if (isTokenExpired()) {
+		return await refreshAccessToken();
+	}
+	return sessionStorage.getItem("token");
+}
+
 (async () => {
 	const params = new URLSearchParams(window.location.search);
 	const code = params.get("code");
@@ -154,11 +217,13 @@ async function monitorPlayback(token) {
 	if (code) {
 		await exchangeCode(code);
 		window.history.replaceState({}, document.title, redirectUri);
-		document.getElementById('login-container').style.display = 'none';
+		document.getElementById('login-container').remove();
 		monitorPlayback(sessionStorage.getItem("token"));
+		handleAutoPopup();
 	} else if (token) {
-		document.getElementById('login-container').style.display = 'none';
+		document.getElementById('login-container').remove();
 		monitorPlayback(token);
+		handleAutoPopup();
 	} else {
 		document.getElementById("login").onclick = login;
 	}
