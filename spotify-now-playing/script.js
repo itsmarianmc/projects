@@ -5,6 +5,7 @@ const scopes = "user-read-currently-playing user-read-playback-state";
 let currentSongId = null;
 let firstAnimationShown = false;
 let secondAnimationShown = false;
+let thirdAnimationShown = false;
 
 function base64urlencode(str) {
 	return btoa(String.fromCharCode(...new Uint8Array(str)))
@@ -69,6 +70,7 @@ async function exchangeCode(code) {
 
 	sessionStorage.setItem("token", data.access_token);
 	sessionStorage.setItem("refresh_token", data.refresh_token);
+	localStorage.setItem("refresh_token", data.refresh_token); // Persistent speichern
 	sessionStorage.setItem("expires_at", Date.now() + data.expires_in * 1000);
 }
 
@@ -143,11 +145,18 @@ async function monitorPlayback(token) {
 			currentSongId = songId;
 			firstAnimationShown = false;
 			secondAnimationShown = false;
+			thirdAnimationShown = false;
 		}
 
 		if (progress >= 10000 && progress <= 12000 && !firstAnimationShown) {
 			showAnimation(title, artists);
 			firstAnimationShown = true;
+		}
+
+		const midpoint = duration / 2;
+		if (progress >= midpoint - 5000 && progress <= midpoint + 5000 && !thirdAnimationShown) {
+			showAnimation(title, artists);
+			thirdAnimationShown = true;
 		}
 
 		const timeRemaining = duration - progress;
@@ -178,7 +187,14 @@ function isTokenExpired() {
 }
 
 async function refreshAccessToken() {
-	const refreshToken = sessionStorage.getItem("refresh_token");
+	const refreshToken = sessionStorage.getItem("refresh_token") || localStorage.getItem("refresh_token");
+
+	if (!refreshToken) {
+		// Kein Refresh Token verfügbar, Benutzer muss sich neu anmelden
+		clearAuthData();
+		window.location.reload();
+		return null;
+	}
 
 	const body = new URLSearchParams({
 		client_id: clientId,
@@ -186,20 +202,48 @@ async function refreshAccessToken() {
 		refresh_token: refreshToken
 	});
 
-	const res = await fetch("https://accounts.spotify.com/api/token", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		body
-	});
+	try {
+		const res = await fetch("https://accounts.spotify.com/api/token", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded"
+			},
+			body
+		});
 
-	const data = await res.json();
+		if (!res.ok) {
+			// Refresh Token ist ungültig
+			clearAuthData();
+			window.location.reload();
+			return null;
+		}
 
-	sessionStorage.setItem("token", data.access_token);
-	sessionStorage.setItem("expires_at", Date.now() + data.expires_in * 1000);
+		const data = await res.json();
 
-	return data.access_token;
+		sessionStorage.setItem("token", data.access_token);
+		sessionStorage.setItem("expires_at", Date.now() + data.expires_in * 1000);
+		
+		// Refresh Token aktualisieren, falls ein neuer zurückgegeben wird
+		if (data.refresh_token) {
+			sessionStorage.setItem("refresh_token", data.refresh_token);
+			localStorage.setItem("refresh_token", data.refresh_token);
+		}
+
+		return data.access_token;
+	} catch (error) {
+		// Bei Fehler Auth-Daten löschen
+		clearAuthData();
+		window.location.reload();
+		return null;
+	}
+}
+
+function clearAuthData() {
+	sessionStorage.removeItem("token");
+	sessionStorage.removeItem("refresh_token");
+	sessionStorage.removeItem("expires_at");
+	sessionStorage.removeItem("verifier");
+	localStorage.removeItem("refresh_token");
 }
 
 async function getValidToken() {
@@ -213,6 +257,7 @@ async function getValidToken() {
 	const params = new URLSearchParams(window.location.search);
 	const code = params.get("code");
 	const token = sessionStorage.getItem("token");
+	const refreshToken = localStorage.getItem("refresh_token");
 
 	if (code) {
 		await exchangeCode(code);
@@ -224,6 +269,18 @@ async function getValidToken() {
 		document.getElementById('login-container').remove();
 		monitorPlayback(token);
 		handleAutoPopup();
+	} else if (refreshToken) {
+		// Versuche mit gespeichertem Refresh Token einen neuen Access Token zu bekommen
+		sessionStorage.setItem("refresh_token", refreshToken);
+		const newToken = await getValidToken();
+		if (newToken) {
+			document.getElementById('login-container').remove();
+			monitorPlayback(newToken);
+			handleAutoPopup();
+		} else {
+			// Refresh Token war ungültig, Login-Button anzeigen
+			document.getElementById("login").onclick = login;
+		}
 	} else {
 		document.getElementById("login").onclick = login;
 	}
