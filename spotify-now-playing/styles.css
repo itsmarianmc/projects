@@ -37,7 +37,7 @@ body {
 .lower-third {
     display: none;
     align-items: flex-end;
-    margin: 40px;
+    margin: 60px;
     height: 96px;
     position: fixed;
     bottom: 0;
