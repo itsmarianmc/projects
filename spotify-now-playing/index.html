@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Spotify Now Playing Widget</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div id="login-container">
+		<h2>Spotify Now Playing Widget</h2>
+		<p>Click on "Authorize" and then on agree. After that you will be redirected to this site.</p>
+		<p>You will see the widget 10 seconds after the start of a song and 22 seconds before the end of a song.</p>
+		<button id="login">Authorize</button>
+        <br><br><br><br><br>
+	    <small>&copy; 2025 itsmarian | All rights reserved!</small>
+        <br>
+        <small>This project uses the Spotify Web API but is not endorsed, certified or otherwise approved in any way by<br>Spotify Technologies SA. Spotify and the Spotify Logo are trademarks of Spotify Technologies SA.</small>
+    </div>
+	<div class="lower-third" id="lowerThird">
+		<div class="white-box" id="whiteBox">
+			<div class="arrow" id="arrow"></div>
+		</div>
+		<div class="bar" id="bar"></div>
+		<div class="text" id="text">
+			<div class="title" id="titleText"></div>
+			<div class="subtitle" id="subtitleText"></div>
+		</div>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>
