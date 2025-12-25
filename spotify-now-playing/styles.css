@@ -59,8 +59,8 @@ body {
 }
 
 .precursor-vertical.animate {
-    animation: precursorVerticalOpen 0.2s ease-out 0.1s forwards,
-               precursorVerticalClose 0.1s ease-in 12.05s forwards;
+    animation: precursorVerticalOpen 0.2s ease 0.1s forwards,
+               precursorVerticalClose 0.1s ease 12.05s forwards;
 }
 
 .left-box {
@@ -74,8 +74,8 @@ body {
 }
 
 .left-box.animate {
-    animation: leftGrow 0.2s ease-out 0.3s forwards,
-               leftShrink 0.15s ease-in 11.95s forwards;
+    animation: leftGrow 0.2s ease 0.3s forwards,
+               leftShrink 0.15s ease 11.95s forwards;
 }
 
 .arrow {
@@ -111,8 +111,8 @@ body {
 }
 
 .precursor-horizontal.animate {
-    animation: precursorHorizontalOpen 0.2s ease-out 1s forwards,
-               precursorHorizontalClose 0.25s ease-in 11.4s forwards;
+    animation: precursorHorizontalOpen 0.4s ease 1s forwards,
+               precursorHorizontalClose 0.35s ease 11.4s forwards;
 }
 
 .bar {
@@ -122,8 +122,8 @@ body {
 }
 
 .bar.animate {
-    animation: barOpen 0.2s ease-out 1.2s forwards,
-               barClose 0.25s ease-in 11.3s forwards;
+    animation: barOpen 0.35s ease 1.2s forwards,
+               barClose 0.35s ease 11.3s forwards;
 }
 
 .text {
