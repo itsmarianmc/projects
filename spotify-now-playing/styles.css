@@ -81,6 +81,13 @@ body {
     text-fill-color: transparent;
 }
 
+.popup-content h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0px 0px 12px 0px;
+}
+
 .popup-content p {
     border-radius: 8px;
     color: #fff;
