@@ -48,7 +48,7 @@ async function monitorPlayback(token) {
 		const songId = data.item.id;
 		const progress = data.progress_ms;
 		const duration = data.item.duration_ms;
-		const title = data.item.name;
+		const title = data.item.name.replace(/\s*\((?:with|feat\.?|ft\.?)\s+[^)]+\)|\s*\([^)]*(?:feat\.?|ft\.?)[^)]*\)/gi, '');
 		const coverUrl = data.item.album.images[0]?.url || "";
 		const artists = data.item.artists.map(a => a.name).join(", ").replace(/, ([^,]*)$/, " FT. $1");
 
