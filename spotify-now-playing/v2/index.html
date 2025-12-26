@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<title>Spotify Now Playing Widget</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../styles.css">
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/fonts/gotham/gotham-style.css">
+</head>
+<body>
+	<div id="login-container">
+		<h2>Spotify Now Playing Widget</h2>
+        <p>If you are using OBS to implement this widget, go to the "Sources" tab, click the browser source, right click and click "Interact" to authorize!</p>
+        <br>
+		<p>Click on "Authorize" and then on agree. After that you will be redirected to this site.</p>
+		<p>You will see the widget 10 seconds after the start of a song and 22 seconds before the end of a song.</p>
+		<button id="login">Authorize</button>
+        <br><br><br><br><br>
+	    <small>&copy; 2025 itsmarian | All rights reserved!</small>
+        <br>
+        <small>This project uses the Spotify Web API but is not endorsed, certified or otherwise approved in any way by<br>Spotify Technologies SA. Spotify and the Spotify Logo are trademarks of Spotify Technologies SA.</small>
+    </div>
+	<div class="music-container" id="musicContainer">
+		<div class="content">
+            <div class="left-box">
+                <div class="">
+                    <div id="cover">
+                        <img src="" alt="Background Cover" id="coverImg">
+                    </div>
+                    <div id="icon">
+                        <svg viewBox="0 -960 960 960" fill="#fff">
+                            <path d="M240-120q-66 0-113-47T80-280q0-66 47-113t113-47q23 0 42.5 5.5T320-418v-342l480-80v480q0 66-47 113t-113 47q-66 0-113-47t-47-113q0-66 47-113t113-47q23 0 42.5 5.5T720-498v-165l-320 63v320q0 66-47 113t-113 47Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="titles">
+                    <div id="title">TITLE</div>
+                    <div id="subtitle">AUTHOR</div>
+                </div>
+            </div>
+        </div>
+	</div>
+	<div class="popup-overlay" id="popupOverlay">
+        <div class="popup-container">
+            <div class="popup-content">
+                <h2>Spotify Now Playing Widget V2 by itsmarian</h2>
+				<p>The widget is active and running! If you believe the widget is not working correctly, please check the console for any errors.</p>
+				<p>Thank you for using the widget!</p>
+                <div style="color: #fff; margin-top: 20px; text-align: center;">
+                    <small>© 2025 itsmarian | All rights reserved!</small>
+					<br>
+					<small>This project uses the Spotify Web API but is not endorsed, certified or otherwise approved in any way by Spotify Technologies SA.<br>Spotify and the Spotify Logo are trademarks of Spotify Technologies SA.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+	<script src="script.js"></script>
+	<script src="../script.js"></script>
+</body>
+</html>
