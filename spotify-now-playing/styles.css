@@ -38,7 +38,6 @@ body {
     align-items: center;
     backdrop-filter: blur(4px);
     display: flex;
-    display: none !important;
     height: 100%;
     justify-content: center;
     left: 0;
