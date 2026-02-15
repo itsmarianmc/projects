@@ -60,7 +60,7 @@
 
 .arrow.animate {
     animation: arrowStayDown 0.9s ease-out 0s forwards,
-               arrowMoveUpRotate 0.3s ease-out 0.9s forwards,
+               arrowMoveUpRotate 0.2s ease-out 0.9s forwards,
                flicker 0.2s ease-in-out 0.5s,
                flicker 0.2s ease-in-out 1.35s,
                flicker 0.2s ease-in-out 10.9s,
@@ -109,7 +109,7 @@
 }
 
 .text.animate {
-    animation: textIn 0.3s ease-out 1s forwards,
+    animation: textIn 0.3s ease-out 0.9s forwards,
                textOut 0.3s ease-in 11.1s forwards;
 }
 
