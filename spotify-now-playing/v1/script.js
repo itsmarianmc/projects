@@ -9,6 +9,8 @@ function showAnimation(title, artists) {
 	const titleText = document.getElementById('titleText');
 	const subtitleText = document.getElementById('subtitleText');
 
+	firstAnimationShown = true
+
 	titleText.textContent = title;
 	subtitleText.textContent = artists;
 
