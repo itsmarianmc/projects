@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Spotify Now Playing Widget Dashboard - Setup</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="itsmarian">
+    <meta name="description" content="Dashboard for the Spotify Now Playing Widget">
+    <meta name="keywords" content="spotify, now playing, dashboard, widget, api, configuration">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Dashboard for the Spotify Now Playing Widget">
+    <meta property="og:description" content="Configure and manage your Spotify Now Playing Widget dashboard.">
+    <meta property="og:image" content="https://projects.itsmarian.is-a.dev/now-playing/favicon.png">
+    <meta property="og:url" content="https://projects.itsmarian.is-a.dev/now-playing/">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <div class="sidebar-toggle" id="sidebarToggle">
+        <svg fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+        </svg>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="color: var(--primary)">
+                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+            <h2>Dashboard</h2>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Main</div>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a data-section="configuration" class="nav-link active">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                        </svg>
+                        Configuration
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="nav-section">
+            <div class="nav-section-title">Documentation</div>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="nav-item has-submenu open" id="docsMenu">
+                    <a class="nav-link">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                        </svg>
+                        Docs
+                    </a>
+                    <ul class="nav-submenu">
+                        <li class="nav-item">
+                            <a data-section="api-docs" class="nav-link">
+                                <svg fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                                API Reference
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a data-section="set-up" class="nav-link">
+                                <svg fill="currentColor" viewBox="0 -960 960 960">
+                                    <path fill-rule="evenodd" d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/>
+                                </svg>
+                                Set-Up Guide
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a data-section="response-format" class="nav-link">
+                                <svg fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                                </svg>
+                                Response Format
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item has-submenu" id="apiMenu">
+                    <a class="nav-link">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        API
+                    </a>
+                    <ul class="nav-submenu">
+                        <li class="nav-item">
+                            <a data-section="v1" class="nav-link">
+                                <svg fill="currentColor" viewBox="0 -960 960 960">
+                                    <path d="M480-120q-151 0-255.5-46.5T120-280v-400q0-66 105.5-113T480-840q149 0 254.5 47T840-680v400q0 67-104.5 113.5T480-120Zm0-479q89 0 179-25.5T760-679q-11-29-100.5-55T480-760q-91 0-178.5 25.5T200-679q14 30 101.5 55T480-599Zm0 199q42 0 81-4t74.5-11.5q35.5-7.5 67-18.5t57.5-25v-120q-26 14-57.5 25t-67 18.5Q600-528 561-524t-81 4q-42 0-82-4t-75.5-11.5Q287-543 256-554t-56-25v120q25 14 56 25t66.5 18.5Q358-408 398-404t82 4Zm0 200q46 0 93.5-7t87.5-18.5q40-11.5 67-26t32-29.5v-98q-26 14-57.5 25t-67 18.5Q600-328 561-324t-81 4q-42 0-82-4t-75.5-11.5Q287-343 256-354t-56-25v99q5 15 31.5 29t66.5 25.5q40 11.5 88 18.5t94 7Z"/>
+                                </svg>
+                                v1
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a data-section="v2" class="nav-link">
+                                <svg fill="currentColor" viewBox="0 -960 960 960">
+                                    <path d="M480-120q-151 0-255.5-46.5T120-280v-400q0-66 105.5-113T480-840q149 0 254.5 47T840-680v400q0 67-104.5 113.5T480-120Zm0-479q89 0 179-25.5T760-679q-11-29-100.5-55T480-760q-91 0-178.5 25.5T200-679q14 30 101.5 55T480-599Zm0 199q42 0 81-4t74.5-11.5q35.5-7.5 67-18.5t57.5-25v-120q-26 14-57.5 25t-67 18.5Q600-528 561-524t-81 4q-42 0-82-4t-75.5-11.5Q287-543 256-554t-56-25v120q25 14 56 25t66.5 18.5Q358-408 398-404t82 4Zm0 200q46 0 93.5-7t87.5-18.5q40-11.5 67-26t32-29.5v-98q-26 14-57.5 25t-67 18.5Q600-328 561-324t-81 4q-42 0-82-4t-75.5-11.5Q287-343 256-354t-56-25v99q5 15 31.5 29t66.5 25.5q40 11.5 88 18.5t94 7Z"/>
+                                </svg>
+                                v2
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a data-section="v3" class="nav-link">
+                                <svg fill="currentColor" viewBox="0 -960 960 960">
+                                    <path d="M480-120q-151 0-255.5-46.5T120-280v-400q0-66 105.5-113T480-840q149 0 254.5 47T840-680v400q0 67-104.5 113.5T480-120Zm0-479q89 0 179-25.5T760-679q-11-29-100.5-55T480-760q-91 0-178.5 25.5T200-679q14 30 101.5 55T480-599Zm0 199q42 0 81-4t74.5-11.5q35.5-7.5 67-18.5t57.5-25v-120q-26 14-57.5 25t-67 18.5Q600-528 561-524t-81 4q-42 0-82-4t-75.5-11.5Q287-543 256-554t-56-25v120q25 14 56 25t66.5 18.5Q358-408 398-404t82 4Zm0 200q46 0 93.5-7t87.5-18.5q40-11.5 67-26t32-29.5v-98q-26 14-57.5 25t-67 18.5Q600-328 561-324t-81 4q-42 0-82-4t-75.5-11.5Q287-343 256-354t-56-25v99q5 15 31.5 29t66.5 25.5q40 11.5 88 18.5t94 7Z"/>
+                                </svg>
+                                v3
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="https://developer.spotify.com/dashboard" target="_blank" class="nav-link">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+                        </svg>
+                        Spotify Developer
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="main-content">
+        <div class="content-section active" id="configuration">
+            <div class="setup-container">
+                <div class="glass-card">
+                    <div class="form-header">
+                        <h2>Welcome!</h2>
+                        <p>Enter your Spotify API credentials to set up the dashboard and start monitoring your Spotify activity.</p>
+                    </div>
+                    <form id="setupForm">
+                        <div class="form-group">
+                            <label for="clientId">Client ID</label>
+                            <input type="text" id="clientId" placeholder="Your Spotify Client ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientSecret">Client Secret</label>
+                            <div class="copy-container">
+                                <input type="password" id="clientSecret" placeholder="Your Spotify Client Secret" required>
+                                <button class="copy-btn" data-copy-target="clientSecret">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 -960 960 960" width="34" fill="currentColor">
+                                        <path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="refreshToken">Refresh Token</label>
+                            <div class="copy-container">
+                                <input type="password" id="refreshToken" placeholder="Your Spotify Refresh Token" required>
+                                <button class="copy-btn" data-copy-target="refreshToken">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 -960 960 960" width="34" fill="currentColor">
+                                        <path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" id="submitBtn">
+                            Save
+                        </button>
+                    </form>
+                    <div class="error-message" id="errorMessage"></div>
+                    <div class="success-message" id="successMessage">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Saved your credentials!</span>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Information:</strong> Your credentials are only stored locally in your browser and are never shared with third parties. You can find your Spotify API credentials in your <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Developer Dashboard</a>.
+                        <br>
+                        <p>For more information, visit the <a data-section="set-up" class="nav-link unstyled">Setup Guide</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-section" id="set-up">
+            <div class="setup-container">
+                <div class="glass-card">
+                    <div class="form-header">
+                        <h2>Set Up your Dashboard</h2>
+                        <p>This step by step guide will help you set up your Spotify Now Playing Dashboard.</p>
+                    </div>
+                    <div class="setup-steps section">
+                        <div class="setup-step">
+                            <h3>1. Create a Spotify Developer Account</h3>
+                            <p>Go to the <a href="https://developer.spotify.com/" target="_blank">Spotify Developer Site</a> and create an account if you don't have one already.</p>
+                            <img src="images/login.png" alt="">
+                        </div>
+                        <div class="setup-step">
+                            <h3>2. Go to the Spotify Developer Dashboard</h3>
+                            <p>Click on your name and select "Dashboard" from the dropdown menu.</p>
+                            <img src="images/dashboard.png" alt="">
+                        </div>
+                        <div class="setup-step">
+                            <h3>3. Create a New Application</h3>
+                            <p>Click on "Create App" to create a new Spotify Application (Note: Due to changes, you can only create one application per account and your account must be a paid subscriber)</p>
+                            <img src="images/create-app.png" alt="">
+                        </div>
+                        <div class="setup-step">
+                            <h3>4. Configure Redirect URI</h3>
+                            <p>Set the Redirect URI to <code>https://projects.itsmarian.is-a.dev/now-playing/token</code></p>
+                            <img class="full-width" src="images/redirect.png" alt="">
+                        </div>
+                        <div class="setup-step">
+                            <h3>5. Client ID and Client Secret</h3>
+                            <p>Open <a href="https://projects.itsmarian.is-a.dev/now-playing/token" target="_blank">https://projects.itsmarian.is-a.dev/now-playing/token</a></p>
+                            <p>Copy the Client ID and paste it into the "Client ID" field.</p>
+                            <p>Then, click on "View Client Secret" and copy the secret, then paste it into the "Client Secret" field.</p>
+                            <img class="full-width" src="images/client-secret.png" alt="">
+                        </div>
+                        <div class="setup-step">
+                            <h3>6. Select scopes and get token</h3>
+                            <p>Select "user-read-recently-played", "user-read-currently-playing" and "user-read-playback-state" in the scopes section, and then click "Get Spotify Access Code".</p>
+                            <p>After that you will be redirected to Spotify, where you need to approve the permissions.</p>
+                            <img class="full-width" src="images/conf-dash.png" alt="">
+                        </div>
+                        <div class="setup-step">
+                            <h3>7. Refresh Token</h3>
+                            <p>Then, you will be redirected to this page with a refresh token. Copy this token.</p>
+                            <p>Then navigate to <a href="https://projects.itsmarian.is-a.dev/now-playing/dashboard" target="_blank">https://projects.itsmarian.is-a.dev/now-playing/dashboard</a></p>
+                            <img class="full-width" src="images/fin.png" alt="">
+                        </div>
+                        <div class="setup-step">
+                            <h3>8. Dashboard</h3>
+                            <p>On the dashboard, you can see three fields, your Client ID and Client Secret will be filled in automatically.</p>
+                        </div>
+                        <div class="setup-step">
+                            <h3>9. Paste Refresh Token</h3>
+                            <p>If the token is not already in the field, paste the refresh token you copied into the "Refresh Token" field on the dashboard.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-section" id="api-docs">
+            <div class="glass-card section">
+                <h2>API Reference</h2>
+                <p>The Now Playing API allows you to retrieve information about the song currently playing on Spotify.</p>
+                <h3>Endpoint</h3>
+                <pre><code>GET https://itsmarianmc-github.vercel.app/api/now-playing</code></pre>
+                <h3>Query Parameter</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Typ</th>
+                            <th>Beschreibung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>client_id</code><span class="badge required">Required</span></td>
+                            <td>String</td>
+                            <td>Your Spotify Application Client ID</td>
+                        </tr>
+                        <tr>
+                            <td><code>client_secret</code><span class="badge required">Required</span></td>
+                            <td>String</td>
+                            <td>Your Spotify Application Client Secret</td>
+                        </tr>
+                        <tr>
+                            <td><code>refresh_token</code><span class="badge required">Required</span></td>
+                            <td>String</td>
+                            <td>Your Spotify Refresh Token</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Rate Limits</h3>
+                <p>For the Demo Version there is no rate limit, but for the production version, there is a rate limit of 4 seconds per request. Due to limitations there I can't set a higher rate limit.</p>
+            </div>
+        </div>
+        <div class="content-section" id="response-format">
+            <div class="glass-card docs-section">
+                <h2>Response Format</h2>
+                <p>The API returns a JSON object with the following structure:</p>
+                <h3>Successful Response (Music is playing)</h3>
+                <pre><code>{
+  "playing": true,
+  "timestamp": 1234567890123,
+  "progress_ms": 12345,
+  "track": {
+    "id": "TRACK_ID",
+    "name": "Track Name Placeholder",
+    "duration_ms": 180000,
+    "explicit": false,
+    "popularity": 50,
+    "track_number": 1,
+    "type": "track",
+    "uri": "spotify:track:TRACK_ID",
+    "is_local": false,
+    "spotify_url": "https://open.spotify.com/track/TRACK_ID",
+    "preview_url": null,
+    "isrc": "ISRC"
+  },
+  "artists": [
+    {
+      "id": "ARTIST_ID",
+      "name": "Artist Name Placeholder",
+      "uri": "spotify:artist:ARTIST_ID",
+      "spotify_url": "https://open.spotify.com/artist/ARTIST_ID"
+    }
+  ],
+  "album": {
+    "id": "ALBUM_ID",
+    "name": "Album Name Placeholder",
+    "album_type": "album",
+    "total_tracks": 10,
+    "release_date": "2024-01-01",
+    "release_date_precision": "day",
+    "uri": "spotify:album:ALBUM_ID",
+    "spotify_url": "https://open.spotify.com/album/ALBUM_ID",
+    "images": [
+      {
+        "url": "https://i.scdn.co/image/IMAGE_URL",
+        "height": 640,
+        "width": 640
+      },
+      {
+        "url": "https://i.scdn.co/image/IMAGE_URL",
+        "height": 300,
+        "width": 300
+      },
+      {
+        "url": "https://i.scdn.co/image/IMAGE_URL",
+        "height": 64,
+        "width": 64
+      }
+    ],
+    "artists": [
+      {
+        "id": "ARTIST_ID",
+        "name": "Artist Name Placeholder",
+        "uri": "spotify:artist:ARTIST_ID",
+        "spotify_url": "https://open.spotify.com/artist/ARTIST_ID"
+      }
+    ]
+  },
+  "context": null,
+  "device": null,
+  "actions": {
+    "disallows": {
+      "resuming": true,
+      "toggling_repeat_context": true,
+      "toggling_repeat_track": true,
+      "toggling_shuffle": true
+    }
+  },
+  "currently_playing_type": "track",
+  "progress_percent": "10.00",
+  "remaining_ms": 167655,
+  "estimated_end_time": 1234567890123
+}</code></pre>
+                <h3>Response (Keine Musik)</h3>
+                <pre><code>{
+  "playing": false
+}</code></pre>
+                <h3>Main fields</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>playing</code></td>
+                            <td>Boolean</td>
+                            <td>Indicates whether music is currently playing</td>
+                        </tr>
+                        <tr>
+                            <td><code>timestamp</code></td>
+                            <td>Number</td>
+                            <td>Unix timestamp of the query in milliseconds</td>
+                        </tr>
+                        <tr>
+                            <td><code>progress_ms</code></td>
+                            <td>Number</td>
+                            <td>Current progress of the track in milliseconds</td>
+                        </tr>
+                        <tr>
+                            <td><code>track</code></td>
+                            <td>Object</td>
+                            <td>Information about the current track (id, name, duration_ms, uri, spotify_url, etc.)</td>
+                        </tr>
+                        <tr>
+                            <td><code>track.duration_ms</code></td>
+                            <td>Number</td>
+                            <td>Total length of the track in milliseconds</td>
+                        </tr>
+                        <tr>
+                            <td><code>artists</code></td>
+                            <td>Array</td>
+                            <td>List of artists with id, name, uri, and spotify_url</td>
+                        </tr>
+                        <tr>
+                            <td><code>album</code></td>
+                            <td>Object</td>
+                            <td>Album information including cover images, release_date, and total_tracks</td>
+                        </tr>
+                        <tr>
+                            <td><code>album.images</code></td>
+                            <td>Array</td>
+                            <td>Cover images in various sizes (640x640, 300x300, 64x64)</td>
+                        </tr>
+                        <tr>
+                            <td><code>progress_percent</code></td>
+                            <td>String</td>
+                            <td>Progress in percent as a formatted string</td>
+                        </tr>
+                        <tr>
+                            <td><code>remaining_ms</code></td>
+                            <td>Number</td>
+                            <td>Remaining time of the track in milliseconds</td>
+                        </tr>
+                        <tr>
+                            <td><code>estimated_end_time</code></td>
+                            <td>Number</td>
+                            <td>Estimated Unix timestamp (ms) when the track ends</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="content-section" id="v1">
+            <div class="glass-card">
+                <h2>API v1</h2>
+                <br>
+                <h3>API Endpoint</h3>
+                <pre><code>GET https://projects.itsmarian.is-a.dev/now-playing/v1/</code></pre>
+                <p>This is the first version of the now playing widget.</p>
+                <p>This version, displays the current song in a modern animation to save screen space. It appears 10 seconds after the start of the song, the middle of the song and 20 seconds before the end of the song.</p>
+                <img class="full-width" src="images/v1-preview.png" alt=""> 
+                <a class="btn" href="../v1/">Open API Endpoint</a>
+            </div>
+        </div>
+        <div class="content-section" id="v2">
+            <div class="glass-card">
+                <h2>API v1</h2>
+                <br>
+                <h3>API Endpoint</h3>
+                <pre><code>GET https://projects.itsmarian.is-a.dev/now-playing/v2/</code></pre>
+                <p>This is the second version of the now playing widget.</p>
+                <p>This version is almost the same as the first version. It displays the current song in a modern and minimalistic animation to save screen space. It also appears 10 seconds after the start of the song, the middle of the song and 20 seconds before the end of the song.</p>
+                <p>However, in this version the animation transitions for a few seconds to the album art and then back to original.</p>
+                <img class="full-width" src="images/v2-preview.png" alt=""> 
+                <a class="btn" href="../v2/">Open API Endpoint</a>
+            </div>
+        </div>
+        <div class="content-section" id="v3">
+            <div class="glass-card">
+                <h2>API v1</h2>
+                <br>
+                <h3>API Endpoint</h3>
+                <pre><code>GET https://projects.itsmarian.is-a.dev/now-playing/v3/</code></pre>
+                <p>This is the third version of the now playing widget.</p>
+                <p>This version constantly displays the album art, title and artist information as well as the progress bar and remaining time.</p>
+                <p>It is the most feature-rich version of the now playing widget and it adapts its scale individually to the size of the screen.</p>
+                <img class="full-width" src="images/v3-preview.png" alt=""> 
+                <a class="btn" href="../v3/">Open API Endpoint</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

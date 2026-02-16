@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Spotify Refresh Token Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
+    <!-- META -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="itsmarian">
+    <meta name="description" content="Refresh Token Generator for the Spotify Now Playing Widget">
+    <meta name="keywords" content="spotify, now playing, dashboard, widget, api, configuration">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Spotify Refresh Token Generator">
+    <meta property="og:description" content="Generate a refresh token for the Spotify Now Playing Widget.">
+    <meta property="og:image" content="https://projects.itsmarian.is-a.dev/now-playing/favicon.png">
+    <meta property="og:url" content="https://projects.itsmarian.is-a.dev/now-playing/">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <div class="view" id="info" active="">
+        <h3 class="fade-in">Spotify Refresh Token Generator</h3>
+        <div class="warning">
+            ⚠️ Caution: Your <strong>Client Secret</strong> is saved in your browser and will be visible there. 
+            Do not share your Client Secret with anyone and do not use this tool on a public or shared computer.
+            The session storage is cleared after the token exchange, but be aware of the risks. Always keep your credentials secure!
+        </div>
+        <div class="box">
+            <p>Step-by-Step Guide</p>
+            <p>1. Create a Spotify App at <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer">Spotify Developer Dashboard</a></p>
+            <p>2. Add the Redirect URI: <code>https://projects.itsmarian.is-a.dev/now-playing/token</code></p>
+            <p>3. Enter your Client ID, Client Secret, and select the desired scopes below.</p>
+            <p>4. Click "Get Spotify Access Code" and authorize the app to receive your access token.</p>
+        </div>
+        <div class="form slide-in delay">
+            <div class="input">
+                <label>Client ID</label>
+                <input type="text" name="clientId" id="clientId" placeholder="1a2b3c4d...">
+            </div>
+            <div class="input">
+                <label>Client Secret</label>
+                <input type="password" name="clientSecret" id="clientSecret" placeholder="5e6f7g8h...">
+            </div>
+            <div class="input">
+                <label>Redirect URI</label>
+                <input type="text" name="redirectUri" id="redirectUri" placeholder="https://projects.itsmarian.is-a.dev/now-playing/token/">
+            </div>
+            <div class="input">
+                <label>
+                    <span>Scopes </span>
+                    <a href="https://developer.spotify.com/documentation/general/guides/scopes/" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"></path>
+                        </svg>
+                    </a>
+                </label>
+                <div class="scope-checkbox">
+                    <label class="input"><input type="checkbox" name="scope" value="ugc-image-upload"> ugc-image-upload</label>
+                    <label class="input"><input type="checkbox" name="scope" value="playlist-read-collaborative"> playlist-read-collaborative</label>
+                    <label class="input"><input type="checkbox" name="scope" value="playlist-modify-private"> playlist-modify-private</label>
+                    <label class="input"><input type="checkbox" name="scope" value="playlist-modify-public"> playlist-modify-public</label>
+                    <label class="input"><input type="checkbox" name="scope" value="playlist-read-private"> playlist-read-private</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-read-playback-position"> user-read-playback-position</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-read-recently-played"> user-read-recently-played</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-top-read"> user-top-read</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-modify-playback-state"> user-modify-playback-state</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-read-currently-playing"> user-read-currently-playing</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-read-playback-state"> user-read-playback-state</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-read-private"> user-read-private</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-read-email"> user-read-email</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-library-modify"> user-library-modify</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-library-read"> user-library-read</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-follow-modify"> user-follow-modify</label>
+                    <label class="input"><input type="checkbox" name="scope" value="user-follow-read"> user-follow-read</label>
+                    <label class="input"><input type="checkbox" name="scope" value="streaming"> streaming</label>
+                    <label class="input"><input type="checkbox" name="scope" value="app-remote-control"> app-remote-control</label>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <div class="button fade-in delay" role="button" tabindex="0" onclick="getAccessCode()">Get Spotify Access Code</div>
+            <a class="button-link fade-in delay" href="../dashboard/">Go to Dashboard</a>
+        </div>
+        <div id="token-display"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -9,11 +9,22 @@ body {
     position: relative;
 }
 
+.linkout {
+    font-weight: bold;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.linkout:hover {
+    text-decoration: underline;
+}
+
 #login-container {
     background: #181818;
     padding: 32px;
     color: #fff;
     border-radius: 16px;
+    display: none;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }

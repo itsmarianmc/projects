@@ -4,22 +4,24 @@
 	<meta charset="UTF-8">
 	<title>Spotify Now Playing Widget</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../styles.css">
 	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="../styles.css">
 	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/fonts/gotham/gotham-style.css">
 </head>
 <body>
 	<div id="login-container">
-		<h2>Spotify Now Playing Widget</h2>
-        <p>If you are using OBS to implement this widget, go to the "Sources" tab, click the browser source, right click and click "Interact" to authorize!</p>
-        <br>
-		<p>Click on "Authorize" and then on agree. After that you will be redirected to this site.</p>
-		<p>You will see the widget 10 seconds after the start of a song and 22 seconds before the end of a song.</p>
-		<button id="login">Authorize</button>
-        <br><br><br><br><br>
-	    <small>&copy; 2025 itsmarian | All rights reserved!</small>
-        <br>
-        <small>This project uses the Spotify Web API but is not endorsed, certified or otherwise approved in any way by<br>Spotify Technologies SA. Spotify and the Spotify Logo are trademarks of Spotify Technologies SA.</small>
+        <div class="error-container" id="errorContainer">
+            <div class="glass-card">
+                <div class="error-message">
+                    <svg width="80" height="80" fill="currentColor" viewBox="0 0 20 20" style="margin: 0 auto 20px; opacity: 0.5;">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <h2>No configuration found!</h2>
+                    <p>Set up your Spotify API credentials in the Dashboard first in order to use the API.</p>
+                    <a href="../dashboard/" class="linkout">Go to Dashboard</a>
+                </div>
+            </div>
+        </div>
     </div>
 	<div class="music-container" id="musicContainer">
 		<div class="content">
@@ -58,6 +60,5 @@
         </div>
     </div>
 	<script src="script.js"></script>
-	<script src="../script.js"></script>
 </body>
 </html>

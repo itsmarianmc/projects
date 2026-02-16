@@ -79,8 +79,8 @@
 }
 
 .precursor-horizontal.animate {
-    animation: precursorHorizontalOpen 0.3s var(--ease) 0.6s forwards,
-               precursorHorizontalClose 0.3s var(--ease) 11.4s forwards;
+    animation: precursorHorizontalOpen 0.2s var(--ease) 0.7s forwards,
+               precursorHorizontalClose 0.2s var(--ease) 11.4s forwards;
 }
 
 .bar {
@@ -90,8 +90,8 @@
 }
 
 .bar.animate {
-    animation: barOpen 0.3s var(--ease) 0.8s forwards,
-               barClose 0.3s var(--ease) 11.3s forwards;
+    animation: barOpen 0.2s var(--ease) 0.8s forwards,
+               barClose 0.2s var(--ease) 11.3s forwards;
 }
 
 .text {
@@ -157,23 +157,39 @@
 }
 
 @keyframes flicker {
-    0%, 33%, 66%, 100% { opacity: 1; }
-    16%, 50%, 83% { opacity: 0.1; }
+    0%, 33%, 66%, 100% {
+        opacity: 1;
+    }
+    16%, 50%, 83% {
+        opacity: 0;
+    }
 }
 
 @keyframes leftGrow {
-    from { height: 0; }
-    to   { height: 96px; }
+    from {
+        height: 0;
+    }
+    to {
+        height: 96px;
+    }
 }
 
 @keyframes arrowRotate {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(90deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(90deg);
+    }
 }
 
 @keyframes barOpen {
-    from { width: 0; }
-    to   { width: 1275px; }
+    from {
+        width: 0;
+    }
+    to {
+        width: 1275px;
+    }
 }
 
 @keyframes textIn {
@@ -188,18 +204,29 @@
 }
 
 @keyframes leftShrink {
-    from { height: 96px; }
-    to   { height: 0; }
+    from {
+        height: 96px
+    }
+    to {
+        height: 0
+    }
 }
 
 @keyframes arrowRotateBack {
-    from { transform: rotate(90deg); }
-    to   { transform: rotate(0deg); }
+    from {
+        transform: rotate(90deg)
+    }
+    to {
+        transform: rotate(0deg)
+    }
 }
 
 @keyframes barClose {
-    from { width: 1275px; }
-    to   { width: 0; }
+    from {
+        width: 1275px
+    }
+    to { width: 0
+    }
 }
 
 @keyframes textOut {
