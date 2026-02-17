@@ -1,5 +1,3 @@
-const API_URL = 'https://itsmarianmc-github.vercel.app/api/now-playing';
-
 let credentials = null;
 let currentTrackData = null;
 let localProgressMs = 0;
@@ -14,6 +12,9 @@ let fetchInterval = null;
 let progressInterval = null;
 
 const elements = {
+    loginContainer: document.getElementById('login-container'),
+    mainContainer: document.getElementById('musicContainer'),
+    error: document.getElementById('errorMsg'),
     musicContainer: null,
     coverImg: null,
     title: null,
@@ -51,7 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function startMonitoring() {
     fetchNowPlaying();
 
-    fetchInterval = setInterval(fetchNowPlaying, 4000);
+    fetchInterval = setInterval(fetchNowPlaying, 1000);
 
     progressInterval = setInterval(updateLocalProgressAndCheck, 1000);
 }
@@ -59,11 +60,26 @@ function startMonitoring() {
 async function fetchNowPlaying() {
     if (!credentials) return;
 
-    try {
-        const url = `${API_URL}?client_id=${encodeURIComponent(credentials.clientId)}&client_secret=${encodeURIComponent(credentials.clientSecret)}&refresh_token=${encodeURIComponent(credentials.refreshToken)}`;
+    const { clientId, clientSecret, refreshToken } = credentials;
 
-        const response = await fetch(url);
-        const data = await response.json();
+    if (!clientId || !clientSecret || !refreshToken) {
+        elements.loginContainer.style.display = 'block';
+        elements.mainContainer.style.display = 'none';
+        if (!clientId) {
+            console.log('No Client Id found!');
+            elements.error.innerText = 'No Client Id found!';
+        } else if (!refreshToken) {
+            console.log('No refresh Token found!');
+            elements.error.innerText = 'No refresh Token found!';
+        } else if (!clientSecret) {
+            console.log('No client Secret found!');
+            elements.error.innerText = 'No client Secret found!';
+        }
+        return;
+    }
+
+    try {
+        const data = await fetchNowPlayingFromSpotify(clientId, clientSecret, refreshToken);
 
         if (data.error) {
             console.error('API Fehler:', data.error);

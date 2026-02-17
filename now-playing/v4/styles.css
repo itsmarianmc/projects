@@ -94,7 +94,7 @@ body {
 
 .player-view {
     animation: fadeIn 0.5s;
-    width: 1200px;
+    width: 800px;
     transform-origin: center center;
     transition: all 0.5s ease;
     display: flex;
@@ -111,7 +111,8 @@ body {
 }
 
 .player-grid {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     grid-template-columns: 300px 1fr;
     gap: 30px;
     margin-bottom: 20px;
@@ -152,9 +153,8 @@ body {
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    border-radius: 24px;
+    border-radius: 28px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .album-shadow {
@@ -194,15 +194,25 @@ body {
     flex-direction: column;
     background: var(--bg-section);
     border-radius: 24px;
-    padding: 0px 30px;
+    padding: 2rem;
     flex: 1;
 	transition: all 1s ease;
     backdrop-filter: blur(10px);
     min-height: 0;
 }
 
+.sec-info {
+    padding: 3rem 1rem;
+}
+
+.track-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 .track-header h1 {
-    font-size: 48px;
+    font-size: 54px;
     font-weight: 900;
     color: var(--text-primary);
     margin-bottom: 4px;
@@ -214,7 +224,7 @@ body {
 }
 
 .track-header p {
-    font-size: 32px;
+    font-size: 48px;
     font-weight: 600;
     color: var(--text-primary);
     opacity: 0.9;
@@ -223,17 +233,21 @@ body {
     white-space: nowrap;
 }
 
-.waveform-container {
+.playback-container, .paused-container {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
+.paused-container {
+    display: none;
+}
+
 .time-label {
-    font-size: 34px;
+    font-size: 48px;
     font-weight: 700;
     color: var(--text-primary);
-    min-width: 80px;
+    min-width: 120px;
 }
 
 .time-current {
@@ -241,37 +255,22 @@ body {
 }
 
 .time-paused {
-    display: none;
+    display: flex;
+    justify-content: center;
 }
 
 .time-total {
     text-align: left;
 }
 
-.waveform {
-    flex: 1;
-    height: 85px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    padding: 0 10px;
-}
-
-.waveform-bar {
-    width: 12px;
-    border-radius: 6px;
-    transition: all 0.6s ease-in-out;
-    background: var(--fill-color);
-}
-
 .progress-bar-container {
     margin-bottom: 0;
+    width: 100%;
 }
 
 .progress-bar {
     height: 24px;
-    background: var(--bg-section);
+    background: var(--fill-color-bg);
     border-radius: 12px;
 	transition: all 1s ease;
     overflow: hidden;

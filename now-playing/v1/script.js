@@ -1,4 +1,3 @@
-const API_URL = 'https://itsmarianmc-github.vercel.app/api/now-playing';
 let credentials = null;
 let currentSongId = null;
 let firstAnimationShown = false;
@@ -7,6 +6,12 @@ let thirdAnimationShown = false;
 let localProgressMs = 0;
 let lastFetchTime = 0;
 let currentTrackData = null;
+
+const elements = {
+	loginContainer: document.getElementById('login-container'),
+	mainContainer: document.getElementById('musicContainer'),
+	error: document.getElementById('errorMsg'),
+}
 
 function showAnimation(title, artists) {
 	const musicContainer = document.getElementById('musicContainer');
@@ -48,11 +53,26 @@ function showAnimation(title, artists) {
 async function fetchNowPlaying() {
 	if (!credentials) return;
 
+	const { clientId, clientSecret, refreshToken } = credentials;
+
+	if (!clientId || !clientSecret || !refreshToken) {
+		elements.loginContainer.style.display = 'block';
+		elements.mainContainer.style.display = 'none';
+		if (!clientId) {
+			console.log('No Client Id found!');
+			elements.error.innerText = 'No Client Id found!';
+		} else if (!refreshToken) {
+			console.log('No refresh Token found!');
+			elements.error.innerText = 'No refresh Token found!';
+		} else if (!clientSecret) {
+			console.log('No client Secret found!');
+			elements.error.innerText = 'No client Secret found!';
+		}
+		return;
+	}
+
 	try {
-		const url = `${API_URL}?client_id=${encodeURIComponent(credentials.clientId)}&client_secret=${encodeURIComponent(credentials.clientSecret)}&refresh_token=${encodeURIComponent(credentials.refreshToken)}`;
-		
-		const response = await fetch(url);
-		const data = await response.json();
+		const data = await fetchNowPlayingFromSpotify(clientId, clientSecret, refreshToken);
 
 		if (data.error) {
 			console.error('API Error:', data.error);
@@ -154,7 +174,7 @@ function initializeWidget() {
 	
 	fetchNowPlaying();
 	
-	setInterval(fetchNowPlaying, 4000);
+	setInterval(fetchNowPlaying, 1000);
 	setInterval(updateLocalProgress, 1000);
 }
 

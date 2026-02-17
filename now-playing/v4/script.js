@@ -1,8 +1,8 @@
 let credentials = null;
 let fetchInterval = null;
-
 let animationInterval = null;
 let currentTrackData = null;
+let localProgressMs = 0;
 let currentAlbumUrl = '';
 let isFlipped = false;
 
@@ -14,6 +14,9 @@ const elements = {
     errorContainer: document.getElementById('errorContainer'),
     loginContainer: document.getElementById('login-container'),
     mainContainer: document.querySelector('.container'),
+    pausedFill: document.getElementById('pausedFill'),
+    pausedContainer: document.querySelector('.paused-container'),
+    playingContainer: document.querySelector('.playback-container'),
     error: document.getElementById('errorMsg'),
     loadingView: document.getElementById('loadingView'),
     notPlayingView: document.getElementById('notPlayingView'),
@@ -26,7 +29,7 @@ const elements = {
     progressFill: document.getElementById('progressFill'),
     currentTime: document.getElementById('currentTime'),
     totalTime: document.getElementById('totalTime'),
-    pausedTime: document.getElementById('pausedTime'),
+    totalTimePaused: document.getElementById('totalTimePaused'),
     waveform: document.getElementById('waveform')
 };
 
@@ -106,6 +109,7 @@ function extractColorsFromImage(img) {
         const accentS = s;
         const accentRgb = hslToRgb(h, accentS, accentL);
         document.documentElement.style.setProperty('--fill-color', `rgb(${accentRgb[0]},${accentRgb[1]},${accentRgb[2]})`);
+        document.documentElement.style.setProperty('--fill-color-bg', `rgb(${accentRgb[0]},${accentRgb[1]},${accentRgb[2]}, 0.5)`);
     } catch (e) {
         console.error('Color extraction failed', e);
     }
@@ -117,26 +121,31 @@ const calculateScale = (clientWidth, clientHeight, containerWidth, containerHeig
     const aspectRatioElement = clientWidth / clientHeight;
     const aspectRatioContainer = availableWidth / availableHeight;
     return aspectRatioElement > aspectRatioContainer
-        ? availableWidth / clientWidth * 0.95
-        : availableHeight / clientHeight * 0.95;
+        ? availableWidth / clientWidth
+        : availableHeight / clientHeight;
 };
 
 function scalePlayerView() {
     const playerView = document.querySelector('.player-view');
-    if (!playerView || playerView.style.display === 'none') return;
+    if (!playerView || playerView.style.display === 'none' || playerView.offsetWidth === 0) return;
 
     const container = document.querySelector('.container');
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
 
-    const designWidth = 1200;
-    const designHeight = 198;
+    const playerWidth = playerView.offsetWidth;
+    const playerHeight = playerView.offsetHeight;
 
     const paddingX = 20;
     const paddingY = 20;
 
-    const scale = calculateScale(designWidth, designHeight, containerWidth, containerHeight, paddingX, paddingY);
+    const scale = calculateScale(playerWidth, playerHeight, containerWidth, containerHeight, paddingX, paddingY);
     playerView.style.transform = `scale(${scale})`;
+}
+
+function generatePlaceholerFill() {
+    const randomPercent = Math.floor(Math.random() * 101);
+    elements.pausedFill.style.width = `${randomPercent}%`;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -149,7 +158,6 @@ window.addEventListener('DOMContentLoaded', () => {
     credentials = JSON.parse(saved);
     elements.loadingView.style.display = 'block';
 
-    generateWaveform();
     fetchNowPlaying();
 
     fetchInterval = setInterval(fetchNowPlaying, 1000);
@@ -157,49 +165,9 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
         setTimeout(() => scalePlayerView(), 1000);
     });
+
     setTimeout(scalePlayerView, 1000);
 });
-
-function generateWaveform() {
-    const barCount = 25;
-    for (let i = 0; i < barCount; i++) {
-        const bar = document.createElement('div');
-        bar.className = 'waveform-bar';
-        const height = Math.random() * 60 + 30;
-        bar.style.height = height + '%';
-        bar.dataset.targetHeight = height;
-        elements.waveform.appendChild(bar);
-    }
-}
-
-function animateWaveform() {
-    const bars = elements.waveform.querySelectorAll('.waveform-bar');
-    bars.forEach((bar) => {
-        const newHeight = Math.random() * 50 + 40;
-        bar.dataset.targetHeight = newHeight;
-        bar.style.height = newHeight + '%';
-    });
-}
-
-function updateWaveform(progressPercent, isPlaying) {
-    const bars = elements.waveform.querySelectorAll('.waveform-bar');
-    const activeCount = Math.floor((progressPercent / 100) * bars.length);
-
-    bars.forEach((bar, i) => {
-        if (i < activeCount) {
-            bar.classList.add('active');
-        } else {
-            bar.classList.remove('active');
-        }
-    });
-
-    if (isPlaying && !animationInterval) {
-        animationInterval = setInterval(animateWaveform, 600);
-    } else if (!isPlaying && animationInterval) {
-        clearInterval(animationInterval);
-        animationInterval = null;
-    }
-}
 
 async function fetchNowPlaying() {
     if (!credentials) return;
@@ -228,6 +196,7 @@ async function fetchNowPlaying() {
         }
 
         currentTrackData = data;
+        localProgressMs = data.progress_ms || 0;
 
         const currentProgress = data.progress_ms || 0;
 
@@ -239,11 +208,14 @@ async function fetchNowPlaying() {
         lastProgressMs = currentProgress;
 
         const isFrozen = samePositionCount >= SAME_POSITION_THRESHOLD;
-        const isPaused = data.playing === false || isFrozen;
+        const isPaused = data.playing === false || data.recently_played === true || isFrozen;
 
-        if (elements.pausedTime) {
-            elements.pausedTime.style.display = isPaused ? 'block' : 'none';
-            elements.currentTime.style.display = isPaused ? 'none' : 'block';
+        if (isPaused) {
+            elements.pausedContainer.style.display = 'flex';
+            elements.playingContainer.style.display = 'none';
+        } else {
+            elements.pausedContainer.style.display = 'none';
+            elements.playingContainer.style.display = 'flex';
         }
 
         elements.loadingView.style.display = 'none';
@@ -256,7 +228,13 @@ async function fetchNowPlaying() {
     }
 }
 
-
+function updateProgressUI() {
+    if (!currentTrackData) return;
+    const progressPercent = (localProgressMs / currentTrackData.track.duration_ms) * 100;
+    elements.progressFill.style.width = `${progressPercent}%`;
+    elements.pausedFill.style.width = `${progressPercent}%`;
+    elements.currentTime.textContent = formatTime(localProgressMs);
+}
 
 function updatePlayerUI(data, isPaused = false) {
     if (!data.track) {
@@ -305,13 +283,12 @@ function updatePlayerUI(data, isPaused = false) {
     elements.trackName.textContent = data.track.name;
     elements.artistName.textContent = data.artists.map(a => a.name).join(', ');
 
-    const progressMs = data.progress_ms || 0;
-    const progressPercent = (progressMs / data.track.duration_ms) * 100;
+    const progressPercent = (localProgressMs / data.track.duration_ms) * 100;
     elements.progressFill.style.width = `${progressPercent}%`;
-    elements.currentTime.textContent = formatTime(progressMs);
+    elements.pausedFill.style.width = `${progressPercent}%`;
+    elements.currentTime.textContent = formatTime(localProgressMs);
     elements.totalTime.textContent = formatTime(data.track.duration_ms);
-
-    updateWaveform(progressPercent, data.playing && !isPaused);
+    elements.totalTimePaused.textContent = formatTime(data.track.duration_ms);
 }
 
 function formatTime(ms) {
@@ -323,6 +300,5 @@ function formatTime(ms) {
 
 window.addEventListener('beforeunload', () => {
     if (fetchInterval) clearInterval(fetchInterval);
-
     if (animationInterval) clearInterval(animationInterval);
 });
