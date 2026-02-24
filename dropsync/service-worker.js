@@ -5,6 +5,7 @@ const ASSETS = [
     'https://itsmarian-static.is-a.dev/global/colors.css',
     './',
     './favicon.png',
+    './glass.js',
     './index.html',
     './script.js',
     './styles.css'

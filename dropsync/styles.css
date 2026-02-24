@@ -1099,3 +1099,17 @@ body.modal-open {
 .toggle-switch[aria-pressed="true"]::after {
     transform: translateX(20px);
 }
+
+@keyframes waveScroll {
+  from { transform: translate(0,-7px); }
+  to   { transform: translate(-70px,-7px); }
+}
+
+#waveGroup {
+  animation: waveScroll 4.5s linear infinite;
+  animation-play-state: running;
+}
+
+#waveGroup.waving {
+  animation-play-state: running;
+}

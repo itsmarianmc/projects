@@ -173,86 +173,104 @@
                     </div>
                 </div>
                 <div class="modal-step" id="step2">
-                    <div class="amount-step-inner">
-                        <div class="amount-display">
-                            <div class="amount-num" id="amountNum">250</div>
-                            <div class="amount-ml">ml</div>
-                        </div>
-                        <div class="glass-scale-wrap">
-                            <div class="scale-col left" id="scaleLeft"></div>
-                            <div class="glass-container" id="glassContainer">
-                                <svg class="glass-svg" viewBox="0 0 140 300">
+                	<div class="amount-step-inner">
+                		<div class="amount-display">
+                			<div class="amount-num" id="amountNum">250</div>
+                			<div class="amount-ml">ml</div>
+                		</div>
+                		<div class="glass-scale-wrap">
+                			<div class="scale-col left" id="scaleLeft"></div>
+                			<div class="glass-container" id="glassContainer">
+                				<svg class="glass-svg" viewBox="0 0 140 300" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
                                         <clipPath id="fillClip">
-                                            <rect id="fillRect" x="0" y="294" width="140" height="0"/>
+                                            <rect id="fillRect" x="0" y="294" width="140" height="0" />
                                         </clipPath>
-                                        <linearGradient id="fillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                            <stop offset="0%"   stop-color="#60c8ff" stop-opacity="0.75"/>
-                                            <stop offset="100%" stop-color="#1a6fd4" stop-opacity="0.88"/>
+                                        <linearGradient id="fillGrad" x1="0" y1="6" x2="0" y2="294" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%"   stop-color="#60c8ff" stop-opacity="0.72" />
+                                            <stop offset="100%" stop-color="#1a6fd4" stop-opacity="0.92" />
                                         </linearGradient>
                                         <clipPath id="glassBodyClip">
-                                            <path d="M8,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L132,6 Z"/>
+                                            <path d="M4,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L136,6 Z" />
                                         </clipPath>
                                         <linearGradient id="glassBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="rgba(255,255,255,0.20)"/>
-                                            <stop offset="12%" stop-color="rgba(255,255,255,0.38)"/>
-                                            <stop offset="30%" stop-color="rgba(255,255,255,0.05)"/>
-                                            <stop offset="70%" stop-color="rgba(255,255,255,0.04)"/>
-                                            <stop offset="88%" stop-color="rgba(255,255,255,0.26)"/>
-                                            <stop offset="100%" stop-color="rgba(255,255,255,0.14)"/>
+                                            <stop offset="0%"   stop-color="rgba(255,255,255,0.20)" />
+                                            <stop offset="12%"  stop-color="rgba(255,255,255,0.38)" />
+                                            <stop offset="30%"  stop-color="rgba(255,255,255,0.05)" />
+                                            <stop offset="70%"  stop-color="rgba(255,255,255,0.04)" />
+                                            <stop offset="88%"  stop-color="rgba(255,255,255,0.26)" />
+                                            <stop offset="100%" stop-color="rgba(255,255,255,0.14)" />
                                         </linearGradient>
                                         <linearGradient id="leftEdge" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="rgba(255,255,255,0.60)"/>
-                                            <stop offset="100%" stop-color="rgba(255,255,255,0.00)"/>
+                                            <stop offset="0%"   stop-color="rgba(255,255,255,0.60)" />
+                                            <stop offset="100%" stop-color="rgba(255,255,255,0.00)" />
                                         </linearGradient>
                                         <linearGradient id="rightEdge" x1="100%" y1="0%" x2="0%" y2="0%">
-                                            <stop offset="0%" stop-color="rgba(255,255,255,0.42)"/>
-                                            <stop offset="100%" stop-color="rgba(255,255,255,0.00)"/>
+                                            <stop offset="0%"   stop-color="rgba(255,255,255,0.42)" />
+                                            <stop offset="100%" stop-color="rgba(255,255,255,0.00)" />
                                         </linearGradient>
                                         <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
-                                            <stop offset="30%" stop-color="rgba(255,255,255,0.80)"/>
-                                            <stop offset="70%" stop-color="rgba(255,255,255,0.60)"/>
-                                            <stop offset="100%" stop-color="rgba(255,255,255,0.12)"/>
+                                            <stop offset="0%"   stop-color="rgba(255,255,255,0.12)" />
+                                            <stop offset="30%"  stop-color="rgba(255,255,255,0.80)" />
+                                            <stop offset="70%"  stop-color="rgba(255,255,255,0.60)" />
+                                            <stop offset="100%" stop-color="rgba(255,255,255,0.12)" />
                                         </linearGradient>
                                         <radialGradient id="bottomDepth" cx="50%" cy="100%" r="55%">
-                                            <stop offset="0%" stop-color="rgba(0,20,70,0.32)"/>
-                                            <stop offset="100%" stop-color="rgba(0,0,0,0.00)"/>
+                                            <stop offset="0%"   stop-color="rgba(0,20,70,0.32)" />
+                                            <stop offset="100%" stop-color="rgba(0,0,0,0.00)" />
                                         </radialGradient>
                                         <linearGradient id="innerTopShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-                                            <stop offset="0%" stop-color="rgba(0,0,0,0.18)"/>
-                                            <stop offset="18%" stop-color="rgba(0,0,0,0.00)"/>
+                                            <stop offset="0%"   stop-color="rgba(0,0,0,0.18)" />
+                                            <stop offset="18%"  stop-color="rgba(0,0,0,0.00)" />
                                         </linearGradient>
                                     </defs>
-                                    <ellipse cx="70" cy="297" rx="46" ry="4" fill="rgba(0,0,0,0.20)" style="filter:blur(4px)"/>
-                                    <path d="M8,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L132,6 Z" fill="url(#fillGrad)" clip-path="url(#fillClip)"/>
-                                    <path d="M8,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L132,6 Z" fill="url(#bottomDepth)" clip-path="url(#fillClip)"/>
-                                    <path d="M8,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L132,6 Z" fill="url(#glassBodyGrad)" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
-                                    <rect x="8" y="6" width="20" height="292" fill="url(#leftEdge)" clip-path="url(#glassBodyClip)"/>
-                                    <rect x="112" y="6" width="20" height="292" fill="url(#rightEdge)" clip-path="url(#glassBodyClip)"/>
-                                    <rect x="64" y="16" width="6" height="255" rx="3" fill="rgba(255,255,255,0.07)" clip-path="url(#glassBodyClip)"/>
-                                    <path d="M8,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L132,6 Z" fill="url(#innerTopShadow)" clip-path="url(#glassBodyClip)"/>
-                                    <ellipse cx="70" cy="6" rx="62" ry="6" fill="rgba(200,230,255,0.18)" stroke="rgba(255,255,255,0.50)" stroke-width="1.2"/>
-                                    <ellipse cx="70" cy="5" rx="54" ry="4" fill="rgba(0,10,30,0.22)"/>
-                                    <ellipse cx="70" cy="4" rx="54" ry="3" fill="none" stroke="url(#rimGrad)" stroke-width="1.5"/>
-                                    <ellipse cx="70" cy="290" rx="42" ry="5" fill="rgba(180,220,255,0.18)" stroke="rgba(255,255,255,0.24)" stroke-width="1"/>
-                                    <ellipse cx="70" cy="290" rx="32" ry="3" fill="rgba(10,40,120,0.18)"/>
+
+                                    <ellipse cx="70" cy="297" rx="46" ry="4" fill="rgba(0,0,0,0.20)" style="filter:blur(4px)" />
+
+                                    <path d="M4,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L136,6 Z"
+                                        fill="url(#fillGrad)" clip-path="url(#fillClip)" />
+
+                                    <g clip-path="url(#glassBodyClip)">
+                                        <g id="waveGroup">
+                                            <path id="wavePath" fill="url(#fillGrad)" />
+                                        </g>
+                                    </g>
+
+                                    <path d="M4,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L136,6 Z"
+                                        fill="url(#bottomDepth)" clip-path="url(#fillClip)" />
+
+                                    <ellipse id="fillSurface" cx="70" cy="294" rx="42" ry="3.5"
+                                            fill="url(#fillGrad)" opacity="0" />
+
+                                    <ellipse id="fullRimFill" cx="70" cy="6" rx="66" ry="5.5" fill="url(#fillGrad)" opacity="1"></ellipse>
+
+                                    <path d="M4,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L136,6" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round"></path>
+
+                                    <rect x="4"   y="6" width="20" height="292" fill="url(#leftEdge)"  clip-path="url(#glassBodyClip)" />
+                                    <rect x="116" y="6" width="20" height="292" fill="url(#rightEdge)" clip-path="url(#glassBodyClip)" />
+
+                                    <path d="M4,6 L28,284 Q28,294 38,294 L102,294 Q112,294 112,284 L136,6 Z"
+                                        fill="url(#innerTopShadow)" clip-path="url(#glassBodyClip)" />
+
+                                    <ellipse cx="70" cy="6"  rx="66" ry="6"   fill="rgba(200,230,255,0.18)" stroke="rgba(255,255,255,0.50)" stroke-width="1.2" />
+                                    <ellipse cx="70" cy="290" rx="42" ry="5"  fill="rgba(180,220,255,0.18)" stroke="rgba(255,255,255,0.24)" stroke-width="1" />
+                                    <ellipse cx="70" cy="290" rx="32" ry="3"  fill="rgba(10,40,120,0.18)" />
                                 </svg>
-                            </div>
-                            <div class="scale-col right" id="scaleRight"></div>
-                        </div>
-                        <div class="quick-amounts">
-                            <button class="quick-btn" data-ml="100">100 ml</button>
-                            <button class="quick-btn" data-ml="150">150 ml</button>
-                            <button class="quick-btn" data-ml="200">200 ml</button>
-                            <button class="quick-btn" data-ml="250">250 ml</button>
-                            <button class="quick-btn" data-ml="330">330 ml</button>
-                            <button class="quick-btn" data-ml="400">400 ml</button>
-                            <button class="quick-btn" data-ml="500">500 ml</button>
-                            <button class="quick-btn" data-ml="750">750 ml</button>
-                            <button class="quick-btn" data-ml="1000">1000 ml</button>
-                        </div>
-                    </div>
+                			</div>
+                			<div class="scale-col right" id="scaleRight"></div>
+                		</div>
+                		<div class="quick-amounts">
+                			<button class="quick-btn" data-ml="100">100 ml</button>
+                			<button class="quick-btn" data-ml="150">150 ml</button>
+                			<button class="quick-btn" data-ml="200">200 ml</button>
+                			<button class="quick-btn" data-ml="250">250 ml</button>
+                			<button class="quick-btn" data-ml="330">330 ml</button>
+                			<button class="quick-btn" data-ml="400">400 ml</button>
+                			<button class="quick-btn" data-ml="500">500 ml</button>
+                			<button class="quick-btn" data-ml="750">750 ml</button>
+                			<button class="quick-btn" data-ml="1000">1000 ml</button>
+                		</div>
+                	</div>
                 </div>
             </div>
             <div class="modal-footer" id="modalFooter">
@@ -419,6 +437,7 @@
         </div>
     </div>
     <div class="toast" id="toast"></div>
+    <script src="glass.js"></script>
     <script src="script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
