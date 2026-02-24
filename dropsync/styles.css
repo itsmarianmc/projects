@@ -52,7 +52,6 @@ body.modal-open {
     padding: 12px 24px 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
 }
 
 .header-greeting {
