@@ -445,11 +445,13 @@ function goToStep1() {
 }
 
 function goToStep2() {
-    el('backBtn').style.opacity = '1';
+    el('backBtn').classList.remove('hidden');
+    setTimeout(() => {        
+        el('backBtn').style.opacity = '1';
+    }, 100);
     if (!selDrink) return;
     switchStep('step2', 'forward');
     el('modalTitle').textContent = `${selDrink.name}`;
-    el('backBtn').classList.remove('hidden');
     buildScale();
     quickSet(250);
 }
@@ -598,6 +600,8 @@ function triggerSnapEffect() {
 }
 
 function addEntry() {
+    el('backBtn').classList.add('hidden');
+    el('backBtn').style.opacity = "0";
     el('step2').style = '';
     if (!selDrink) return;
     const entry = {

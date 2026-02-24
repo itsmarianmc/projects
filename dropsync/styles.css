@@ -588,6 +588,10 @@ body.modal-open {
     gap: 4px;
 }
 
+.back-btn.hidden {
+    display: none
+}
+
 .back-btn:hover {
     background: var(--surface3);
 }
