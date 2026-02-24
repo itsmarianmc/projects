@@ -1,0 +1,13 @@
+{
+  "name": "DropSync",
+  "short_name": "DropSync",
+  "start_url": "/dropsync/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/dropsync/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

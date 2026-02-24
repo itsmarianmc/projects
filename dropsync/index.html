@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DropSync - Drink Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css"/>
+    <link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/colors.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- App -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0F0F10">
+</head>
+<body>
+    <div class="header">
+        <div class="header-greeting">Today, <span id="dateLabel"></span></div>
+        <div class="header-title-row">
+            <div class="header-title">Drop<span>Sync</span></div>
+            <div class="button-box">
+                <button id="openHistoryBtn" title="History">
+                    <svg viewBox="0 -960 960 960" fill="currentColor">
+                        <path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/>
+                    </svg>
+                </button>
+                <button id="openSettingsBtn" title="Settings">
+                    <svg viewBox="0 -960 960 960" fill="currentColor"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="ring-section">
+        <div class="ring-container">
+            <svg class="ring-svg" viewBox="0 0 220 220">
+                <defs>
+                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#5AC8FA"/>
+                        <stop offset="100%" stop-color="#30D158"/>
+                    </linearGradient>
+                </defs>
+                <circle class="ring-track" cx="110" cy="110" r="95"/>
+                <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="95"/>
+            </svg>
+            <div class="ring-inner">
+                <div class="ring-amount" id="ringAmount">0</div>
+                <div class="ring-unit">ml today</div>
+                <div class="ring-goal">Goal: 2.5 L</div>
+            </div>
+        </div>
+    </div>
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+            </div>
+            <div class="stat-value" id="statPct">0%</div>
+            <div class="stat-label">Progress</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-bottle-water"></i>
+            </div>
+            <div class="stat-value" id="statCount">0</div>
+            <div class="stat-label">Drinks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-stopwatch"></i>
+            </div>
+            <div class="stat-value" id="statLast">—</div>
+            <div class="stat-label">Last</div>
+        </div>
+    </div>
+    <div class="add-section">
+        <button class="add-btn" id="openModalBtn">
+            <svg viewBox="0 0 24 24">
+                <line x1="12" y1="2" x2="12" y2="22"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+            </svg>
+        </button>
+    </div>
+    <div class="log-section">
+        <div class="section-title">
+            History
+            <button class="btn" id="clearAll" style="padding: 6px 6px; width: unset;">
+                <svg viewBox="0 0 24 24" style="height: 20px; transform: rotate(45deg); width: 20px;">
+                    <line x1="12" y1="2" x2="12" y2="22"></line>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="log-list" id="logList">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-bottle-water"></i>
+                </div>
+                Nothing logged yet.<br>Time for a glass of water!
+            </div>
+        </div>
+    </div>
+    <div class="overlay" id="overlay">
+        <div class="modal" id="modal">
+            <div class="modal-handle-zone" id="handleZone">
+                <div class="modal-handle"></div>
+            </div>
+            <div class="modal-header">
+                <div class="modal-btn">
+                    <button class="back-btn" id="backBtn" style="opacity: 0; transition: all 0.25s var(--ease);">
+                        <svg height="18" viewBox="0 -960 960 960" width="18" fill="#e3e3e3"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+                    </button>
+                </div>
+                <div class="modal-title" id="modalTitle">What did you drink?</div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="modal-step" id="step1">
+                    <div class="drink-grid">
+                        <div class="drink-option" data-drink="Alcohol" data-emoji="fas fa-blender" data-color="#FF2D55" style="color: #FF2D55;">
+                            <div class="drink-option-emoji">
+                                <i class="fa-solid fa-wine-glass"></i>
+                            </div>
+                            <div class="drink-option-name">Alcohol</div>
+                        </div>
+                        <div class="drink-option" data-drink="Coffee" data-emoji="fas fa-coffee" data-color="#8b6152" style="color: #8b6152;">
+                            <div class="drink-option-emoji">
+                                <i class="fas fa-coffee"></i>
+                            </div>
+                            <div class="drink-option-name">Coffee</div>
+                        </div>
+                        <div class="drink-option" data-drink="Energy" data-emoji="fas fa-bolt-lightning" data-color="#FFD60A" style="color: #FFD60A;">
+                            <div class="drink-option-emoji">
+                                <i class="fas fa-bolt-lightning"></i>
+                            </div>
+                            <div class="drink-option-name">Energy</div>
+                        </div>
+                        <div class="drink-option" data-drink="Juice" data-emoji="fas fa-citrus" data-color="#E4840F" style="color: #E4840F;">
+                            <div class="drink-option-emoji">
+                                <i class="fas fa-citrus"></i>
+                            </div>
+                            <div class="drink-option-name">Juice</div>
+                        </div>
+                        <div class="drink-option" data-drink="Milk" data-emoji="fa-sharp fas fa-glass" data-color="#EDEDEE" style="color: #EDEDEE;">
+                            <div class="drink-option-emoji">
+                                <i class="fa-sharp fas fa-glass"></i>
+                            </div>
+                            <div class="drink-option-name">Milk</div>
+                        </div>
+                        <div class="drink-option" data-drink="Smoothie" data-emoji="fas fa-blender" data-color="#d3a2bb" style="color: #d3a2bb;">
+                            <div class="drink-option-emoji">
+                                <i class="fas fa-blender"></i>
+                            </div>
+                            <div class="drink-option-name">Smoothie</div>
+                        </div>
+                        <div class="drink-option" data-drink="Soda" data-emoji="fas fa-can-food" data-color="#4070ff" style="color: #4070ff;">
+                            <div class="drink-option-emoji">
+                                <i class="fas fa-can-food"></i>
+                            </div>
+                            <div class="drink-option-name">Soda</div>
+                        </div>
+                        <div class="drink-option" data-drink="Tea" data-emoji="fas fa-mug-tea-saucer" data-color="#3dcc55" style="color: #3dcc55;">
+                            <div class="drink-option-emoji">
+                                <i class="fas fa-mug-tea-saucer"></i>
+                            </div>
+                            <div class="drink-option-name">Tea</div>
+                        </div>
+                        <div class="drink-option" data-drink="Water" data-emoji="fas fa-droplet" data-color="#00d2e5" style="color: #00d2e5;">
+                            <div class="drink-option-emoji">
+                                <i class="fas fa-droplet"></i>
+                            </div>
+                            <div class="drink-option-name">Water</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-step" id="step2">
+                    <div class="amount-step-inner">
+                        <div class="amount-display">
+                            <div class="amount-num" id="amountNum">250</div>
+                            <div class="amount-ml">ml</div>
+                        </div>
+                        <div class="glass-scale-wrap">
+                            <div class="scale-col left" id="scaleLeft"></div>
+                            <div class="glass-container" id="glassContainer">
+                                <svg class="glass-svg" viewBox="0 0 140 300">
+                                    <defs>
+                                        <clipPath id="fillClip">
+                                            <rect id="fillRect" x="0" y="300" width="140" height="300"/>
+                                        </clipPath>
+                                        <linearGradient id="fillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stop-color="#0027a8" stop-opacity="0.8"></stop>
+                                            <stop offset="100%" stop-color="var(--accent)" stop-opacity=".75"></stop>
+                                        </linearGradient>
+                                        <linearGradient id="glassBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%"   stop-color="rgba(255,255,255,.02)"/>
+                                            <stop offset="38%"  stop-color="rgba(255,255,255,.08)"/>
+                                            <stop offset="100%" stop-color="rgba(255,255,255,.01)"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M22,10 L10,288 Q10,294 16,294 L124,294 Q60,294 130,288 L118,10 Q118,6 113,6 L27,6 Q22,6 22,10 Z"
+                                          fill="url(#glassBodyGrad)" stroke="rgba(255,255,255,.14)" stroke-width="1.5"/>
+                                    <path d="M22,10 L10,288 Q10,294 16,294 L124,294 Q130,294 130,288 L118,10 Q118,6 113,6 L27,6 Q22,6 22,10 Z"
+                                          fill="url(#fillGrad)" clip-path="url(#fillClip)"/>
+                                    <path d="M34,22 L29,262" stroke="rgba(255,255,255,.10)" stroke-width="5" stroke-linecap="round"/>
+                                    <path d="M106,22 L111,190" stroke="rgba(255,255,255,.04)" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="scale-col right" id="scaleRight"></div>
+                        </div>
+                        <div class="quick-amounts">
+                            <button class="quick-btn" data-ml="100">100 ml</button>
+                            <button class="quick-btn" data-ml="150">150 ml</button>
+                            <button class="quick-btn" data-ml="200">200 ml</button>
+                            <button class="quick-btn" data-ml="250">250 ml</button>
+                            <button class="quick-btn" data-ml="330">330 ml</button>
+                            <button class="quick-btn" data-ml="400">400 ml</button>
+                            <button class="quick-btn" data-ml="500">500 ml</button>
+                            <button class="quick-btn" data-ml="750">750 ml</button>
+                            <button class="quick-btn" data-ml="1000">1000 ml</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <button class="confirm-btn" id="nextBtn" disabled>
+                    <svg height="25" viewBox="0 -960 960 960" width="25" fill="#ffffff">
+                        <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
+                    </svg>
+                </button>
+                <button class="confirm-btn" id="confirmBtn" style="display: none;">
+                    <svg height="25" viewBox="0 -960 960 960" width="25" fill="#ffffff">
+                        <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" id="settingsOverlay">
+        <div class="modal" id="settingsModal">
+            <div class="modal-handle-zone" id="settingsHandleZone">
+                <div class="modal-handle"></div>
+            </div>
+            <div class="modal-header">
+                <div class="modal-title">Settings</div>
+            </div>
+            <div class="modal-body" id="settingsModalBody">
+                <div class="modal-step active" id="settingsStep">
+                    <div class="settings-section">
+                        <div class="settings-section-title">
+                            <svg height="20" viewBox="0 -960 960 960" width="20" fill="#ffffff">
+                                <path d="M360-720h80v-80h-80v80Zm160 0v-80h80v80h-80ZM360-400v-80h80v80h-80Zm320-160v-80h80v80h-80Zm0 160v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm160-320v-80h80v80h-80Zm-240 80v-80h80v80h-80ZM200-160v-640h80v80h80v80h-80v80h80v80h-80v320h-80Zm400-320v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm-80-80v-80h80v80h-80Zm160 0v-80h80v80h-80Zm80-80v-80h80v80h-80Z"/>
+                            </svg>
+                            Calculate daily goal
+                        </div>
+                        <div class="settings-section-body">
+                            <div class="calc-row">
+                                <label class="calc-label">Body weight (kg)</label>
+                                <input class="calc-input" id="calcWeight" type="number" min="20" max="250" placeholder="e.g. 70" inputmode="decimal"/>
+                            </div>
+                            <div class="calc-row">
+                                <label class="calc-label">Gender / Status</label>
+                                <div class="seg-control" id="calcGender">
+                                    <button class="seg-btn active" data-val="female">Female</button>
+                                    <button class="seg-btn" data-val="male">Male</button>
+                                    <button class="seg-btn" data-val="pregnant">Pregnant</button>
+                                    <button class="seg-btn" data-val="breastfeeding">Breastfeeding</button>
+                                    <button class="seg-btn" data-val="nospecification">Not specified</button>
+                                </div>
+                            </div>
+                            <div class="calc-row">
+                                <label class="calc-label">Activity</label>
+                                <div class="seg-control" id="calcActivity">
+                                    <button class="seg-btn active" data-val="low">Low</button>
+                                    <button class="seg-btn" data-val="medium">Medium</button>
+                                    <button class="seg-btn" data-val="high">High</button>
+                                </div>
+                            </div>
+                            <div class="calc-row">
+                                <label class="calc-label">Season / Climate</label>
+                                <div class="seg-control" id="calcSeason">
+                                    <button class="seg-btn active" data-val="cool">Cool</button>
+                                    <button class="seg-btn" data-val="mild">Mild</button>
+                                    <button class="seg-btn" data-val="warm">Warm</button>
+                                    <button class="seg-btn" data-val="hot">Hot</button>
+                                </div>
+                            </div>
+                            <div class="calc-result-row" id="calcResultRow" style="display:none;">
+                                <div class="calc-result-label">Recommended daily goal</div>
+                                <div class="calc-result-val" id="calcResultVal">—</div>
+                                <button class="confirm-btn" id="applyGoalBtn" style="margin: 10px 0 0; width: 100%;">
+                                    <svg height="25" viewBox="0 -960 960 960" width="25" fill="#ffffff">
+                                        <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-section-title">
+                            <svg height="20" viewBox="0 -960 960 960" width="20" fill="#ffffff">
+                                <path d="M491-200q12-1 20.5-9.5T520-230q0-14-9-22.5t-23-7.5q-41 3-87-22.5T343-375q-2-11-10.5-18t-19.5-7q-14 0-23 10.5t-6 24.5q17 91 80 130t127 35Zm-239.5 26Q160-268 160-408q0-100 79.5-217.5T480-880q161 137 240.5 254.5T800-408q0 140-91.5 234T480-80q-137 0-228.5-94ZM652-230.5Q720-301 720-408q0-73-60.5-165T480-774Q361-665 300.5-573T240-408q0 107 68 177.5T480-160q104 0 172-70.5ZM480-480Z"/>
+                            </svg>
+                            Current daily goal
+                        </div>
+                        <div class="settings-section-body">
+                            <div class="goal-display-row">
+                                <span class="goal-display-val" id="currentGoalDisplay">2.500 ml</span>
+                                <div class="goal-manual-wrap">
+                                    <input class="calc-input" id="manualGoalInput" type="number" min="500" max="6000" placeholder="ml" inputmode="numeric" style="width:110px;"/>
+                                    <button class="seg-btn active" id="manualGoalBtn" style="border-radius: var(--radius-sm); padding: 13.5px 16px;">Set</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-section-title">
+                            <svg height="20" viewBox="0 -960 960 960" width="20" fill="#ffffff">
+                                <path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/>
+                            </svg>
+                            Data
+                        </div>
+                        <div class="settings-section-body" style="gap: 8px; display:flex; flex-direction:column;">
+                            <button class="data-btn" id="exportJsonBtn">
+                                <svg height="20" viewBox="0 -960 960 960" width="20" fill="#ffffff">
+                                    <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                                </svg>
+                                Export data (JSON)
+                            </button>
+                            <button class="data-btn" id="exportCsvBtn">
+                                <svg height="20" viewBox="0 -960 960 960" width="20" fill="#ffffff">
+                                    <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm240-240H200v160h240v-160Zm80 0v160h240v-160H520Zm-80-80v-160H200v160h240Zm80 0h240v-160H520v160ZM200-680h560v-80H200v80Z"/>
+                                </svg>
+                                Export data (CSV)
+                            </button>
+                            <button class="data-btn danger" id="clearDataBtn">
+                                <svg height="20" viewBox="0 -960 960 960" width="20" fill="#FF453A">
+                                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                </svg>
+                                Delete all data
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-legal">
+                        <div class="legal-title">LEGAL</div>
+                        <p>Please note: The displayed values are for informational purposes only and are calculated based on standardized algorithms and general health guidelines. These calculations serve as approximate guidelines and should not be considered as definitive medical advice.</p>
+                        <p>Individual hydration needs can vary significantly based on multiple factors including but not limited to: body weight, height, physical activity level, age, gender, climate conditions, medical conditions, medications, and overall health status. Environmental factors such as temperature, humidity, and altitude may also affect daily fluid requirements.</p>
+                        <p>The provided values represent statistical averages and may need adjustment based on your specific circumstances. For personalized hydration recommendations, especially if you have underlying health conditions or specific dietary requirements, please consult with a qualified healthcare provider or registered dietitian.</p>
+                        <p>Use is at your own risk. No liability is accepted for damage to health that may arise from errors in the calculation.</p>
+                        <p style="margin-top:8px;">Version 1.0 · © 2025 DropSync</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" id="historyOverlay">
+        <div class="modal" id="historyModal">
+            <div class="modal-handle-zone" id="historyHandleZone">
+                <div class="modal-handle"></div>
+            </div>
+            <div class="modal-header">
+                <div class="modal-title">History</div>
+            </div>
+            <div class="modal-body" id="historyModalBody">
+                <div class="modal-step active" id="historyStep">
+                    <div id="historyList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+            .then(reg => console.log('✅ Service Worker registered.', reg))
+            .catch(err => console.error('❌ Service Worker Error:', err));
+        }
+    </script>
+</body>
+</html>
