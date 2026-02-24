@@ -207,7 +207,10 @@ function snapToClosed() {
             el('openModalBtn').classList.remove('active');
         });
     });
-
+    
+    overlay.style.backdropFilter = '';
+    overlay.classList.remove('visible');
+    
     setTimeout(() => {
         modal.style.transform = '';
         modal.style.height = '';
@@ -219,8 +222,6 @@ function snapToClosed() {
         el('nextBtn').style.display = '';
         el('confirmBtn').style.display = 'none';
         overlay.style.background = '';
-        overlay.style.backdropFilter = '';
-        overlay.classList.remove('visible');
     }, 440);
 }
 
@@ -705,14 +706,15 @@ function closeSettingsModal() {
         });
     });
 
+    settingsOverlay.style.backdropFilter = '';
+    settingsOverlay.classList.remove('visible');
+
     setTimeout(() => {
         settingsModal.style.transform = '';
         settingsModal.style.height = '';
         settingsModal.style.transition = '';
         settingsNaturalHeight = 0;
         settingsOverlay.style.background = '';
-        settingsOverlay.style.backdropFilter = '';
-        settingsOverlay.classList.remove('visible');
     }, 400);
 }
 
@@ -965,6 +967,9 @@ function closeHistoryModal() {
             document.body.classList.remove('modal-open');
         });
     });
+    
+    historyOverlay.style.backdropFilter = '';
+    historyOverlay.classList.remove('visible');
 
     setTimeout(() => {
         historyModal.style.transform = '';
@@ -972,8 +977,6 @@ function closeHistoryModal() {
         historyModal.style.transition = '';
         historyNaturalHeight = 0;
         historyOverlay.style.background = '';
-        historyOverlay.style.backdropFilter = '';
-        historyOverlay.classList.remove('visible');
     }, 400);
 }
 
