@@ -113,7 +113,6 @@ function renderLog() {
         renderedIds.clear();
     }
 
-    // Remove date header if present (re-render cleanly)
     list.querySelectorAll('.log-date-header').forEach(h => h.remove());
 
     const newIds = new Set(te.map(e => e.id));
@@ -136,7 +135,11 @@ function renderLog() {
                     <div class="log-time">${fmtTime(e.ts)}</div>
                 </div>
                 <div class="log-amount">+${e.amount} ml</div>
-                <button class="log-delete">×</button>
+                <button class="log-delete">
+                    <svg height="20" viewBox="0 -960 960 960" width="20" fill="var(--text3)">
+                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                    </svg>
+                </button>
             `;
             div.querySelector('.log-delete').addEventListener('click', () => deleteEntry(e.id));
             const sibling = list.children[i];
@@ -145,7 +148,6 @@ function renderLog() {
         }
     });
 
-    // Add today's date header at the top
     const header = document.createElement('div');
     header.className = 'log-date-header';
     header.textContent = formatDateLabel(getToday());
@@ -619,6 +621,8 @@ function deleteAllEntries() {
         showToast('No entries to delete');
         return;
     }
+    const warnEnabled = localStorage.getItem('dropsync_delete_warning') !== 'false';
+    if (warnEnabled && !confirm('Delete all entries for today? This cannot be undone.')) return;
     entries = entries.filter(e => e.date !== getToday());
     updateUI();
     showToast('🗑 All entries deleted');
@@ -857,7 +861,6 @@ function downloadFile(filename, content, type) {
 }
 
 updateGoalDisplay();
-// ── History Modal ─────────────────────────────────────────────────────────────
 
 let historyModalState = 'closed';
 let historyNaturalHeight = 0;
@@ -1070,3 +1073,18 @@ historyHandleZone.addEventListener('pointercancel', () => {
     if (historyModalState === 'expanded') snapHistoryToExpanded();
     else snapHistoryToOpen();
 });
+
+(function () {
+    const toggle = document.getElementById('deleteWarningToggle');
+    const key = 'dropsync_delete_warning';
+
+    const enabled = localStorage.getItem(key) !== 'false';
+    toggle.setAttribute('aria-pressed', String(enabled));
+
+    toggle.addEventListener('click', () => {
+        const current = toggle.getAttribute('aria-pressed') === 'true';
+        const next = !current;
+        toggle.setAttribute('aria-pressed', String(next));
+        localStorage.setItem(key, String(next));
+    });
+})();
