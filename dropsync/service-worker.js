@@ -1,7 +1,6 @@
 const CACHE = 'dropsync-v3';
 const ASSETS = [
 	'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap',
-	'https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css',
 	'https://itsmarian-static.is-a.dev/global/colors.css',
 	'./',
 	'./auth.js',
@@ -13,7 +12,7 @@ const ASSETS = [
 	'./script.js',
 	'./settings.js',
 	'./styles.css',
-	'./tooltip.css'
+	'./tooltip.js'
 ];
 
 self.addEventListener('install', e => {
