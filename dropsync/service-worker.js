@@ -4,15 +4,16 @@ const ASSETS = [
 	'https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css',
 	'https://itsmarian-static.is-a.dev/global/colors.css',
 	'./',
-	'./favicon.png',
 	'./auth.js',
-	'./onboarding.js',
+	'./favicon.png',
 	'./glass.js',
 	'./index.html',
+	'./notes.js',
+	'./onboarding.js',
 	'./script.js',
-	'./styles.css',
 	'./settings.js',
-	'./notes.js'
+	'./styles.css',
+	'./tooltip.css'
 ];
 
 self.addEventListener('install', e => {

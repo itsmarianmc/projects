@@ -194,11 +194,11 @@
 }
 
 .loggin-in {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    font-size: 1.3rem;
-    justify-content: center;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	font-size: 1.3rem;
+	justify-content: center;
 }
 
 .onboarding-slides {
@@ -321,55 +321,55 @@
 }
 
 .onboarding-feature-icon {
-    position: relative;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface2);
-    border-radius: 10px;
-    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-    cursor: pointer;
+	position: relative;
+	width: 36px;
+	height: 36px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--surface2);
+	border-radius: 10px;
+	transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+	cursor: pointer;
 }
 
 .onboarding-feature-icon input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    z-index: 2;
+	position: absolute;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+	z-index: 2;
 }
 
 .checkbox-custom {
-    width: 22.5px;
-    height: 22.5px;
-    border: 2px solid var(--text3);
-    border-radius: 5px;
-    background: transparent;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    pointer-events: none;
+	width: 22.5px;
+	height: 22.5px;
+	border: 2px solid var(--text3);
+	border-radius: 5px;
+	background: transparent;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	font-size: 16px;
+	font-weight: bold;
+	pointer-events: none;
 }
 
 .onboarding-feature-icon:hover .checkbox-custom {
-    border-color: var(--accent);
+	border-color: var(--accent);
 }
 
-.onboarding-feature-icon input[type="checkbox"]:checked + .checkbox-custom {
-    background: var(--accent);
-    border-color: var(--accent);
+.onboarding-feature-icon input[type="checkbox"]:checked+.checkbox-custom {
+	background: var(--accent);
+	border-color: var(--accent);
 }
 
-.onboarding-feature-icon input[type="checkbox"]:checked + .checkbox-custom::after {
-    content: "✓";
-    line-height: 1;
+.onboarding-feature-icon input[type="checkbox"]:checked+.checkbox-custom::after {
+	content: "✓";
+	line-height: 1;
 }
 
 .onboarding-feature-text {
@@ -913,7 +913,7 @@ body.modal-open {
 }
 
 #settingsModal.small {
-    transform: scale(0.95) translateY(18px) !important;
+	transform: scale(0.95) translateY(18px) !important;
 }
 
 .modal {
@@ -1372,7 +1372,8 @@ body.modal-open {
 	transform: scale(0.9);
 }
 
-.settings-section, .license-section {
+.settings-section,
+.license-section {
 	margin: 20px 24px 0;
 	background: var(--surface2);
 	border-radius: var(--radius);
@@ -1380,7 +1381,8 @@ body.modal-open {
 	border: 1px solid var(--border);
 }
 
-.settings-section-title, .license-section-title {
+.settings-section-title,
+.license-section-title {
 	font-size: 13px;
 	display: flex;
 	align-items: center;
@@ -1393,7 +1395,8 @@ body.modal-open {
 	border-bottom: 1px solid var(--border);
 }
 
-.settings-section-body, .license-section-body {
+.settings-section-body,
+.license-section-body {
 	padding: 14px 16px;
 }
 
@@ -1623,17 +1626,17 @@ body.modal-open {
 }
 
 .settings-legal a {
-    cursor: pointer;
-    color: var(--text2);
-    text-decoration: none;
+	cursor: pointer;
+	color: var(--text2);
+	text-decoration: none;
 }
 
 .settings-legal a:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 .settings-legal-footer {
-    text-align: center;
+	text-align: center;
 }
 
 #historyList {
@@ -1683,7 +1686,9 @@ body.modal-open {
 	color: var(--text);
 }
 
-.settings-toggle-sub, .license-section-body p, .license-section-body a {
+.settings-toggle-sub,
+.license-section-body p,
+.license-section-body a {
 	font-size: 12px;
 	color: var(--text2);
 	font-weight: 400;
@@ -1778,9 +1783,9 @@ body.modal-open {
 }
 
 ::-webkit-scrollbar {
-    width: 7.5px;
-    -webkit-appearance: none;
-    z-index: 1000000;
+	width: 7.5px;
+	-webkit-appearance: none;
+	z-index: 1000000;
 }
 
 ::-webkit-scrollbar {

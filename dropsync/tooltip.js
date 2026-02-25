@@ -66,7 +66,6 @@
             margin-bottom: 5px;
 		`;
 
-        
 		const buttonDiv = document.createElement('div');
 		buttonDiv.className = 'button-div';
 		buttonDiv.style.cssText = `
@@ -75,7 +74,7 @@
             justify-content: space-between;
 		`;
 
-        const progressEl = document.createElement('div');
+		const progressEl = document.createElement('div');
 		progressEl.className = 'progress';
 		progressEl.textContent = progress;
 		progressEl.style.cssText = `
@@ -121,7 +120,7 @@
 
 		tooltipBox.appendChild(messageEl);
 		tooltipBox.appendChild(buttonDiv);
-        buttonDiv.appendChild(progressEl);
+		buttonDiv.appendChild(progressEl);
 		buttonDiv.appendChild(button);
 		tooltipBox.appendChild(arrow);
 
@@ -154,43 +153,43 @@
 		const tooltipRect = tooltipBox.getBoundingClientRect();
 		const viewportHeight = window.innerHeight;
 		const viewportWidth = window.innerWidth;
-		
+
 		const arrowSize = 12;
 		const gap = 16;
-		
+
 		const spaceAbove = targetRect.top;
 		const spaceBelow = viewportHeight - targetRect.bottom;
 		const tooltipHeight = tooltipRect.height;
-		
+
 		let positionAbove = spaceAbove > spaceBelow;
-		
+
 		if (positionAbove && spaceAbove < tooltipHeight + gap + arrowSize) {
 			if (spaceBelow >= tooltipHeight + gap + arrowSize) {
 				positionAbove = false;
 			}
 		}
-		
+
 		let left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
-		
+
 		const horizontalPadding = 20;
 		if (left < horizontalPadding) {
 			left = horizontalPadding;
 		} else if (left + tooltipRect.width > viewportWidth - horizontalPadding) {
 			left = viewportWidth - tooltipRect.width - horizontalPadding;
 		}
-		
+
 		let top;
 		if (positionAbove) {
 			top = targetRect.top - tooltipHeight - gap - arrowSize;
 		} else {
 			top = targetRect.bottom + gap + arrowSize;
 		}
-		
+
 		tooltipBox.style.left = left + 'px';
 		tooltipBox.style.top = top + 'px';
-		
+
 		const arrowLeft = targetRect.left + (targetRect.width / 2) - left - arrowSize;
-		
+
 		if (positionAbove) {
 			arrow.style.cssText = `
 				position: absolute;

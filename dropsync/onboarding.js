@@ -74,7 +74,7 @@
 			const buttonText = isLast ? (step.buttonText || 'Fertig') : (step.buttonText || 'Next');
 
 			const nextAction = () => {
-				closeToolTip(); 
+				closeToolTip();
 				setTimeout(() => {
 					showStep(index + 1);
 				}, 300);
@@ -86,54 +86,52 @@
 		showStep(0);
 	}
 
-
 	function finishOnboarding() {
-        const isChecked = document.getElementById('onboardingSetupCheckbox').checked;
+		const isChecked = document.getElementById('onboardingSetupCheckbox').checked;
 
-        localStorage.setItem(STORAGE_KEY, '1');
-        overlay.classList.add('hidden');
-        
-        if (isChecked == true) {
-            startTooltipTour([
-                {
-                    elementId: 'openModalBtn',
-                    message: 'Log your beverages here to track your daily intake.',
-                    progress: '1/6',
-                    buttonText: 'Next'
-                },
-                {
-                    elementId: 'openHistoryBtn',
-                    message: 'Browse your history to review past entries and spot trends.',
-                    progress: '2/6',
-                    buttonText: 'Next'
-                },
-                {
-                    elementId: 'openSettingsBtn',
-                    message: 'Customize your daily goal and manage your account preferences.',
-                    progress: '3/6',
-                    buttonText: 'Next'
-                },
-                {
-                    elementId: 'ringContainer',
-                    message: 'Watch your progress fill the ring as you get closer to your goal.',
-                    progress: '4/6',
-                    buttonText: 'Next'
-                },
-                {
-                    elementId: 'statsRow',
-                    message: 'View your daily stats: progress, drinks, and the last time you drank something.',
-                    progress: '5/6',
-                    buttonText: 'Next'
-                },
-                {
-                    elementId: 'logSection',
-                    message: 'View and manage your entries for today.',
-                    progress: '6/6',
-                    buttonText: 'Got it!'
-                }
-            ]);
-        }
-    }
+		localStorage.setItem(STORAGE_KEY, '1');
+		overlay.classList.add('hidden');
+
+		if (isChecked == true) {
+			startTooltipTour([{
+					elementId: 'openModalBtn',
+					message: 'Log your beverages here to track your daily intake.',
+					progress: '1/6',
+					buttonText: 'Next'
+				},
+				{
+					elementId: 'openHistoryBtn',
+					message: 'Browse your history to review past entries and spot trends.',
+					progress: '2/6',
+					buttonText: 'Next'
+				},
+				{
+					elementId: 'openSettingsBtn',
+					message: 'Customize your daily goal and manage your account preferences.',
+					progress: '3/6',
+					buttonText: 'Next'
+				},
+				{
+					elementId: 'ringContainer',
+					message: 'Watch your progress fill the ring as you get closer to your goal.',
+					progress: '4/6',
+					buttonText: 'Next'
+				},
+				{
+					elementId: 'statsRow',
+					message: 'View your daily stats: progress, drinks, and the last time you drank something.',
+					progress: '5/6',
+					buttonText: 'Next'
+				},
+				{
+					elementId: 'logSection',
+					message: 'View and manage your entries for today.',
+					progress: '6/6',
+					buttonText: 'Got it!'
+				}
+			]);
+		}
+	}
 
 	function startOnboarding() {
 		document.documentElement.style.overflow = "hidden";
