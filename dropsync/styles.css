@@ -95,6 +95,11 @@
 	--ease: cubic-bezier(.5, 0, 1, .5)
 }
 
+#copyright:hover, #copyright2:hover {
+	cursor: auto !important;
+	text-decoration: none !important;
+}
+
 .onboarding-overlay {
 	align-items: center;
 	position: fixed;

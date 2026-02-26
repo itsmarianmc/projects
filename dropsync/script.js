@@ -42,6 +42,8 @@ const todayEntries = () => entries.filter(e => e.date === getToday());
 const totalToday = () => todayEntries().reduce((s, e) => s + e.amount, 0);
 const expandedHeight = () => window.innerHeight - SHEET_TOP_MARGIN;
 
+document.getElementById('copyright2').textContent = document.getElementById('copyright').textContent
+
 function fmtTime(ts) {
 	const d = new Date(ts);
 	return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
