@@ -229,53 +229,46 @@
 .onboarding-slide .onboarding-slide-desc,
 .onboarding-slide .onboarding-feature,
 .onboarding-slide .onboarding-legal-link,
-.onboarding-slide .onboarding-legal-text {
+.onboarding-slide .onboarding-legal-text,
+.onboarding-legal-text p {
 	opacity: 0;
 	animation: onboardingFadeUp 0.42s cubic-bezier(0.34, 1.15, 0.64, 1) forwards;
 }
 
-.onboarding-slide .onboarding-slide-icon {
-	animation-delay: 0.05s;
-}
+.onboarding-slide .onboarding-slide-icon { animation-delay: 0.05s; }
+.onboarding-slide .onboarding-slide-title { animation-delay: 0.15s; }
+.onboarding-slide .onboarding-slide-desc { animation-delay: 0.24s; }
 
-.onboarding-slide .onboarding-slide-title {
-	animation-delay: 0.15s;
-}
+.onboarding-slide .onboarding-feature:nth-child(1) { animation-delay: 0.32s; }
+.onboarding-slide .onboarding-feature:nth-child(2) { animation-delay: 0.42s; }
+.onboarding-slide .onboarding-feature:nth-child(3) { animation-delay: 0.52s; }
+.onboarding-slide .onboarding-feature:nth-child(4) { animation-delay: 0.62s; }
+.onboarding-slide .onboarding-feature:nth-child(5) { animation-delay: 0.72s; }
+.onboarding-slide .onboarding-feature:nth-child(6) { animation-delay: 0.82s; }
+.onboarding-slide .onboarding-feature:nth-child(7) { animation-delay: 0.92s; }
 
-.onboarding-slide .onboarding-slide-desc {
-	animation-delay: 0.24s;
-}
+.onboarding-slide .onboarding-legal-link:nth-child(1) { animation-delay: 0.32s; }
+.onboarding-slide .onboarding-legal-link:nth-child(2) { animation-delay: 0.42s; }
+.onboarding-slide .onboarding-legal-link:nth-child(3) { animation-delay: 0.52s; }
+.onboarding-slide .onboarding-legal-link:nth-child(4) { animation-delay: 0.62s; }
 
-.onboarding-slide .onboarding-feature:nth-child(1) {
-	animation-delay: 0.32s;
-}
+.onboarding-slide .onboarding-legal-text { animation-delay: 0.52s; }
 
-.onboarding-slide .onboarding-feature:nth-child(2) {
-	animation-delay: 0.42s;
-}
-
-.onboarding-slide .onboarding-feature:nth-child(3) {
-	animation-delay: 0.52s;
-}
-
-.onboarding-slide .onboarding-legal-link:nth-child(1) {
-	animation-delay: 0.32s;
-}
-
-.onboarding-slide .onboarding-legal-link:nth-child(2) {
-	animation-delay: 0.42s;
-}
-
-.onboarding-slide .onboarding-legal-text {
-	animation-delay: 0.52s;
-}
+.onboarding-slide .onboarding-legal-text p:nth-child(1) { animation-delay: 0.52s; }
+.onboarding-slide .onboarding-legal-text p:nth-child(2) { animation-delay: 0.62s; }
+.onboarding-slide .onboarding-legal-text p:nth-child(3) { animation-delay: 0.72s; }
+.onboarding-slide .onboarding-legal-text p:nth-child(4) { animation-delay: 0.82s; }
+.onboarding-slide .onboarding-legal-text p:nth-child(5) { animation-delay: 0.95s; }
+.onboarding-slide .onboarding-legal-text p:nth-child(6) { animation-delay: 1.02s; }
+.onboarding-slide .onboarding-legal-text p:nth-child(7) { animation-delay: 1.12s; }
 
 .onboarding-slide.slide-reset .onboarding-slide-icon,
 .onboarding-slide.slide-reset .onboarding-slide-title,
 .onboarding-slide.slide-reset .onboarding-slide-desc,
 .onboarding-slide.slide-reset .onboarding-feature,
 .onboarding-slide.slide-reset .onboarding-legal-link,
-.onboarding-slide.slide-reset .onboarding-legal-text {
+.onboarding-slide.slide-reset .onboarding-legal-text,
+.onboarding-slide.slide-reset .onboarding-legal-text p {
 	opacity: 0;
 	animation: none;
 }
