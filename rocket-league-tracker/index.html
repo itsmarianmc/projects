@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+	<title>Rocket League Tracker</title>
+	<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css" />
+	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/colors.css">
+	<link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+	<div class="app-container">
+		<h1>
+			<i class="fas fa-futbol"></i>
+			ROCKET TRACKER
+		</h1>
+		<div class="button-panel">
+			<button class="big-btn win-btn" id="btnWin">+</button>
+			<button class="big-btn loss-btn" id="btnLoss">-</button>
+		</div>
+		<div class="stats-overview">
+			<div class="stat-card">
+				<span class="stat-label"><i class="fas fa-chart-line"></i> Streak</span>
+				<span class="stat-value" id="streakValue">0</span>
+				<span class="stat-sub" id="streakType">-</span>
+			</div>
+			<div class="stat-card">
+				<span class="stat-label"><i class="fas fa-percent"></i> Win-Rate</span>
+				<span class="stat-value" id="winRateValue">0%</span>
+				<span class="stat-sub" id="winLossCount">0W 0L</span>
+			</div>
+		</div>
+		<div id="entryList" class="entry-list"></div>
+		<footer>
+			<i class="fas fa-database"></i> Einträge werden lokal gesichert!
+		</footer>
+	</div>
+	<div class="modal-overlay" id="modalOverlay">
+		<div class="modal-card" id="modalCard">
+			<div class="modal-header">
+				<span class="modal-title" id="modalTitle">WIN</span>
+				<button class="close-btn" id="closeModalBtn">&times;</button>
+			</div>
+			<div class="input-group">
+				<label><i class="fas fa-futbol"></i> Eigene Tore</label>
+				<input type="number" id="goalsFor" min="0" value="0" step="1">
+			</div>
+			<div class="input-group">
+				<label><i class="fas fa-shield-alt"></i> Gegner Tore</label>
+				<input type="number" id="goalsAgainst" min="0" value="0" step="1">
+			</div>
+			<div class="input-group">
+				<label id="commentLabel"><i class="fas fa-comment"></i> Kommentar (optional)</label>
+				<textarea id="commentField" placeholder="z.B. starke defence, missglückte aerials ..."></textarea>
+			</div>
+
+			<button class="save-btn" id="saveEntryBtn"><i class="fas fa-save"></i> Speichern</button>
+			<div class="small-note" id="hintMessage"></div>
+		</div>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>
