@@ -298,7 +298,7 @@ setupOptionControl('calcGoalType', 'goalType');
 	});
 })();
 
-(function() {
+document.addEventListener("DOMContentLoaded", function() {
 	const toggle = document.getElementById('splashScreenOnReturn');
 	const key = 'calsync_splash_on_return';
 	const enabled = localStorage.getItem(key) === 'true';
@@ -306,12 +306,13 @@ setupOptionControl('calcGoalType', 'goalType');
 	document.addEventListener('visibilitychange', () => {
 		if (document.visibilityState === 'visible' && localStorage.getItem(key) === 'true') showSplashScreen();
 	});
+	if (document.visibilityState === 'visible' && localStorage.getItem(key) === 'true') showSplashScreen();
 	toggle.addEventListener('click', () => {
 		const next = toggle.getAttribute('aria-pressed') !== 'true';
 		toggle.setAttribute('aria-pressed', String(next));
 		localStorage.setItem(key, String(next));
 	});
-})();
+});
 
 (function() {
 	const saved = localStorage.getItem('calsync_theme') || 'dark';
