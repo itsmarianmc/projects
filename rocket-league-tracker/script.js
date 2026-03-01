@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	let entries = [];
 	const STORAGE_KEY = 'rlTrackerEntries';
 
-	const entryListDiv = document.getElementById('entryList');
+	const entryTable = document.getElementById('entryTable');
 	const btnWin = document.getElementById('btnWin');
 	const btnLoss = document.getElementById('btnLoss');
 	const modalOverlay = document.getElementById('modalOverlay');
 	const closeModalBtn = document.getElementById('closeModalBtn');
 	const modalTitle = document.getElementById('modalTitle');
+	const gameModeSelect = document.getElementById('gameMode');
 	const goalsForInput = document.getElementById('goalsFor');
 	const goalsAgainstInput = document.getElementById('goalsAgainst');
 	const commentField = document.getElementById('commentField');
@@ -84,46 +85,64 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 
 		const isWin = entry.type === 'win';
-		const symbolClass = isWin ? 'win' : 'loss';
-		const sign = isWin ? '+' : '−';
-		const labelText = isWin ? 'WIN' : 'LOSS';
+		const typeClass = isWin ? 'win' : 'loss';
+		const typeText = isWin ? 'WIN' : 'LOSS';
+		const typeIcon = isWin ? '<i class="fas fa-trophy"></i>' : '<i class="fas fa-heart-broken"></i>';
+		
+		const modeText = entry.gameMode === 'solo' ? 'Solo' : 'Duos';
+		
+		const row = document.createElement('tr');
+		row.className = `entry-row ${typeClass}`;
 
-		const card = document.createElement('div');
-		card.className = 'entry-card';
-
-		const datetimeIcon = '<i class="fas fa-clock"></i>';
-		const scoreIcon = '<i class="fas fa-futbol"></i>';
-		const commentIcon = '<i class="fas fa-comment"></i>';
-		const deleteIcon = '<i class="fas fa-trash"></i>';
-
-		card.innerHTML = `
-			<div class="entry-symbol ${symbolClass}">
-				<span class="sign">${sign}</span>
-				<span class="label">${labelText}</span>
-			</div>
-			<div class="entry-info">
-				<div class="entry-datetime">${datetimeIcon} ${dateStr} ${timeStr}</div>
-				<div class="entry-score">${scoreIcon} ${entry.goalsFor} : ${entry.goalsAgainst}</div>
-				${entry.comment ? `<div class="entry-comment">${commentIcon} ${entry.comment}</div>` : ''}
-			</div>
-			<div class="entry-actions">
-				<span class="delete-entry" data-id="${entry.id}" title="Eintrag löschen">${deleteIcon}</span>
-			</div>
+		row.innerHTML = `
+			<td class="type-cell">
+				<span class="type-badge ${typeClass}">${typeIcon} ${typeText}</span>
+			</td>
+			<td class="mode-cell">${modeText}</td>
+			<td class="score-cell">
+				<span class="score-badge">${entry.goalsFor} : ${entry.goalsAgainst}</span>
+			</td>
+			<td class="datetime-cell">
+				<div>${dateStr}</div>
+				<div class="time-sub">${timeStr}</div>
+			</td>
+			<td class="comment-cell">${entry.comment || '-'}</td>
+			<td class="actions-cell">
+				<span class="delete-entry" data-id="${entry.id}" title="Eintrag löschen">
+					<i class="fas fa-trash"></i>
+				</span>
+			</td>
 		`;
 
-		return card;
+		return row;
 	}
 
 	function renderAllEntries() {
-		entryListDiv.innerHTML = '';
 		if (entries.length === 0) {
-			entryListDiv.innerHTML = `<div class="empty-message">
-				<i class="fas fa-plus-circle"></i>
-				<div>Keine Einträge.<br>Klick + oder - um zu starten.</div>
-			</div>`;
+			entryTable.innerHTML = `<div class="empty-message">
+					<i class="fas fa-plus-circle"></i>
+					<div>Keine Einträge.<br>Klick + oder - um zu starten.</div>
+				</div>`;
 		} else {
+			// Tabelle aufbauen wenn Einträge vorhanden
+			entryTable.innerHTML = `
+				<table class="entry-table">
+					<thead>
+						<tr>
+							<th><i class="fas fa-chart-line"></i> Typ</th>
+							<th><i class="fas fa-gamepad"></i> Modus</th>
+							<th><i class="fas fa-futbol"></i> Score</th>
+							<th><i class="fas fa-clock"></i> Datum/Zeit</th>
+							<th><i class="fas fa-comment"></i> Kommentar</th>
+							<th><i class="fas fa-trash"></i></th>
+						</tr>
+					</thead>
+					<tbody id="entryTableBody"></tbody>
+				</table>
+			`;
+			const entryTableBody = document.getElementById('entryTableBody');
 			const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
-			sorted.forEach(e => entryListDiv.appendChild(renderEntry(e)));
+			sorted.forEach(e => entryTableBody.appendChild(renderEntry(e)));
 		}
 		updateStats();
 	}
@@ -163,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			hintMessage.innerHTML = '<i class="fas fa-chart-line"></i> analyse fürs nächste spiel';
 		}
 
+		gameModeSelect.value = 'solo';
 		goalsForInput.value = 0;
 		goalsAgainstInput.value = 0;
 		commentField.value = '';
@@ -176,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function saveEntry() {
+		const gameMode = gameModeSelect.value;
 		const goalsFor = parseInt(goalsForInput.value, 10);
 		const goalsAgainst = parseInt(goalsAgainstInput.value, 10);
 		const comment = commentField.value.trim();
@@ -186,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		const newEntry = {
 			id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
 			type: currentMode,
+			gameMode: gameMode,
 			date: new Date().toISOString(),
 			goalsFor: validFor,
 			goalsAgainst: validAgainst,
@@ -218,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 
-		entryListDiv.addEventListener('click', (e) => {
+		entryTable.addEventListener('click', (e) => {
 			const deleteBtn = e.target.closest('.delete-entry');
 			if (deleteBtn) {
 				const id = deleteBtn.getAttribute('data-id');

@@ -31,7 +31,21 @@
 				<span class="stat-sub" id="winLossCount">0W 0L</span>
 			</div>
 		</div>
-		<div id="entryList" class="entry-list"></div>
+		<div id="entryTableContainer" class="entry-table-container">
+			<table id="entryTable" class="entry-table">
+				<thead>
+					<tr>
+						<th><i class="fas fa-chart-line"></i> Typ</th>
+						<th><i class="fas fa-gamepad"></i> Modus</th>
+						<th><i class="fas fa-futbol"></i> Score</th>
+						<th><i class="fas fa-clock"></i> Datum/Zeit</th>
+						<th><i class="fas fa-comment"></i> Kommentar</th>
+						<th><i class="fas fa-trash"></i></th>
+					</tr>
+				</thead>
+				<tbody id="entryTableBody"></tbody>
+			</table>
+		</div>
 		<footer>
 			<i class="fas fa-database"></i> Einträge werden lokal gesichert!
 		</footer>
@@ -41,6 +55,13 @@
 			<div class="modal-header">
 				<span class="modal-title" id="modalTitle">WIN</span>
 				<button class="close-btn" id="closeModalBtn">&times;</button>
+			</div>
+			<div class="input-group">
+				<label><i class="fas fa-gamepad"></i> Spielmodus</label>
+				<select id="gameMode">
+					<option value="solo">(Ranked) Solo</option>
+					<option value="duos">(Ranked) Duos</option>
+				</select>
 			</div>
 			<div class="input-group">
 				<label><i class="fas fa-futbol"></i> Eigene Tore</label>
