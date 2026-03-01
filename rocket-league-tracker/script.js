@@ -124,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					<div>Keine Einträge.<br>Klick + oder - um zu starten.</div>
 				</div>`;
 		} else {
-			// Tabelle aufbauen wenn Einträge vorhanden
 			entryTable.innerHTML = `
 				<table class="entry-table">
 					<thead>
