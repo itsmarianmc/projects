@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	const winRateValue = document.getElementById('winRateValue');
 	const winLossCount = document.getElementById('winLossCount');
 
+	const soloWinRateEl = document.getElementById('soloWinRate');
+	const soloStreakEl = document.getElementById('soloStreak');
+	const duosWinRateEl = document.getElementById('duosWinRate');
+	const duosStreakEl = document.getElementById('duosStreak');
+
 	let currentMode = 'win';
 
 	function loadEntries() {
@@ -41,35 +46,69 @@ document.addEventListener('DOMContentLoaded', function() {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
 	}
 
+	function calculateStreak(sortedEntries) {
+		if (sortedEntries.length === 0) return { streak: 0, type: null };
+		let streak = 1;
+		const firstType = sortedEntries[0].type;
+		for (let i = 1; i < sortedEntries.length; i++) {
+			if (sortedEntries[i].type === firstType) {
+				streak++;
+			} else {
+				break;
+			}
+		}
+		return { streak, type: firstType };
+	}
+
 	function updateStats() {
 		if (entries.length === 0) {
 			streakValue.textContent = '0';
 			streakType.textContent = '-';
 			winRateValue.textContent = '0%';
 			winLossCount.textContent = '0W 0L';
-			return;
+		} else {
+			const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+			const { streak, type } = calculateStreak(sorted);
+			streakValue.textContent = streak;
+			streakType.textContent = type === 'win' ? 'Wins' : type === 'loss' ? 'Losses' : '-';
+
+			const wins = entries.filter(e => e.type === 'win').length;
+			const losses = entries.filter(e => e.type === 'loss').length;
+			const total = wins + losses;
+			const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
+			winRateValue.textContent = winRate + '%';
+			winLossCount.textContent = `${wins}W ${losses}L`;
 		}
 
-		const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+		const soloEntries = entries.filter(e => e.gameMode === 'solo');
+		const soloWins = soloEntries.filter(e => e.type === 'win').length;
+		const soloLosses = soloEntries.filter(e => e.type === 'loss').length;
+		const soloTotal = soloWins + soloLosses;
+		const soloWinRate = soloTotal > 0 ? Math.round((soloWins / soloTotal) * 100) : 0;
+		soloWinRateEl.textContent = soloWinRate + '%';
 
-		let streak = 1;
-		const firstType = sorted[0].type;
-		for (let i = 1; i < sorted.length; i++) {
-			if (sorted[i].type === firstType) {
-				streak++;
-			} else {
-				break;
-			}
+		if (soloEntries.length > 0) {
+			const sortedSolo = [...soloEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+			const { streak, type } = calculateStreak(sortedSolo);
+			soloStreakEl.textContent = `${streak} ${type === 'win' ? 'W' : 'L'}`;
+		} else {
+			soloStreakEl.textContent = '0 -';
 		}
-		streakValue.textContent = streak;
-		streakType.textContent = firstType === 'win' ? 'Wins' : 'Losses';
 
-		const wins = entries.filter(e => e.type === 'win').length;
-		const losses = entries.filter(e => e.type === 'loss').length;
-		const total = wins + losses;
-		const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
-		winRateValue.textContent = winRate + '%';
-		winLossCount.textContent = `${wins}W ${losses}L`;
+		const duosEntries = entries.filter(e => e.gameMode === 'duos');
+		const duosWins = duosEntries.filter(e => e.type === 'win').length;
+		const duosLosses = duosEntries.filter(e => e.type === 'loss').length;
+		const duosTotal = duosWins + duosLosses;
+		const duosWinRate = duosTotal > 0 ? Math.round((duosWins / duosTotal) * 100) : 0;
+		duosWinRateEl.textContent = duosWinRate + '%';
+
+		if (duosEntries.length > 0) {
+			const sortedDuos = [...duosEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+			const { streak, type } = calculateStreak(sortedDuos);
+			duosStreakEl.textContent = `${streak} ${type === 'win' ? 'W' : 'L'}`;
+		} else {
+			duosStreakEl.textContent = '0 -';
+		}
 	}
 
 	function renderEntry(entry) {
