@@ -30,16 +30,6 @@ const renderedIds = new Set();
 
 const el = id => document.getElementById(id);
 
-const modal = el('modal');
-const overlay = el('overlay');
-const handleZone = el('handleZone');
-const modalBody = el('modalBody');
-const actionBtn = el('actionBtn');
-const actionIcon = el('actionIcon');
-const historyOverlay = el('historyOverlay');
-const historyModal = el('historyModal');
-const historyHandleZone = el('historyHandleZone');
-
 const getToday = () => new Date().toDateString();
 const todayEntries = () => entries.filter(e => e.date === getToday());
 const totalTodayKcal = () => todayEntries().reduce((s, e) => s + e.kcal, 0);
@@ -380,6 +370,39 @@ function goToStep(n, direction) {
 	}
 }
 
+function setAIMode(enable) {
+	const amountSection = document.getElementById('amount-section');
+	const caloriePreviewRow = document.getElementById('caloriePreviewRow');
+	const manualNutrients = document.getElementById('manualNutrients');
+	const nutritionFacts = document.getElementById('nutritionFactsTable');
+	const aiSummary = document.getElementById('aiSummary');
+	const amountInput = document.getElementById('amountInput');
+	const unitToggle = document.querySelector('.amount-unit-toggle');
+	const quickAmounts = document.querySelector('.quick-amounts');
+
+	if (enable) {
+		if (amountSection) amountSection.style.display = 'none';
+		if (caloriePreviewRow) caloriePreviewRow.style.display = 'none';
+		if (manualNutrients) manualNutrients.style.display = 'none';
+		if (nutritionFacts) nutritionFacts.style.display = 'none';
+		if (aiSummary) aiSummary.style.display = 'block';
+
+		if (amountInput) amountInput.disabled = true;
+		if (unitToggle) unitToggle.style.display = 'none';
+		if (quickAmounts) quickAmounts.style.display = 'none';
+	} else {
+		if (amountSection) amountSection.style.display = '';
+		if (caloriePreviewRow) caloriePreviewRow.style.display = '';
+		if (manualNutrients) manualNutrients.style.display = 'block';
+		if (nutritionFacts) nutritionFacts.style.display = 'none';
+		if (aiSummary) aiSummary.style.display = 'none';
+
+		if (amountInput) amountInput.disabled = false;
+		if (unitToggle) unitToggle.style.display = 'flex';
+		if (quickAmounts) quickAmounts.style.display = 'grid';
+	}
+}
+
 function resetToStep1() {
 	selFood = null;
 	selectedCategory = null;
@@ -401,6 +424,8 @@ function resetToStep1() {
 	el('modalTitle').textContent = 'Add Food';
 	el('backBtn').style.opacity = '0';
 	updateActionButton();
+
+	setAIMode(false);
 }
 
 function parseServingSize(product) {
@@ -633,14 +658,33 @@ function startManualAdd() {
 
 function updateCaloriePreview() {
 	if (!selFood) return;
+
+	if (selFood.isAI) return;
+
 	const amount = parseFloat(el('amountInput').value) || 0;
 	let kcal, prot, carb, fat;
 
 	if (selFood.isManual) {
-		kcal = (parseFloat(el('manualKcal').value) || 0) * amount / 100;
-		prot = (parseFloat(el('manualProtein').value) || 0) * amount / 100;
-		carb = (parseFloat(el('manualCarbs').value) || 0) * amount / 100;
-		fat  = (parseFloat(el('manualFat').value)   || 0) * amount / 100;
+		let kcalPer100 = parseFloat(el('manualKcal').value.replace(',', '.')) || 0;
+		let protPer100 = parseFloat(el('manualProtein').value.replace(',', '.')) || 0;
+		let carbPer100 = parseFloat(el('manualCarbs').value.replace(',', '.')) || 0;
+		let fatPer100 = parseFloat(el('manualFat').value.replace(',', '.')) || 0;
+
+		if (kcalPer100 === 0 && protPer100 === 0 && carbPer100 === 0 && fatPer100 === 0) {
+			kcalPer100 = selFood.kcalPer100 || 0;
+			protPer100 = selFood.protPer100 || 0;
+			carbPer100 = selFood.carbPer100 || 0;
+			fatPer100 = selFood.fatPer100 || 0;
+			el('manualKcal').value = kcalPer100;
+			el('manualProtein').value = protPer100;
+			el('manualCarbs').value = carbPer100;
+			el('manualFat').value = fatPer100;
+		}
+
+		kcal = (kcalPer100 * amount) / 100;
+		prot = (protPer100 * amount) / 100;
+		carb = (carbPer100 * amount) / 100;
+		fat  = (fatPer100 * amount) / 100;
 	} else {
 		kcal = (selFood.kcalPer100 * amount) / 100;
 		prot = (selFood.protPer100 * amount) / 100;
@@ -658,25 +702,37 @@ function updateCaloriePreview() {
 			<div class="macro-pill">C: ${Math.round(carb)}g</div>
 			<div class="macro-pill">F: ${Math.round(fat)}g</div>
 		`;
-
-		el('manualKcal').value = `${Math.round(prot)}`;
-		el('manualProtein').value = `${kcal}`;
-		el('manualCarbs').value = `${Math.round(carb)}`;
-		el('manualFat').value = `${Math.round(fat)}`;
 	}
 }
 
 function logFood() {
 	if (!selFood) return;
-	const amount = parseFloat(el('amountInput').value) || 100;
-	let kcal, prot, carb, fat;
 
-	if (selFood.isManual) {
-		kcal = (parseFloat(el('manualKcal').value) || 0) * amount / 100;
-		prot = (parseFloat(el('manualProtein').value) || 0) * amount / 100;
-		carb = (parseFloat(el('manualCarbs').value) || 0) * amount / 100;
-		fat  = (parseFloat(el('manualFat').value)   || 0) * amount / 100;
+	let kcal, prot, carb, fat;
+	let amount, unit;
+
+	if (selFood.isAI) {
+		kcal = selFood.kcalTotal;
+		prot = selFood.protTotal;
+		carb = selFood.carbTotal;
+		fat = selFood.fatTotal;
+		amount = selFood.amount;
+		unit = selFood.unit;
+	} else if (selFood.isManual) {
+		amount = parseFloat(el('amountInput').value) || 100;
+		unit = selectedUnit;
+		const kcalPer100 = parseFloat(el('manualKcal').value.replace(',', '.')) || 0;
+		const protPer100 = parseFloat(el('manualProtein').value.replace(',', '.')) || 0;
+		const carbPer100 = parseFloat(el('manualCarbs').value.replace(',', '.')) || 0;
+		const fatPer100 = parseFloat(el('manualFat').value.replace(',', '.')) || 0;
+
+		kcal = (kcalPer100 * amount) / 100;
+		prot = (protPer100 * amount) / 100;
+		carb = (carbPer100 * amount) / 100;
+		fat  = (fatPer100 * amount) / 100;
 	} else {
+		amount = parseFloat(el('amountInput').value) || 100;
+		unit = selectedUnit;
 		kcal = (selFood.kcalPer100 * amount) / 100;
 		prot = (selFood.protPer100 * amount) / 100;
 		carb = (selFood.carbPer100 * amount) / 100;
@@ -691,7 +747,7 @@ function logFood() {
 		color: selFood.color,
 		kcal: Math.round(kcal),
 		amount: Math.round(amount),
-		unit: selectedUnit,
+		unit: unit || 'g',
 		prot: Math.round(prot * 10) / 10,
 		carb: Math.round(carb * 10) / 10,
 		fat: Math.round(fat * 10) / 10,
@@ -786,6 +842,56 @@ function renderHistoryList() {
 		});
 		container.appendChild(section);
 	});
+}
+
+function updateMethodButtonState() {
+	const methodAI = document.getElementById('methodAI');
+	const methodSelection = document.getElementById('methodSelection');
+	const existingNotice = methodSelection.querySelector('.ai-disabled-notice');
+	
+	if (existingNotice) {
+		existingNotice.remove();
+	}
+	
+	if (typeof window.isAIReady === 'function' && window.isAIReady()) {
+		methodAI.classList.remove('disabled');
+		methodAI.style.pointerEvents = 'auto';
+	} else {
+		methodAI.classList.add('disabled');
+		methodAI.style.pointerEvents = 'none';
+		
+		const notice = document.createElement('div');
+		notice.className = 'ai-disabled-notice';
+		notice.innerHTML = `
+			<i class="fa-solid fa-circle-info"></i>
+			<p>AI Detection is not enabled. Please activate it in <a href="#" id="goToAISettings">Settings</a> to use this feature.</p>
+		`;
+		methodSelection.querySelector('.method-buttons').appendChild(notice);
+		
+		setTimeout(() => {
+			const link = document.getElementById('goToAISettings');
+			if (link) {
+				link.addEventListener('click', (e) => {
+					e.preventDefault();
+					snapToClosed();
+					setTimeout(() => {
+						openSettingsModal();
+						setTimeout(() => {
+							const aiSection = document.querySelector('.settings-section:has(#aiEnabledToggle)');
+							if (aiSection) {
+								aiSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+								aiSection.style.transition = 'background 0.3s';
+								aiSection.style.background = 'rgba(255, 149, 0, 0.1)';
+								setTimeout(() => {
+									aiSection.style.background = '';
+								}, 2000);
+							}
+						}, 100);
+					}, 300);
+				});
+			}
+		}, 0);
+	}
 }
 
 el('openModalBtn').addEventListener('click', openModal);
@@ -1000,6 +1106,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	});
 });
+
+el('methodDatabase').addEventListener('click', () => {
+	el('searchStatus').classList.remove('active');
+	showSkeletons(3);
+	selFood = null;
+	goToStep(3);
+});
+
+el('methodManual').addEventListener('click', startManualAdd);
 
 updateDateLabel();
 updateUI();

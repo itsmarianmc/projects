@@ -319,4 +319,143 @@ document.addEventListener("DOMContentLoaded", function() {
 	applyTheme(saved);
 })();
 
+(function() {
+	const AI_ENABLED_KEY = 'calsync_ai_enabled';
+	const AI_TERMS_KEY = 'calsync_ai_terms_accepted';
+	const AI_API_KEY = 'calsync_ai_api_key';
+	
+	const aiToggle = document.getElementById('aiEnabledToggle');
+	const aiSettings = document.getElementById('aiSettings');
+	const aiDetection = document.getElementById('aiDetection');
+	const aiTermsBox = document.getElementById('aiTermsBox');
+	const aiApiKeySection = document.getElementById('aiApiKeySection');
+	const aiTermsAccept = document.getElementById('aiTermsAccept');
+	const aiTermsDecline = document.getElementById('aiTermsDecline');
+	const aiApiKeyInput = document.getElementById('aiApiKeyInput');
+	const apiKeyToggle = document.getElementById('apiKeyToggle');
+	const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+	const aiStatusBox = document.getElementById('aiStatusBox');
+	
+	function loadAIState() {
+		const enabled = localStorage.getItem(AI_ENABLED_KEY) === 'true';
+		const termsAccepted = localStorage.getItem(AI_TERMS_KEY) === 'true';
+		const apiKey = localStorage.getItem(AI_API_KEY) || '';
+		
+		aiToggle.setAttribute('aria-pressed', String(enabled));
+		
+		if (enabled) {
+			aiSettings.style.display = 'block';
+			
+			if (termsAccepted) {
+				aiTermsBox.style.display = 'none';
+				aiDetection.classList.remove('showTerms');
+				aiApiKeySection.style.display = 'block';
+				aiApiKeyInput.value = apiKey;
+				
+				if (apiKey) {
+					aiStatusBox.style.display = 'flex';
+				}
+			} else {
+				aiTermsBox.style.display = 'block';
+				aiDetection.classList.add('showTerms');
+				aiApiKeySection.style.display = 'none';
+			}
+		} else {
+			aiSettings.style.display = 'none';
+		}
+		
+		updateMethodButtonState();
+	}
+	
+	aiToggle.addEventListener('click', () => {
+		const enabled = aiToggle.getAttribute('aria-pressed') === 'true';
+		const newState = !enabled;
+		
+		aiToggle.setAttribute('aria-pressed', String(newState));
+		localStorage.setItem(AI_ENABLED_KEY, String(newState));
+		
+		if (newState) {
+			aiSettings.style.display = 'block';
+			const termsAccepted = localStorage.getItem(AI_TERMS_KEY) === 'true';
+			
+			if (termsAccepted) {
+				aiTermsBox.style.display = 'none';
+				aiDetection.classList.remove('showTerms');
+				aiApiKeySection.style.display = 'block';
+			} else {
+				aiTermsBox.style.display = 'block';
+				aiDetection.classList.add('showTerms');
+				aiApiKeySection.style.display = 'none';
+			}
+		} else {
+			aiSettings.style.display = 'none';
+		}
+		
+		updateMethodButtonState();
+	});
+	
+	aiTermsAccept.addEventListener('click', () => {
+		localStorage.setItem(AI_TERMS_KEY, 'true');
+		aiDetection.classList.remove('showTerms');
+		aiTermsBox.style.display = 'none';
+		aiApiKeySection.style.display = 'block';
+		showToast('✓ Terms accepted');
+	});
+	
+	aiTermsDecline.addEventListener('click', () => {
+		aiToggle.setAttribute('aria-pressed', 'false');
+		aiDetection.classList.remove('showTerms');
+		localStorage.setItem(AI_ENABLED_KEY, 'false');
+		aiSettings.style.display = 'none';
+		updateMethodButtonState();
+		showToast('AI Detection disabled');
+	});
+	
+	apiKeyToggle.addEventListener('click', () => {
+		const input = aiApiKeyInput;
+		const icon = apiKeyToggle.querySelector('i');
+		
+		if (input.type === 'password') {
+			input.type = 'text';
+			icon.classList.remove('fa-eye');
+			icon.classList.add('fa-eye-slash');
+		} else {
+			input.type = 'password';
+			icon.classList.remove('fa-eye-slash');
+			icon.classList.add('fa-eye');
+		}
+	});
+	
+	saveApiKeyBtn.addEventListener('click', () => {
+		const apiKey = aiApiKeyInput.value.trim();
+		
+		if (!apiKey) {
+			showToast('❌ Please enter an API key');
+			return;
+		}
+		
+		if (!apiKey.startsWith('AIza')) {
+			showToast('⚠️ Invalid API key format');
+			return;
+		}
+		
+		localStorage.setItem(AI_API_KEY, apiKey);
+		aiStatusBox.style.display = 'flex';
+		showToast('✓ API key saved successfully');
+		updateMethodButtonState();
+	});
+	
+	loadAIState();
+})();
+
+function isAIReady() {
+	const enabled = localStorage.getItem('calsync_ai_enabled') === 'true';
+	const termsAccepted = localStorage.getItem('calsync_ai_terms_accepted') === 'true';
+	const apiKey = localStorage.getItem('calsync_ai_api_key') || '';
+	
+	return enabled && termsAccepted && apiKey.length > 0;
+}
+
+window.isAIReady = isAIReady;
+
 updateGoalDisplay();

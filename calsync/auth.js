@@ -7,21 +7,6 @@ const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = null;
 let syncEnabled = false;
 
-function loginWithDiscord() {
-	_supabase.auth.signInWithOAuth({
-		provider: 'discord',
-		options: { redirectTo: REDIRECT_URI }
-	});
-}
-
-async function logoutUser() {
-	await _supabase.auth.signOut();
-	currentUser = null;
-	syncEnabled = false;
-	updateAuthUI();
-	showToast('👋 Logged out');
-}
-
 function updateAuthUI() {
 	const loginBtn = document.getElementById('discordLoginBtn');
 	const logoutBtn = document.getElementById('discordLogoutBtn');
@@ -222,6 +207,21 @@ async function pullFromCloud() {
 	} catch (err) {
 		console.error('[CalSync] Pull error:', err);
 	}
+}
+
+function loginWithDiscord() {
+	_supabase.auth.signInWithOAuth({
+		provider: 'discord',
+		options: { redirectTo: REDIRECT_URI }
+	});
+}
+
+async function logoutUser() {
+	await _supabase.auth.signOut();
+	currentUser = null;
+	syncEnabled = false;
+	updateAuthUI();
+	showToast('👋 Logged out');
 }
 
 async function initAuth() {
