@@ -456,13 +456,11 @@ function parseServingSize(product) {
 function mapProductToFood(product) {
 	const n = product.nutriments || {};
 	
-	// Check for prepared format first (energy-kcal_prepared_100g), then standard format
 	const kcalPer100 = n['energy-kcal_prepared_100g'] || n['energy-kcal_100g'] || n['energy-kcal'] || (n['energy_100g'] ? n['energy_100g'] / 4.184 : 0);
 	const protPer100 = n['proteins_prepared_100g'] || n['proteins_100g'] || n['proteins'] || 0;
 	const carbPer100 = n['carbohydrates_prepared_100g'] || n['carbohydrates_100g'] || n['carbohydrates'] || 0;
 	const fatPer100 = n['fat_prepared_100g'] || n['fat_100g'] || n['fat'] || 0;
 
-	// Detect if this product uses prepared format
 	const isPrepared = !!(n['energy-kcal_prepared_100g'] || n['proteins_prepared_100g'] || n['carbohydrates_prepared_100g'] || n['fat_prepared_100g']);
 
 	const energyKj = n['energy-kj_prepared_100g'] || n['energy-kj_100g'] || n['energy-kj'] || (kcalPer100 * 4.184);
@@ -619,7 +617,6 @@ function selectFood(food) {
 		el('nutritionFactsTable').style.display = 'none';
 	}
 
-	// Hide amount section for prepared products (similar to AI mode)
 	if (food.isPrepared) {
 		const amountSection = document.getElementById('amount-section');
 		if (amountSection) amountSection.style.display = 'none';
