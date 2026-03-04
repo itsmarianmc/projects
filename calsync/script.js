@@ -455,19 +455,25 @@ function parseServingSize(product) {
 
 function mapProductToFood(product) {
 	const n = product.nutriments || {};
-	const kcalPer100 = n['energy-kcal_100g'] || n['energy-kcal'] || (n['energy_100g'] ? n['energy_100g'] / 4.184 : 0);
-	const protPer100 = n['proteins_100g'] || n['proteins'] || 0;
-	const carbPer100 = n['carbohydrates_100g'] || n['carbohydrates'] || 0;
-	const fatPer100 = n['fat_100g'] || n['fat'] || 0;
+	
+	// Check for prepared format first (energy-kcal_prepared_100g), then standard format
+	const kcalPer100 = n['energy-kcal_prepared_100g'] || n['energy-kcal_100g'] || n['energy-kcal'] || (n['energy_100g'] ? n['energy_100g'] / 4.184 : 0);
+	const protPer100 = n['proteins_prepared_100g'] || n['proteins_100g'] || n['proteins'] || 0;
+	const carbPer100 = n['carbohydrates_prepared_100g'] || n['carbohydrates_100g'] || n['carbohydrates'] || 0;
+	const fatPer100 = n['fat_prepared_100g'] || n['fat_100g'] || n['fat'] || 0;
 
-	const energyKj = n['energy-kj_100g'] || n['energy-kj'] || (kcalPer100 * 4.184);
-	const satFatPer100 = n['saturated-fat_100g'] || n['saturated-fat'] || null;
-	const sugarPer100 = n['sugars_100g'] || n['sugars'] || null;
-	const saltPer100 = n['salt_100g'] || n['salt'] || null;
+	// Detect if this product uses prepared format
+	const isPrepared = !!(n['energy-kcal_prepared_100g'] || n['proteins_prepared_100g'] || n['carbohydrates_prepared_100g'] || n['fat_prepared_100g']);
+
+	const energyKj = n['energy-kj_prepared_100g'] || n['energy-kj_100g'] || n['energy-kj'] || (kcalPer100 * 4.184);
+	const satFatPer100 = n['saturated-fat_prepared_100g'] || n['saturated-fat_100g'] || n['saturated-fat'] || null;
+	const sugarPer100 = n['sugars_prepared_100g'] || n['sugars_100g'] || n['sugars'] || null;
+	const saltPer100 = n['salt_prepared_100g'] || n['salt_100g'] || n['salt'] || null;
 
 	let finalSalt = saltPer100;
-	if (finalSalt === null && n['sodium_100g']) {
-		finalSalt = n['sodium_100g'] * 2.5;
+	if (finalSalt === null && (n['sodium_prepared_100g'] || n['sodium_100g'])) {
+		const sodium = n['sodium_prepared_100g'] || n['sodium_100g'];
+		finalSalt = sodium * 2.5;
 	}
 
 	const categories = (product.categories_tags || []).join(' ');
@@ -493,7 +499,8 @@ function mapProductToFood(product) {
 		isLiquid,
 		servingSize,
 		defaultUnit: isLiquid ? 'ml' : 'g',
-		isBarcode: true
+		isBarcode: true,
+		isPrepared: isPrepared
 	};
 }
 
@@ -610,6 +617,15 @@ function selectFood(food) {
 	} else {
 		el('manualNutrients').style.display = 'block';
 		el('nutritionFactsTable').style.display = 'none';
+	}
+
+	// Hide amount section for prepared products (similar to AI mode)
+	if (food.isPrepared) {
+		const amountSection = document.getElementById('amount-section');
+		if (amountSection) amountSection.style.display = 'none';
+	} else {
+		const amountSection = document.getElementById('amount-section');
+		if (amountSection) amountSection.style.display = '';
 	}
 
 	updateCaloriePreview();
