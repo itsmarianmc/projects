@@ -70,11 +70,12 @@
 		document.documentElement.style.overflow = '';
 		if (isChecked) {
 			startTooltipTour([
-				{ elementId: 'openModalBtn', message: 'Log food here. Search by name or enter a barcode number.', progress: '1/5', buttonText: 'Next' },
-				{ elementId: 'openHistoryBtn', message: 'Browse your full food log history and daily calorie totals.', progress: '2/5', buttonText: 'Next' },
-				{ elementId: 'openSettingsBtn', message: 'Set your daily calorie goal and customize the app here.', progress: '3/5', buttonText: 'Next' },
-				{ elementId: 'ringContainer', message: 'Watch the ring fill as you get closer to your daily calorie goal.', progress: '4/5', buttonText: 'Next' },
-				{ elementId: 'logSection', message: 'Your logged food for today appears here. Tap <i class="fa-solid fa-xmark"></i> to delete an entry.', progress: '5/5', buttonText: 'Got it!' }
+				{ elementId: 'openModalBtn', message: 'Log food here. Search by name or enter a barcode number.', progress: '1/6', buttonText: 'Next' },
+				{ elementId: 'openHistoryBtn', message: 'Browse your full food log history and daily calorie totals.', progress: '2/6', buttonText: 'Next' },
+				{ elementId: 'openSettingsBtn', message: 'Set your daily calorie goal and customize the app here.', progress: '3/6', buttonText: 'Next' },
+				{ elementId: 'ringContainer', message: 'Watch the ring fill as you get closer to your daily calorie goal.', progress: '4/6', buttonText: 'Next' },
+				{ elementId: 'statsRow', message: 'View the Calories, Protein, Carbs and Fat you took in today.', progress: '5/6', buttonText: 'Next' },
+				{ elementId: 'logSection', message: 'Your logged food for today appears here. Tap <i class="fa-solid fa-xmark"></i> to delete an entry.', progress: '6/6', buttonText: 'Got it!' }
 			]);
 		}
 	}

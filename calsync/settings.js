@@ -336,10 +336,41 @@ document.addEventListener("DOMContentLoaded", function() {
 	const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
 	const aiStatusBox = document.getElementById('aiStatusBox');
 	
+	function checkThirdPartyCookiesEnabled() {
+		const cookieSettings = localStorage.getItem('cookieSettings');
+		if (!cookieSettings) return false;
+		
+		try {
+			const settings = JSON.parse(cookieSettings);
+			return settings.thirdparty === true;
+		} catch (e) {
+			return false;
+		}
+	}
+	
 	function loadAIState() {
 		const enabled = localStorage.getItem(AI_ENABLED_KEY) === 'true';
 		const termsAccepted = localStorage.getItem(AI_TERMS_KEY) === 'true';
 		const apiKey = localStorage.getItem(AI_API_KEY) || '';
+		const thirdPartyCookiesEnabled = checkThirdPartyCookiesEnabled();
+		
+		if (!thirdPartyCookiesEnabled) {
+			aiToggle.disabled = true;
+			el('aiInfoBox').innerHTML = `<i class="fa-solid fa-circle-info"></i><p>Third-Party Content is disabled. To enable AI scanning, turn on "Third-Party Content" in the Cookie Settings!</p>`
+			aiToggle.style.opacity = '0.5';
+			aiToggle.style.cursor = 'not-allowed';
+			aiToggle.setAttribute('aria-pressed', 'false');
+			aiToggle.setAttribute('title', 'Please enable Third-Party Content cookies in cookie settings');
+			aiSettings.style.display = 'none';
+			updateMethodButtonState();
+			return;
+		} else {
+			el('aiInfoBox').innerHTML = `<i class="fa-solid fa-circle-info"></i><p>AI Detection uses Google's Gemini API to analyze food images and estimate nutrition values. This feature is experimental and requires your own API key.</p>`
+			aiToggle.disabled = false;
+			aiToggle.style.opacity = '1';
+			aiToggle.style.cursor = 'pointer';
+			aiToggle.removeAttribute('title');
+		}
 		
 		aiToggle.setAttribute('aria-pressed', String(enabled));
 		
@@ -367,7 +398,22 @@ document.addEventListener("DOMContentLoaded", function() {
 		updateMethodButtonState();
 	}
 	
+	window.addEventListener('storage', (e) => {
+		if (e.key === 'cookieSettings') {
+			loadAIState();
+		}
+	});
+	
+	window.addEventListener('cookieSettingsChanged', () => {
+		loadAIState();
+	});
+	
 	aiToggle.addEventListener('click', () => {
+		if (!checkThirdPartyCookiesEnabled()) {
+			showToast('⚠️ Please enable Third-Party Content cookies first');
+			return;
+		}
+		
 		const enabled = aiToggle.getAttribute('aria-pressed') === 'true';
 		const newState = !enabled;
 		
@@ -453,7 +499,18 @@ function isAIReady() {
 	const termsAccepted = localStorage.getItem('calsync_ai_terms_accepted') === 'true';
 	const apiKey = localStorage.getItem('calsync_ai_api_key') || '';
 	
-	return enabled && termsAccepted && apiKey.length > 0;
+	const cookieSettings = localStorage.getItem('cookieSettings');
+	let thirdPartyCookiesEnabled = false;
+	if (cookieSettings) {
+		try {
+			const settings = JSON.parse(cookieSettings);
+			thirdPartyCookiesEnabled = settings.thirdparty === true;
+		} catch (e) {
+			thirdPartyCookiesEnabled = false;
+		}
+	}
+	
+	return enabled && termsAccepted && apiKey.length > 0 && thirdPartyCookiesEnabled;
 }
 
 window.isAIReady = isAIReady;
