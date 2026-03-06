@@ -125,6 +125,10 @@ body.modal-open {
 	transition: opacity 0.9s ease-out, visibility 0.9s;
 }
 
+.upper {
+	text-transform: uppercase;
+}
+
 .SplashHidden {
 	opacity: 0 !important;
 	transition: opacity 0.9s ease-out, visibility 0.9s;
@@ -924,6 +928,113 @@ body.modal-open {
 	background: rgba(255, 149, 0, 0.1);
 	color: var(--accent);
 	border-color: var(--accent);
+}
+
+/* ── Recent Searches ── */
+.recent-searches {
+	display: none;
+	flex-direction: column;
+	gap: 8px;
+	padding-top: 12px;
+}
+
+.recent-searches.visible {
+	display: flex;
+}
+
+.recent-searches-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 2px 4px;
+}
+
+.recent-searches-label {
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--text3);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+
+.recent-searches-clear {
+	font-size: 11px;
+	color: var(--accent);
+	cursor: pointer;
+	background: none;
+	border: none;
+	padding: 0;
+	font-family: inherit;
+	opacity: 0.8;
+	transition: opacity 0.15s;
+}
+
+.recent-searches-clear:hover { opacity: 1; }
+
+.recent-item {
+	background: var(--surface2);
+	border: 1.5px solid var(--border);
+	border-radius: var(--radius-sm);
+	padding: 11px 14px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	transition: all 0.15s;
+}
+
+.recent-item:active,
+.recent-item:hover {
+	border-color: var(--accent);
+	background: rgba(255, 149, 0, 0.06);
+}
+
+.recent-item-icon {
+	width: 34px;
+	height: 34px;
+	border-radius: 10px;
+	background: var(--surface3);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 15px;
+	flex-shrink: 0;
+	color: var(--text2);
+}
+
+.recent-item-icon.barcode-icon {
+	font-size: 14px;
+}
+
+.recent-item-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.recent-item-query {
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: var(--text);
+}
+
+.recent-item-sub {
+	font-size: 12px;
+	color: var(--text2);
+	margin-top: 2px;
+}
+
+.recent-item-arrow {
+	color: var(--text3);
+	font-size: 13px;
+	flex-shrink: 0;
+}
+
+/* skeleton items inside recent searches */
+.recent-searches .skeleton-item {
+	opacity: 0.45;
 }
 
 .search-status {
@@ -1840,10 +1951,14 @@ body.modal-open {
 	margin-bottom: 6px;
 }
 
-.settings-legal a, a:link {
+.settings-legal a, a:link, a:link:active {
 	cursor: pointer;
 	color: var(--text2);
 	text-decoration: none;
+}
+
+a:link:visited {
+	color: var(--text2);
 }
 
 .settings-legal a:hover, a:link:hover {
@@ -2289,6 +2404,9 @@ body.modal-open {
 	background: var(--surface2);
 	border-radius: 10px;
 	transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.onboarding-feature-icon.clickable {
 	cursor: pointer;
 }
 
@@ -2629,18 +2747,17 @@ body.modal-open {
 
 .ai-terms-content p {
 	font-size: 13px;
+	margin-top: 12px;
 	color: var(--text2);
 	line-height: 1.6;
-	margin: 0 0 12px 0;
 }
 
 .ai-terms-content strong {
-	color: var(--text);
 	font-weight: 600;
 }
 
 .ai-terms-content ul {
-	margin: 12px 0;
+	margin: 0 0 12px 0;
 	padding-left: 24px;
 }
 
@@ -2656,7 +2773,6 @@ body.modal-open {
 	border: 1px solid rgba(255, 149, 0, 0.3);
 	border-radius: 8px;
 	padding: 10px 12px;
-	margin: 12px 0 0 0;
 	display: flex;
 	align-items: flex-start;
 	gap: 8px;
@@ -2798,10 +2914,15 @@ body.modal-open {
 	font-weight: 500;
 }
 
-.method-btn.disabled {
+.method-btn:disabled {
 	opacity: 0.4;
 	cursor: not-allowed;
-	pointer-events: none;
+}
+
+.method-btn:disabled:hover, .method-btn:disabled:active {
+	transform: unset !important;
+	background: unset !important;
+	border-color: var(--border);
 }
 
 .method-btn.disabled i {

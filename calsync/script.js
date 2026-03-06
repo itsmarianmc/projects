@@ -1,6 +1,137 @@
 let GOAL = parseInt(localStorage.getItem('calsync_goal') || '2000');
 const SHEET_TOP_MARGIN = 24;
 
+const RECENT_KEY = 'calsync_recent_searches';
+const RECENT_MAX = 3;
+
+function loadRecentSearches() {
+	try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch (e) { return []; }
+}
+
+function saveRecentSearch(query, type, foods) {
+	if (!query || !query.trim()) return;
+	type = type || 'search';
+	var list = loadRecentSearches().filter(function(r) {
+		return !(r.query === query && r.type === type);
+	});
+	list.unshift({ query: query, type: type, ts: Date.now(), foods: foods || [] });
+	localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_MAX)));
+}
+
+function clearRecentSearches() {
+	localStorage.removeItem(RECENT_KEY);
+	renderRecentSearches();
+}
+
+const SKEL_HTML = '<div class="skeleton-item"><div class="skeleton-icon"></div>'
+	+ '<div class="skeleton-info"><div class="skeleton-line name"></div>'
+	+ '<div class="skeleton-line brand"></div></div>'
+	+ '<div class="skeleton-kcal"></div></div>';
+
+function renderRecentSearches() {
+	var container = el('recentSearches');
+	if (!container) return;
+	var list = loadRecentSearches();
+
+	var headerHTML = list.length
+		? '<div class="recent-searches-header">'
+			+ '<span class="recent-searches-label">Recent</span>'
+			+ '<button class="recent-searches-clear" id="clearRecentBtn">Clear</button>'
+			+ '</div>'
+		: '<div class="recent-searches-header">'
+			+ '<span class="recent-searches-label">Recent</span>'
+			+ '</div>';
+
+	var itemsHTML = list.map(function(r) {
+		var isBarcode = r.type === 'barcode';
+		var icon = isBarcode ? 'fa-solid fa-barcode' : 'fa-solid fa-clock-rotate-left';
+		var firstFood = r.foods && r.foods[0];
+		var sub = firstFood
+			? (firstFood.brand || (isBarcode ? 'Barcode lookup' : 'Recent search'))
+			: (isBarcode ? 'Barcode lookup' : 'Recent search');
+		return '<div class="recent-item" data-idx="' + list.indexOf(r) + '">'
+			+ '<div class="recent-item-icon' + (isBarcode ? ' barcode-icon' : '') + '"><i class="' + icon + '"></i></div>'
+			+ '<div class="recent-item-info">'
+			+   '<div class="recent-item-query">' + r.query + '</div>'
+			+   '<div class="recent-item-sub">' + sub + '</div>'
+			+ '</div>'
+			+ '<i class="fa-solid fa-arrow-up-left recent-item-arrow"></i>'
+			+ '</div>';
+	}).join('');
+
+	var skeletonsNeeded = RECENT_MAX - list.length;
+	var skeletonHTML = '';
+	for (var s = 0; s < skeletonsNeeded; s++) skeletonHTML += SKEL_HTML;
+
+	container.innerHTML = headerHTML + itemsHTML + skeletonHTML;
+	container.classList.add('visible');
+
+	var clearBtn = container.querySelector('#clearRecentBtn');
+	if (clearBtn) {
+		clearBtn.addEventListener('click', function(e) {
+			e.stopPropagation();
+			clearRecentSearches();
+		});
+	}
+
+	container.querySelectorAll('.recent-item').forEach(function(item) {
+		item.addEventListener('click', function() {
+			var idx = parseInt(item.dataset.idx);
+			var r = list[idx];
+			if (!r) return;
+
+			el('searchStatus').textContent = '';
+			el('searchStatus').classList.remove('active');
+
+			if (r.foods && r.foods.length === 1) {
+				hideRecentSearches();
+				selectFood(r.foods[0]);
+				return;
+			}
+
+			if (r.type === 'barcode') {
+				var elements = el('searchInterface').querySelector('.search-elements');
+				if (!elements.classList.contains('barcode-mode')) {
+					elements.classList.add('barcode-mode');
+					el('scanBarcodeBtn').classList.add('active');
+					el('scanBarcodeBtn').innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>';
+				}
+				el('barcodeManualInput').value = r.query;
+			} else {
+				el('foodSearchInput').value = r.query;
+			}
+
+			if (r.foods && r.foods.length) {
+				renderFoodResults(r.foods);
+			} else {
+				if (r.type === 'barcode') lookupBarcode(r.query);
+				else searchFood(r.query);
+			}
+		});
+	});
+}
+
+function showRecentSearches() {
+	renderRecentSearches();
+}
+
+function preRenderRecentSearches() {
+	var container = el('recentSearches');
+	if (!container) return;
+	renderRecentSearches();
+	container.classList.remove('visible');
+}
+
+function revealRecentSearches() {
+	var container = el('recentSearches');
+	if (container) container.classList.add('visible');
+}
+
+function hideRecentSearches() {
+	var container = el('recentSearches');
+	if (container) container.classList.remove('visible');
+}
+
 const SVG_ARROW = '<svg height="25" viewBox="0 -960 960 960" width="25" fill="#ffffff"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg>';
 const SVG_CHECK = '<svg height="25" viewBox="0 -960 960 960" width="25" fill="#ffffff"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>';
 
@@ -248,9 +379,9 @@ function openModal() {
 	el('backBtn').classList.remove('hidden');
 
 	el('foodSearchInput').value = '';
-	el('searchResults').innerHTML = ``;
-	showSkeletons(3);
+	el('searchResults').innerHTML = '';
 	el('searchStatus').textContent = '';
+	el('searchStatus').classList.remove('active');
 	const _se = document.querySelector('.search-elements');
 	if (_se) _se.classList.remove('barcode-mode');
 	el('barcodeManualInput').value = '';
@@ -259,6 +390,7 @@ function openModal() {
 	document.querySelectorAll('.category-option').forEach(o => o.classList.remove('selected'));
 	selFood = null;
 	currentCategory = null;
+	renderRecentSearches();
 
 	setModalNoTransition();
 	modal.style.height = 'auto';
@@ -520,8 +652,10 @@ async function searchFood(query) {
 	if (!query.trim()) {
 		el('searchResults').innerHTML = '';
 		el('searchStatus').textContent = '';
+		showRecentSearches();
 		return;
 	}
+	hideRecentSearches();
 	el('searchStatus').textContent = '';
 	showSkeletons(3);
 	try {
@@ -536,7 +670,8 @@ async function searchFood(query) {
 			return;
 		}
 		el('searchStatus').textContent = '';
-		renderSearchResults(products);
+		const foods = renderSearchResults(products);
+		saveRecentSearch(query.trim(), 'search', foods);
 	} catch (e) {
 		el('searchResults').innerHTML = '';
 		el('searchStatus').textContent = 'Search failed. Check your connection.';
@@ -546,6 +681,7 @@ async function searchFood(query) {
 
 async function lookupBarcode(barcode) {
 	if (!barcode.trim()) return;
+	hideRecentSearches();
 	el('searchStatus').textContent = '';
 	showSkeletons(1);
 	try {
@@ -558,18 +694,18 @@ async function lookupBarcode(barcode) {
 			return;
 		}
 		el('searchStatus').textContent = '';
-		renderSearchResults([data.product]);
+		const foods = renderSearchResults([data.product]);
+		saveRecentSearch(barcode.trim(), 'barcode', foods);
 	} catch (e) {
 		el('searchResults').innerHTML = '';
 		el('searchStatus').textContent = 'Lookup failed. Check your connection.';
 	}
 }
 
-function renderSearchResults(products) {
+function renderFoodResults(foods) {
 	const container = el('searchResults');
 	container.innerHTML = '';
-	products.forEach(product => {
-		const food = mapProductToFood(product);
+	foods.forEach(food => {
 		const div = document.createElement('div');
 		div.className = 'search-result-item';
 		const kcalDisplay = food.kcalPer100 ? `${Math.round(food.kcalPer100)} kcal/100${food.defaultUnit}` : '? kcal';
@@ -584,6 +720,12 @@ function renderSearchResults(products) {
 		div.addEventListener('click', () => selectFood(food));
 		container.appendChild(div);
 	});
+}
+
+function renderSearchResults(products) {
+	const foods = products.map(mapProductToFood);
+	renderFoodResults(foods);
+	return foods;
 }
 
 function selectFood(food) {
@@ -627,6 +769,7 @@ function selectFood(food) {
 
 	updateCaloriePreview();
 	prevStepBeforeAmount = 3;
+	hideRecentSearches();
 	goToStep(4);
 }
 
@@ -867,11 +1010,9 @@ function updateMethodButtonState() {
 	}
 	
 	if (typeof window.isAIReady === 'function' && window.isAIReady()) {
-		methodAI.classList.remove('disabled');
-		methodAI.style.pointerEvents = 'auto';
+		methodAI.disabled = true
 	} else {
-		methodAI.classList.add('disabled');
-		methodAI.style.pointerEvents = 'none';
+		methodAI.disabled = true
 		
 		const notice = document.createElement('div');
 		notice.className = 'ai-disabled-notice';
@@ -934,6 +1075,10 @@ el('backBtn').addEventListener('click', () => {
 		goToStep(2);
 	} else if (currentStep === 4) {
 		selFood = null;
+		if (prevStepBeforeAmount === 3) {
+			el('searchResults').innerHTML = '';
+			revealRecentSearches();
+		}
 		goToStep(prevStepBeforeAmount);
 	}
 });
@@ -988,9 +1133,13 @@ el('foodSearchInput').addEventListener('input', e => {
 	const q = e.target.value.trim();
 	clearTimeout(searchTimeout);
 	if (!q) {
+		el('searchResults').innerHTML = '';
 		el('searchStatus').textContent = '';
+		el('searchStatus').classList.remove('active');
+		showRecentSearches();
 		return;
 	}
+	hideRecentSearches();
 	searchTimeout = setTimeout(() => searchFood(q), 400);
 });
 
@@ -1035,7 +1184,7 @@ document.querySelectorAll('.category-option').forEach(opt => {
 
 el('methodDatabase').addEventListener('click', () => {
 	el('searchStatus').classList.remove('active');
-	showSkeletons(3);
+	el('searchResults').innerHTML = '';
 	selFood = null;
 	goToStep(3);
 });
@@ -1120,12 +1269,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 });
 
-el('methodDatabase').addEventListener('click', () => {
-	el('searchStatus').classList.remove('active');
-	showSkeletons(3);
-	selFood = null;
-	goToStep(3);
-});
 
 el('methodManual').addEventListener('click', startManualAdd);
 

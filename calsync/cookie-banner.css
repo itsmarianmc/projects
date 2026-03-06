@@ -23,7 +23,6 @@ body {
 	-ms-overflow-style: none;
 }
 
-/* Disabled Scroll Bars */
 .settings-content, .cookie-banner {
 	scroll-behavior: smooth;
 	scrollbar-width: none;
@@ -185,7 +184,8 @@ footer .linkout.nodecoration {
 }
 
 .cookie-banner {
-	animation: slideUp 0.5s var(--ease);
+	animation: slideUp 0.5s ease-out forwards;
+	animation-delay: 0.3s;
 	background: var(--surface);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
@@ -194,11 +194,12 @@ footer .linkout.nodecoration {
 	left: 50%;
 	max-height: calc(100% - 2rem);
 	max-width: 800px;
+	opacity: 0;
 	overflow: scroll;
 	padding: 2rem;
 	position: fixed;
 	text-align: left;
-	transform: translateX(-50%);
+	transform: translate(-50%, 100%);
 	width: calc(100% - 5px);
 	z-index: 9998;
 }
