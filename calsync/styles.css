@@ -125,10 +125,6 @@ body.modal-open {
 	transition: opacity 0.9s ease-out, visibility 0.9s;
 }
 
-.upper {
-	text-transform: uppercase;
-}
-
 .SplashHidden {
 	opacity: 0 !important;
 	transition: opacity 0.9s ease-out, visibility 0.9s;
