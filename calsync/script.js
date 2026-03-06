@@ -1010,7 +1010,7 @@ function updateMethodButtonState() {
 	}
 	
 	if (typeof window.isAIReady === 'function' && window.isAIReady()) {
-		methodAI.disabled = true
+		methodAI.disabled = false
 	} else {
 		methodAI.disabled = true
 		
