@@ -104,7 +104,7 @@
 		localStorage.setItem(STORAGE_KEY, '1');
 		document.querySelector('.onboarding-body').innerHTML = `<div style="color:var(--text);text-align:center;width:100%;">Redirecting you to login, please wait!</div>`;
 		document.querySelector('.onboarding-body').classList.add('loggin-in');
-		loginWithDiscord();
+		window.open('/calsync/login/', '_parent')
 	});
 
 	document.addEventListener('DOMContentLoaded', () => {

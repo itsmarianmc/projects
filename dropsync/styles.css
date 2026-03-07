@@ -1398,27 +1398,26 @@ body.modal-open {
 	padding: 14px 16px;
 }
 
-.discord-btn {
+.divider {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	background: #5865F2;
-	color: #fff;
-	border: none;
-	border-radius: 12px;
-	padding: 12px 18px;
-	font-size: 15px;
-	font-weight: 600;
-	margin: 10px;
-	cursor: pointer;
-	width: calc(100% - 20px);
-	justify-content: center;
+	margin: 0.5rem 0;
+	color: var(--text3);
+	font-size: 0.82rem;
 }
 
-.auth-user-info {
+.divider::before,
+.divider::after {
+	content: '';
+	flex: 1;
+	height: 1px;
+	background: var(--border);
+}
+
+.auth-user-info, .manage-btn, .logout-btn, .account-btn {
 	background: var(--surface3);
 	border: 1px solid var(--border);
-	border-radius: 12px;
 	display: flex;
 	align-items: center;
 	gap: 10px;
@@ -1426,6 +1425,16 @@ body.modal-open {
 	font-size: 14px;
 	font-weight: 500;
 	margin: 10px;
+	width: calc(100% - 20px);
+	border-radius: var(--radius-sm) !important;
+}
+
+#loggedInSettings {
+    margin: 10px;
+}
+
+.manage-btn, .logout-btn, .account-btn {
+	justify-content: center;
 }
 
 .auth-avatar {

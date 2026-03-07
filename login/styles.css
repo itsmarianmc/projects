@@ -34,6 +34,12 @@ body {
 	overflow-x: hidden;
 }
 
+a:link, a:link:active {
+	cursor: pointer;
+	color: var(--text2);
+	text-decoration: none;
+}
+
 .page {
 	min-height: 100dvh;
 	display: flex;
@@ -329,7 +335,14 @@ body {
 	outline: none;
 	transition: border-color 0.2s, background 0.2s;
 	-webkit-appearance: none;
+  	-moz-appearance: textfield;
 	caret-color: var(--accent);
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  	-webkit-appearance: none;
+  	margin: 0;
 }
 
 .otp-wrap input:focus {
@@ -594,4 +607,51 @@ body {
 		width: 42px;
 		height: 50px;
 	}
+}
+
+.remember-me-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0.9rem 0 0.5rem;
+	cursor: pointer;
+	user-select: none;
+}
+
+.remember-me-row input[type="checkbox"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 18px;
+	height: 18px;
+	min-width: 18px;
+	border: 1.5px solid var(--border);
+	border-radius: 5px;
+	background: var(--surface2);
+	cursor: pointer;
+	transition: background 0.18s, border-color 0.18s;
+	position: relative;
+}
+
+.remember-me-row input[type="checkbox"]:checked {
+	background: var(--accent);
+	border-color: var(--accent);
+}
+
+.remember-me-row input[type="checkbox"]:checked::after {
+	content: '';
+	position: absolute;
+	left: 4px;
+	top: 1px;
+	width: 6px;
+	height: 10px;
+	border: 2px solid #fff;
+	border-top: none;
+	border-left: none;
+	transform: rotate(45deg);
+}
+
+.remember-me-row span {
+	font-size: 0.88rem;
+	color: var(--text2);
+	line-height: 1.4;
 }

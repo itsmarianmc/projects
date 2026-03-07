@@ -42,8 +42,17 @@ function getUserInitial(user) {
 	return getUserDisplayName(user).charAt(0).toUpperCase();
 }
 
+document.getElementById('accountLoginBtn').addEventListener('click', function() {
+	window.open('/login/?signinginto=calsync', '_parent')
+})
+
+document.getElementById('manageAccount').addEventListener('click', function() {
+	window.open('/calsync/login/', '_parent')
+})
+
 function updateAuthUI() {
 	const loginBtn  = document.getElementById('loginBtn')  || document.getElementById('accountLoginBtn');
+	const loggedInSettings = document.getElementById('loggedInSettings');
 	const logoutBtn = document.getElementById('logoutBtn') || document.getElementById('accountLogoutBtn');
 	const userInfo  = document.getElementById('authUserInfo');
 	const syncBadge = document.getElementById('syncStatusBadge');
@@ -54,7 +63,10 @@ function updateAuthUI() {
 		const name   = getUserDisplayName(currentUser);
 		const avatar = currentUser.user_metadata?.avatar_url;
 
-		if (loginBtn)  loginBtn.classList.add('hidden');
+		if (loginBtn) {
+			loggedInSettings.classList.remove('hidden');
+			loginBtn.classList.add('hidden');
+		}
 		if (logoutBtn) logoutBtn.classList.remove('hidden');
 
 		if (userInfo) {
@@ -73,7 +85,10 @@ function updateAuthUI() {
 			syncBadge.classList.add('active');
 		}
 	} else {
-		if (loginBtn)  loginBtn.classList.remove('hidden');
+		if (loginBtn) {
+			loggedInSettings.classList.add('hidden');
+			loginBtn.classList.remove('hidden');
+		}
 		if (logoutBtn) logoutBtn.classList.add('hidden');
 		if (userInfo)  userInfo.classList.add('hidden');
 
@@ -93,7 +108,8 @@ async function logoutUser() {
 	currentUser = null;
 	syncEnabled = false;
 	updateAuthUI();
-	if (typeof showToast === 'function') showToast('👋 Abgemeldet');
+	if (typeof showToast === 'function') showToast('👋 Logged out');
+	setTimeout(() => {location.reload()}, 1000);
 }
 
 async function ensureUserSettings() {
@@ -253,7 +269,7 @@ async function pullFromCloud() {
 		if (localOnly.length > 0) await pushToCloud();
 		if (typeof updateUI === 'function') updateUI();
 
-		if (typeof showToast === 'function') showToast(`☁️ ${allCloudEntries.length} Einträge synchronisiert!`);
+		if (typeof showToast === 'function') showToast(`☁️ ${allCloudEntries.length} entries synced!`);
 
 	} catch (err) {
 		console.error('[CalSync] Pull error:', err);

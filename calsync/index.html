@@ -376,10 +376,14 @@
 				<div class="modal-step active" id="settingsStep">
 					<div class="settings-section">
 						<div class="settings-section-title">Cloud Sync</div>
-						<button id="accountLoginBtn" class="settings-btn discord-btn" onclick="loginWithDiscord()"><i class="fas fa-user"></i> Login/Register</button>
+						<button id="accountLoginBtn" class="settings-btn discord-btn"><i class="fas fa-user"></i> Login/Register</button>
 						<div id="authUserInfo" class="auth-user-info hidden"></div>
-						<button id="accountLogoutBtn" class="settings-btn discord-btn hidden" onclick="logoutUser()">Logout</button>
 						<div id="syncStatusBadge" class="sync-badge">Not synced</div>
+						<div id="loggedInSettings">
+							<button id="accountLogoutBtn" class="settings-btn discord-btn hidden" onclick="logoutUser()" style="margin: 0; width: 100%;">Logout</button>
+							<div class="divider">or</div>
+							<button id="manageAccount" class="option-btn active" style="width: 100%; border-radius: var(--radius-sm); padding: 13px 16px;"><i class="fas fa-user"></i> Manage Account</button>
+						</div>
 					</div>
 					<div class="settings-section" id="aiDetection">
 						<div class="settings-section-title">

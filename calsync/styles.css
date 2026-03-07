@@ -1708,6 +1708,27 @@ body.modal-open {
 	padding: 14px 16px;
 }
 
+#loggedInSettings {
+	margin: 10px;
+}
+
+.divider {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0.5rem 0;
+	color: var(--text3);
+	font-size: 0.82rem;
+}
+
+.divider::before,
+.divider::after {
+	content: '';
+	flex: 1;
+	height: 1px;
+	background: var(--border);
+}
+
 #aiDetection.showTerms .ai-info-box {
 	display: none;
 }

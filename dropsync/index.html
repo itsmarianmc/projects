@@ -280,13 +280,19 @@
 				<div class="modal-step active" id="settingsStep">
 					<div class="settings-section">
 						<div class="settings-section-title">Cloud Sync</div>
-						<button id="discordLoginBtn" class="settings-btn discord-btn" onclick="loginWithDiscord()">
-							<i class="fa-brands fa-discord"></i>
-							Login with Discord
+						<button id="accountLoginBtn" class="option-btn active account-btn" style="padding: 13.5px 16px;">
+							<svg height="18" viewBox="0 -960 960 960" width="18" fill="currentColor">
+								<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 129-46.5T480-440q66 0 133 15.5T742-378q29 15 46.5 43.5T806-272v112H160Z"/>
+							</svg>
+							Login / Register
 						</button>
 						<div id="authUserInfo" class="auth-user-info hidden"></div>
-						<button id="discordLogoutBtn" class="settings-btn discord-btn hidden" onclick="logoutUser()">Logout</button>
 						<div id="syncStatusBadge" class="sync-badge">Not synced</div>
+						<div id="loggedInSettings">
+							<button id="accountLogoutBtn" class="option-btn discord-btn hidden active" onclick="logoutUser()" style="padding: 13.5px 16px; margin: 0 auto; border-radius: var(--radius-sm); width: 100%;">Logout</button>
+							<div class="divider">or</div>
+							<button id="manageAccount" class="option-btn active" style="width: 100%; border-radius: var(--radius-sm); padding: 13px 16px;"><i class="fas fa-user"></i> Manage Account</button>
+						</div>
 					</div>
 					<div class="settings-section">
 						<div class="settings-section-title">
@@ -502,9 +508,9 @@
 							<p style="margin-top: 8px;">
 								<a id="openNotes">About / Licenses</a>
 								•
-								<a href="/calsync/">Also Try CalSync</a>
+								<a href="/calsync/">Also Try calsync</a>
 							</p>
-							<p>Version 1.0 • © <span id="copyright"></span> CalSync</p>
+							<p>Version 1.0 • © <span id="copyright"></span> dropsync</p>
 						</div>
 					</div>
 				</div>
@@ -612,7 +618,7 @@
 					</div>
 					<div class="license-section-body">
 						<p><strong>Font: DM Sans</strong></p>
-						<p>Copyright 2014-2018 Indian Type Foundry (info@indiantypefoundry.com)</p>
+						<p>Copyright 2014-2018 Indian Type Foundry (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3851565e577851565c5159564c41485d5e574d565c4a41165b5755">[email&#160;protected]</a>)</p>
 						<p>Copyright 2019 Google LLC</p>
 						<br>
 						<p><strong>License: SIL Open Font License, Version 1.1</strong></p>
@@ -729,10 +735,10 @@
 							</div>
 						</div>
 						<div class="onboarding-feature">
-							<div class="onboarding-feature-icon"><i class="fa-brands fa-discord"></i></div>
+							<div class="onboarding-feature-icon"><i class="fa-solid fa-cloud"></i></div>
 							<div class="onboarding-feature-text">
 								<strong>Cloud sync</strong>
-								<span>Log in one time, sync across multiple devices live and never set up the app again. One simple click, simple, smart and easy!</span>
+								<span>Log in once with your account, sync across multiple devices live and never set up the app again. Simple, smart and easy!</span>
 							</div>
 						</div>
 						<div class="onboarding-feature">
@@ -810,13 +816,13 @@
 				<div class="onboarding-slide">
 					<div class="onboarding-slide-icon"><i class="fas fa-cloud"></i></div>
 					<div class="onboarding-slide-title"><span>Cloud</span> Sync</div>
-					<div class="onboarding-slide-desc">Login with your Discord account to automatically back up and sync your data across all devices. Your data stays private and secure.</div>
+					<div class="onboarding-slide-desc">Login with your email and password to automatically back up and sync your data across all devices. Your data stays private and secure.</div>
 					<div class="onboarding-feature-list">
 						<div class="onboarding-feature">
-							<div class="onboarding-feature-icon"><i class="fa-brands fa-discord"></i></div>
+							<div class="onboarding-feature-icon"><i class="fa-solid fa-envelope"></i></div>
 							<div class="onboarding-feature-text">
-								<strong>Discord login</strong>
-								<span>One tap to sign in - no password needed.</span>
+								<strong>Email & Password login</strong>
+								<span>Sign in securely with your email and password. 2FA available for extra security.</span>
 							</div>
 						</div>
 						<div class="onboarding-feature">
@@ -863,7 +869,7 @@
 							<p>Individual hydration needs can vary significantly based on multiple factors including but not limited to: body weight, height, physical activity level, age, gender, climate conditions, medical conditions, medications, and overall health status. Environmental factors such as temperature, humidity, and altitude may also affect daily fluid requirements.</p>
 							<p>The provided values represent statistical averages and may need adjustment based on your specific circumstances. For personalized hydration recommendations, especially if you have underlying health conditions or specific dietary requirements, please consult with a qualified healthcare provider or registered dietitian.</p>
 							<p>Use is at your own risk. No liability is accepted for damage to health that may arise from errors in the calculation.</p>
-							<p>DropSync stores your hydration data locally on your device and optionally in a secure cloud database (Supabase) when you choose to log in with Discord. We do not sell, share, or monetize your personal data in any way. You can delete all your data at any time from the Settings menu. Authentication is handled via Discord OAuth2 - we only store your Discord user ID and display name to identify your account.</p>
+							<p>DropSync stores your hydration data locally on your device and optionally in a secure cloud database (Supabase) when you choose to create an account. We do not sell, share, or monetize your personal data in any way. You can delete all your data at any time from the Settings menu. Authentication is handled via email and password — we only store your user ID and email to identify your account.</p>
 						</div>
 						<p class="onboarding-legal-agree">By tapping "Let's go!" you confirm that you have read and agree to the Terms of Service and acknowledge the Privacy Policy.</p>
 					</div>
