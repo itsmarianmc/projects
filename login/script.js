@@ -125,7 +125,7 @@ function checkPasswordStrength(val) {
 	const score = Object.values(rules).filter(Boolean).length;
 	const cls   = ['', 'weak', 'medium', 'strong'][score] || '';
 
-	['bar1','bar2','bar3','bar4'].forEach((id, i) => {
+	['bar1','bar2','bar3'].forEach((id, i) => {
 		document.getElementById(id).className = 'pw-bar' + (i < score ? ' ' + cls : '');
 	});
 

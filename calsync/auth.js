@@ -109,7 +109,7 @@ async function logoutUser() {
 	syncEnabled = false;
 	updateAuthUI();
 	if (typeof showToast === 'function') showToast('👋 Logged out');
-	setTimeout(() => {location.reload()}, 1000);
+	setTimeout(() => {window.open('/login/?signinginto=dropsync', '_parent')}, 1000);
 }
 
 async function ensureUserSettings() {
