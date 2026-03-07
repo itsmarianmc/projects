@@ -40,6 +40,13 @@ a:link, a:link:active {
 	text-decoration: none;
 }
 
+.hidden {
+	opacity: 0 !important;
+	visibility: hidden !important;
+	display: none !important;
+	transition: opacity 0.9s ease-out, visibility 0.9s;
+}
+
 .page {
 	min-height: 100dvh;
 	display: flex;

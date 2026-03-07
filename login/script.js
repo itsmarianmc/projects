@@ -17,7 +17,8 @@ const APPS = {
 
 const _params = new URLSearchParams(window.location.search);
 const _appKey = (_params.get('signinginto') || '').toLowerCase();
-const APP     = APPS[_appKey] || APPS['calsync'];
+const APP = APPS[_appKey] || APPS['calsync'];
+const KEEP_LOGIN_PAGE = _params.get('keep_login_page') === 'true';
 
 const SUPABASE_URL      = 'https://stuqtqlkantewwxhwitg.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_nNq-PUIq-C-q5OREGoEquA_XmLrOr-r';
@@ -64,6 +65,7 @@ function setMfaTrusted(email) {
 })();
 
 function goToApp() {
+	if (KEEP_LOGIN_PAGE) return;
 	window.location.href = APP.url;
 }
 
@@ -89,6 +91,7 @@ function switchTab(tab) {
 	document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
 	document.getElementById('viewLogin').classList.toggle('active', tab === 'login');
 	document.getElementById('viewRegister').classList.toggle('active', tab === 'register');
+
 }
 
 function setLoading(btnId, loading) {
@@ -125,7 +128,7 @@ function checkPasswordStrength(val) {
 	const score = Object.values(rules).filter(Boolean).length;
 	const cls   = ['', 'weak', 'medium', 'strong'][score] || '';
 
-	['bar1','bar2','bar3'].forEach((id, i) => {
+	['bar1','bar2','bar3','bar4'].forEach((id, i) => {
 		document.getElementById(id).className = 'pw-bar' + (i < score ? ' ' + cls : '');
 	});
 
@@ -261,15 +264,75 @@ async function doMFAVerify() {
 }
 
 let _setupFactorId = null;
+let _setup2FAMode  = 'setup';
 
 async function show2FASetupOffer() {
+	showView('viewSetup2FA');
+	hideAlert('setup2faAlert');
+
 	const { data, error } = await _supabase.auth.mfa.enroll({
 		factorType: 'totp',
 		issuer: APP.name,
 	});
+
+	const already2FAExists = error && (
+		error.status === 422 ||
+		error.message?.toLowerCase().includes('already') ||
+		error.message?.toLowerCase().includes('exists') ||
+		error.message?.toLowerCase().includes('unprocessable')
+	);
+
+	if (already2FAExists) {
+		const { data: factors } = await _supabase.auth.mfa.listFactors();
+		const existing = factors?.totp?.[0];
+		if (!existing) {
+			showAlert('setup2faAlert', '2FA seems active but no factor was found. Please contact support.');
+			return;
+		}
+		_setupFactorId = existing.id;
+		_setup2FAMode  = 'test';
+
+		document.getElementById('qrCodeContainer').style.display = 'none';
+		document.getElementById('totpSecret').style.display      = 'none';
+		document.querySelector('#viewSetup2FA .view-title').innerHTML =
+			'Manage 2FA <span class="mfa-badge">Active</span>';
+		document.querySelector('#viewSetup2FA .view-subtitle').textContent =
+			'2FA is already active. Enter your current code to test it, or disable 2FA below.';
+		document.querySelector('#setup2faBtn .btn-text').textContent = 'Test code';
+
+		if (!document.getElementById('disable2faBtn')) {
+			const disableBtn = document.createElement('button');
+			disableBtn.id        = 'disable2faBtn';
+			disableBtn.className = 'btn-ghost';
+			disableBtn.style.marginTop = '0.5rem';
+			disableBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Disable 2FA`;
+			disableBtn.onclick = disable2FA;
+			const setupBtn = document.getElementById('setup2faBtn');
+			setupBtn.parentNode.insertBefore(disableBtn, setupBtn.nextSibling);
+		}
+
+		const otpInputs = document.querySelectorAll('#otpSetupWrap input');
+		otpInputs.forEach(i => i.value = '');
+		showAlert('setup2faAlert', '2FA is already set up. You can test your code here.', 'info');
+		return;
+	}
+
 	if (error) { showAlert('setup2faAlert', error.message); return; }
 
 	_setupFactorId = data.id;
+	_setup2FAMode  = 'setup';
+
+	document.getElementById('qrCodeContainer').style.display = '';
+	document.getElementById('totpSecret').style.display      = '';
+	document.querySelector('#viewSetup2FA .view-title').innerHTML =
+		'Set up 2FA <span class="mfa-badge">Recommended</span>';
+	document.querySelector('#viewSetup2FA .view-subtitle').textContent =
+		'Scan the QR code with your authenticator app (e.g. Google Authenticator, Authy).';
+	document.querySelector('#setup2faBtn .btn-text').textContent = 'Enable 2FA';
+
+	const existingDisableBtn = document.getElementById('disable2faBtn');
+	if (existingDisableBtn) existingDisableBtn.remove();
+
 	document.getElementById('totpSecret').textContent = data.totp.secret;
 	document.getElementById('qrCode').innerHTML = '';
 	new QRCode(document.getElementById('qrCode'), {
@@ -277,7 +340,122 @@ async function show2FASetupOffer() {
 		width: 160, height: 160,
 		correctLevel: QRCode.CorrectLevel.M,
 	});
-	showView('viewSetup2FA');
+}
+
+function disable2FA() {
+	if (!_setupFactorId) return;
+	openDisableModal();
+}
+
+function openDisableModal() {
+	let modal = document.getElementById('disable2faModal');
+	if (!modal) {
+		modal = document.createElement('div');
+		modal.id = 'disable2faModal';
+		modal.style.cssText = 'position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeUp 0.25s var(--ease);';
+		modal.innerHTML = `
+			<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:380px;box-shadow:var(--shadow);">
+				<div style="font-size:1.2rem;font-weight:700;margin-bottom:0.4rem;letter-spacing:-0.3px;">Disable 2FA</div>
+				<div style="font-size:0.9rem;color:var(--text2);margin-bottom:1.4rem;line-height:1.5;">Enter your current authenticator code to confirm. This will remove 2FA from your account.<br><br>If you no longer have access to your authenticator app, <a href="#" id="supportReset2FA" style="color:var(--accent);text-decoration:none;" onclick="openSupportPage(event)">contact support</a>.</div>
+				<div class="alert" id="disableModalAlert"></div>
+				<div class="otp-wrap" id="otpDisableWrap" style="margin-bottom:1.2rem;">
+					<input type="number" maxlength="1" min="0" max="9" oninput="otpInputDisable(this,0)" onkeydown="otpKeyDisable(this,0,event)">
+					<input type="number" maxlength="1" min="0" max="9" oninput="otpInputDisable(this,1)" onkeydown="otpKeyDisable(this,1,event)">
+					<input type="number" maxlength="1" min="0" max="9" oninput="otpInputDisable(this,2)" onkeydown="otpKeyDisable(this,2,event)">
+					<input type="number" maxlength="1" min="0" max="9" oninput="otpInputDisable(this,3)" onkeydown="otpKeyDisable(this,3,event)">
+					<input type="number" maxlength="1" min="0" max="9" oninput="otpInputDisable(this,4)" onkeydown="otpKeyDisable(this,4,event)">
+					<input type="number" maxlength="1" min="0" max="9" oninput="otpInputDisable(this,5)" onkeydown="otpKeyDisable(this,5,event)">
+				</div>
+				<button class="btn-primary" id="confirmDisableBtn" onclick="confirmDisable2FA()" style="background:linear-gradient(135deg,#ff453a,#ff6b61);">
+					<span class="btn-text">Confirm & Disable</span>
+					<div class="btn-loader"></div>
+				</button>
+				<button class="btn-ghost" onclick="closeDisableModal()" style="margin-top:0.5rem;">Cancel</button>
+			</div>`;
+		modal.addEventListener('click', e => { if (e.target === modal) closeDisableModal(); });
+		document.body.appendChild(modal);
+	} else {
+		modal.style.display = 'flex';
+	}
+	modal.querySelectorAll('#otpDisableWrap input').forEach(i => i.value = '');
+	hideAlert('disableModalAlert');
+	setTimeout(() => modal.querySelector('#otpDisableWrap input').focus(), 50);
+}
+
+function otpInputDisable(el, idx) {
+	const inputs = [...document.querySelectorAll('#otpDisableWrap input')];
+	el.value = el.value.replace(/\D/g, '').slice(-1);
+	if (el.value && idx < 5) inputs[idx + 1]?.focus();
+}
+
+function otpKeyDisable(el, idx, e) {
+	const inputs = [...document.querySelectorAll('#otpDisableWrap input')];
+	if (e.key === 'Backspace'  && !el.value && idx > 0) inputs[idx - 1]?.focus();
+	if (e.key === 'ArrowLeft'  && idx > 0)              inputs[idx - 1]?.focus();
+	if (e.key === 'ArrowRight' && idx < 5)              inputs[idx + 1]?.focus();
+}
+
+function closeDisableModal() {
+	const modal = document.getElementById('disable2faModal');
+	if (modal) modal.style.display = 'none';
+}
+
+async function openSupportPage(e) {
+	if (e) e.preventDefault();
+	const { data: { session } } = await _supabase.auth.getSession();
+	const name = encodeURIComponent(
+		session?.user?.user_metadata?.full_name ||
+		session?.user?.user_metadata?.name ||
+		session?.user?.email?.split('@')[0] || ''
+	);
+	const mail = encodeURIComponent(session?.user?.email || '');
+	const appName  = encodeURIComponent(APP.name);
+	const url = `https://support.itsmarian.is-a.dev/?utm_origin=${APP.name.toLowerCase()}&utm_page=login&page_pos=2fa_access_lost&name=${name}&name-disabled=true&subject=Lost%20Access%20to%20${appName}%20-%202FA%20Issue&subject-disabled=true&mail=${mail}&mail-disabled=true&description=[DO%20NOT%20CHANGE%20THIS%20TEXT%20IN%20CAPS,%20YOUR%20NAME,%20THE%20SUBJECT%20OR%20YOUR%20MAIL%20ADRESS!%20YOU%20CAN%20CHANGE%20THE%20TEXT%20BELOW%20LIKE%20YOU%20WANT]%0A%0AHi%2C%20I%20can%20no%20longer%20access%20my%20${appName}%20account%20because%20I%20lost%20access%20to%20my%20two-factor%20authentication%20app.%20Please%20help%20me%20regain%20access%20to%20my%20account.%0A%0ABest%20Regards!`;
+	window.open(url, '_blank');
+}
+
+async function confirmDisable2FA() {
+	if (!_setupFactorId) return;
+	const code = [...document.querySelectorAll('#otpDisableWrap input')].map(i => i.value).join('');
+	if (code.length < 6) return;
+
+	setLoading('confirmDisableBtn', true);
+	hideAlert('disableModalAlert');
+
+	const { data: challenge, error: cErr } = await _supabase.auth.mfa.challenge({ factorId: _setupFactorId });
+	if (cErr) {
+		showAlert('disableModalAlert', cErr.message);
+		setLoading('confirmDisableBtn', false);
+		return;
+	}
+
+	const { error: vErr } = await _supabase.auth.mfa.verify({
+		factorId:    _setupFactorId,
+		challengeId: challenge.id,
+		code,
+	});
+	if (vErr) {
+		showAlert('disableModalAlert', 'Invalid code. Please try again.');
+		document.querySelectorAll('#otpDisableWrap input').forEach(i => i.value = '');
+		document.querySelector('#otpDisableWrap input').focus();
+		setLoading('confirmDisableBtn', false);
+		return;
+	}
+
+	const { error: uErr } = await _supabase.auth.mfa.unenroll({ factorId: _setupFactorId });
+	setLoading('confirmDisableBtn', false);
+
+	if (uErr) {
+		showAlert('disableModalAlert', 'Failed to disable 2FA: ' + uErr.message);
+		return;
+	}
+
+	_setupFactorId = null;
+	closeDisableModal();
+	showAlert('setup2faAlert', '2FA has been disabled successfully.', 'success');
+	const disableBtn = document.getElementById('disable2faBtn');
+	if (disableBtn) disableBtn.remove();
+	setTimeout(() => show2FASetupOffer(), 2000);
 }
 
 async function doSetup2FA() {
@@ -293,9 +471,18 @@ async function doSetup2FA() {
 	});
 	setLoading('setup2faBtn', false);
 
-	if (error) return showAlert('setup2faAlert', error.message);
-	showAlert('setup2faAlert', '2FA enabled successfully! 🎉', 'success');
-	goToApp();
+	if (error) {
+		showAlert('setup2faAlert', error.message);
+		document.querySelectorAll('#otpSetupWrap input').forEach(i => i.value = '');
+		return;
+	}
+
+	if (_setup2FAMode === 'test') {
+		showAlert('setup2faAlert', 'Code correct! 2FA is working perfectly. ✅', 'success');
+	} else {
+		showAlert('setup2faAlert', '2FA enabled successfully! 🎉', 'success');
+		setTimeout(goToApp, 1500);
+	}
 }
 
 function copySecret() {
@@ -314,13 +501,244 @@ async function doReset() {
 	if (!email) return showAlert('resetAlert', 'Please enter your email.');
 
 	setLoading('resetBtn', true);
+	const { data: signInData, error: signInErr } = await _supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
+	setLoading('resetBtn', false);
+
+	const { data: factors } = await _supabase.auth.mfa.listFactors().catch(() => ({ data: null }));
+	const has2FA = factors?.totp?.length > 0;
+
+	if (has2FA) {
+		_resetEmail = email;
+		showView('viewResetMFA');
+		document.querySelectorAll('#otpResetWrap input').forEach(i => i.value = '');
+		setTimeout(() => document.querySelector('#otpResetWrap input')?.focus(), 100);
+		return;
+	}
+
+	await sendResetEmail(email);
+}
+
+let _resetEmail = null;
+
+async function sendResetEmail(email) {
+	setLoading('resetBtn', true);
 	const { error } = await _supabase.auth.resetPasswordForEmail(email, {
 		redirectTo: window.location.origin + window.location.pathname + window.location.search,
 	});
 	setLoading('resetBtn', false);
-
 	if (error) return showAlert('resetAlert', error.message);
 	showAlert('resetAlert', 'Reset link sent! Check your inbox.', 'success');
+}
+
+async function doResetMFAVerify() {
+	const code = [...document.querySelectorAll('#otpResetWrap input')].map(i => i.value).join('');
+	if (code.length < 6) return showAlert('resetMfaAlert', 'Enter all 6 digits.');
+
+	setLoading('resetMfaBtn', true);
+	hideAlert('resetMfaAlert');
+
+	const { data: signInData, error: signInErr } = await _supabase.auth.signInWithPassword({
+		email: _resetEmail,
+		password: '__dummy_wont_work__'
+	}).catch(() => ({ data: null, error: null }));
+
+	const { data: factors } = await _supabase.auth.mfa.listFactors();
+	const totp = factors?.totp?.[0];
+	if (!totp) {
+		await sendResetEmail(_resetEmail);
+		showView('viewReset');
+		setLoading('resetMfaBtn', false);
+		return;
+	}
+
+	const { data: challenge, error: cErr } = await _supabase.auth.mfa.challenge({ factorId: totp.id });
+	if (cErr) {
+		showAlert('resetMfaAlert', cErr.message);
+		setLoading('resetMfaBtn', false);
+		return;
+	}
+
+	const { error: vErr } = await _supabase.auth.mfa.verify({
+		factorId: totp.id, challengeId: challenge.id, code,
+	});
+	setLoading('resetMfaBtn', false);
+
+	if (vErr) {
+		showAlert('resetMfaAlert', 'Invalid code. Please try again.');
+		document.querySelectorAll('#otpResetWrap input').forEach(i => i.value = '');
+		document.querySelector('#otpResetWrap input').focus();
+		return;
+	}
+
+	showView('viewReset');
+	await sendResetEmail(_resetEmail);
+}
+
+function openChangePasswordModal() {
+	let modal = document.getElementById('changePasswordModal');
+	if (!modal) {
+		modal = document.createElement('div');
+		modal.id = 'changePasswordModal';
+		modal.style.cssText = 'position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeUp 0.25s var(--ease);';
+		modal.innerHTML = `
+			<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:400px;box-shadow:var(--shadow);">
+				<div style="font-size:1.2rem;font-weight:700;margin-bottom:0.4rem;letter-spacing:-0.3px;">Change Password</div>
+				<div style="font-size:0.9rem;color:var(--text2);margin-bottom:1.4rem;line-height:1.5;" id="changePwModalSubtitle">First, confirm your identity with your 2FA code.</div>
+				<div class="alert" id="changePwAlert"></div>
+
+				<div id="changePwStep1">
+					<div style="font-size:0.82rem;font-weight:600;color:var(--text2);margin-bottom:8px;letter-spacing:0.3px;text-transform:uppercase;">Authenticator code</div>
+					<div class="otp-wrap" id="otpChangePwWrap" style="margin-bottom:1.2rem;">
+						<input type="number" maxlength="1" min="0" max="9" oninput="otpInputChangePw(this,0)" onkeydown="otpKeyChangePw(this,0,event)">
+						<input type="number" maxlength="1" min="0" max="9" oninput="otpInputChangePw(this,1)" onkeydown="otpKeyChangePw(this,1,event)">
+						<input type="number" maxlength="1" min="0" max="9" oninput="otpInputChangePw(this,2)" onkeydown="otpKeyChangePw(this,2,event)">
+						<input type="number" maxlength="1" min="0" max="9" oninput="otpInputChangePw(this,3)" onkeydown="otpKeyChangePw(this,3,event)">
+						<input type="number" maxlength="1" min="0" max="9" oninput="otpInputChangePw(this,4)" onkeydown="otpKeyChangePw(this,4,event)">
+						<input type="number" maxlength="1" min="0" max="9" oninput="otpInputChangePw(this,5)" onkeydown="otpKeyChangePw(this,5,event)">
+					</div>
+					<button class="btn-primary" id="changePwVerifyBtn" onclick="verifyChangePw2FA()">
+						<span class="btn-text">Verify</span>
+						<div class="btn-loader"></div>
+					</button>
+				</div>
+
+				<div id="changePwStep2" style="display:none;">
+					<div class="field" style="margin-bottom:1rem;">
+						<label>New password</label>
+						<div class="input-wrap">
+							<svg class="field-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+							<input type="password" id="changePwNew" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkPasswordStrength(this.value)">
+							<button class="toggle-pw" type="button" onclick="togglePw('changePwNew', this)">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+							</button>
+						</div>
+						<div class="pw-strength" style="margin-top:6px;">
+							<div class="pw-bar" id="bar1"></div>
+							<div class="pw-bar" id="bar2"></div>
+							<div class="pw-bar" id="bar3"></div>
+							<div class="pw-bar" id="bar4"></div>
+						</div>
+					</div>
+					<div class="field" style="margin-bottom:1.2rem;">
+						<label>Confirm new password</label>
+						<div class="input-wrap">
+							<svg class="field-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+							<input type="password" id="changePwConfirm" placeholder="Repeat new password" autocomplete="new-password">
+							<button class="toggle-pw" type="button" onclick="togglePw('changePwConfirm', this)">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+							</button>
+						</div>
+					</div>
+					<button class="btn-primary" id="changePwSaveBtn" onclick="doChangePassword()">
+						<span class="btn-text">Save new password</span>
+						<div class="btn-loader"></div>
+					</button>
+				</div>
+
+				<button class="btn-ghost" onclick="closeChangePasswordModal()" style="margin-top:0.5rem;">Cancel</button>
+			</div>`;
+		modal.addEventListener('click', e => { if (e.target === modal) closeChangePasswordModal(); });
+		document.body.appendChild(modal);
+	} else {
+		modal.style.display = 'flex';
+	}
+
+	document.getElementById('changePwStep1').style.display = '';
+	document.getElementById('changePwStep2').style.display = 'none';
+	document.getElementById('changePwModalSubtitle').textContent = 'First, confirm your identity with your 2FA code.';
+	document.querySelectorAll('#otpChangePwWrap input').forEach(i => i.value = '');
+	hideAlert('changePwAlert');
+	setTimeout(() => document.querySelector('#otpChangePwWrap input')?.focus(), 50);
+}
+
+function closeChangePasswordModal() {
+	const modal = document.getElementById('changePasswordModal');
+	if (modal) modal.style.display = 'none';
+}
+
+function otpInputChangePw(el, idx) {
+	const inputs = [...document.querySelectorAll('#otpChangePwWrap input')];
+	el.value = el.value.replace(/\D/g, '').slice(-1);
+	if (el.value && idx < 5) inputs[idx + 1]?.focus();
+}
+
+function otpKeyChangePw(el, idx, e) {
+	const inputs = [...document.querySelectorAll('#otpChangePwWrap input')];
+	if (e.key === 'Backspace'  && !el.value && idx > 0) inputs[idx - 1]?.focus();
+	if (e.key === 'ArrowLeft'  && idx > 0)              inputs[idx - 1]?.focus();
+	if (e.key === 'ArrowRight' && idx < 5)              inputs[idx + 1]?.focus();
+}
+
+async function verifyChangePw2FA() {
+	const code = [...document.querySelectorAll('#otpChangePwWrap input')].map(i => i.value).join('');
+	if (code.length < 6) {
+		showAlert('changePwAlert', 'Enter all 6 digits.');
+		return;
+	}
+
+	hideAlert('changePwAlert');
+
+	const { data: factors } = await _supabase.auth.mfa.listFactors();
+	const totp = factors?.totp?.[0];
+	if (!totp) {
+		document.getElementById('changePwStep1').style.display = 'none';
+		document.getElementById('changePwStep2').style.display = '';
+		document.getElementById('changePwModalSubtitle').textContent = 'Enter your new password below.';
+		document.getElementById('changePwNew')?.focus();
+		return;
+	}
+
+	setLoading('changePwVerifyBtn', true);
+
+	const { data: challenge, error: cErr } = await _supabase.auth.mfa.challenge({ factorId: totp.id });
+	if (cErr) {
+		showAlert('changePwAlert', cErr.message);
+		setLoading('changePwVerifyBtn', false);
+		return;
+	}
+
+	const { error: vErr } = await _supabase.auth.mfa.verify({
+		factorId:    totp.id,
+		challengeId: challenge.id,
+		code,
+	});
+	setLoading('changePwVerifyBtn', false);
+
+	if (vErr) {
+		showAlert('changePwAlert', 'Invalid code. Please try again.');
+		document.querySelectorAll('#otpChangePwWrap input').forEach(i => i.value = '');
+		document.querySelector('#otpChangePwWrap input')?.focus();
+		return;
+	}
+
+	hideAlert('changePwAlert');
+	document.getElementById('changePwStep1').style.display = 'none';
+	document.getElementById('changePwStep2').style.display = '';
+	document.getElementById('changePwModalSubtitle').textContent = 'Enter your new password below.';
+	document.getElementById('changePwNew')?.focus();
+}
+
+async function doChangePassword() {
+	const newPw  = document.getElementById('changePwNew').value;
+	const confirm = document.getElementById('changePwConfirm').value;
+
+	if (newPw.length < 8)         return showAlert('changePwAlert', 'Password must be at least 8 characters.');
+	if (!/[A-Z]/.test(newPw))     return showAlert('changePwAlert', 'Password needs at least one uppercase letter.');
+	if (!/[0-9]/.test(newPw))     return showAlert('changePwAlert', 'Password needs at least one number.');
+	if (newPw !== confirm)         return showAlert('changePwAlert', 'Passwords do not match.');
+
+	setLoading('changePwSaveBtn', true);
+	hideAlert('changePwAlert');
+
+	const { error } = await _supabase.auth.updateUser({ password: newPw });
+	setLoading('changePwSaveBtn', false);
+
+	if (error) return showAlert('changePwAlert', error.message);
+
+	showAlert('changePwAlert', 'Password changed successfully! ✅', 'success');
+	document.getElementById('changePwNew').value    = '';
+	document.getElementById('changePwConfirm').value = '';
+	setTimeout(() => closeChangePasswordModal(), 2000);
 }
 
 async function logoutUser() {
@@ -333,11 +751,12 @@ async function handleLoggedIn(user) {
 	const msg  = document.getElementById('loggedInMsg');
 	if (msg && name) msg.textContent = `Signed in as ${name}.`;
 	showView('viewLoggedIn');
-	goToApp();
+	document.querySelector('.tabs').classList.add('hidden');
+	setTimeout(goToApp, 1800);
 }
 
 function otpInput(el, idx, ctx) {
-	const wrap   = ctx === 'setup' ? '#otpSetupWrap' : '#otpWrap';
+	const wrap   = ctx === 'setup' ? '#otpSetupWrap' : ctx === 'reset' ? '#otpResetWrap' : '#otpWrap';
 	const inputs = [...document.querySelectorAll(`${wrap} input`)];
 	const val    = el.value.replace(/\D/g, '');
 
@@ -351,7 +770,7 @@ function otpInput(el, idx, ctx) {
 }
 
 function otpKey(el, idx, e, ctx) {
-	const wrap   = ctx === 'setup' ? '#otpSetupWrap' : '#otpWrap';
+	const wrap   = ctx === 'setup' ? '#otpSetupWrap' : ctx === 'reset' ? '#otpResetWrap' : '#otpWrap';
 	const inputs = [...document.querySelectorAll(`${wrap} input`)];
 	if (e.key === 'Backspace'  && !el.value && idx > 0) inputs[idx - 1]?.focus();
 	if (e.key === 'ArrowLeft'  && idx > 0)              inputs[idx - 1]?.focus();
@@ -364,6 +783,7 @@ document.addEventListener('keydown', e => {
 	if (document.getElementById('viewRegister')?.classList.contains('active')) doRegister();
 	if (document.getElementById('viewReset')?.classList.contains('active'))    doReset();
 	if (document.getElementById('viewMFA')?.classList.contains('active'))      doMFAVerify();
+	if (document.getElementById('viewResetMFA')?.classList.contains('active'))  doResetMFAVerify();
 });
 
 (async function init() {

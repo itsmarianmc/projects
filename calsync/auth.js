@@ -47,7 +47,7 @@ document.getElementById('accountLoginBtn').addEventListener('click', function() 
 })
 
 document.getElementById('manageAccount').addEventListener('click', function() {
-	window.open('/calsync/login/', '_parent')
+	window.open('/login/?keep_login_page=true', '_parent')
 })
 
 function updateAuthUI() {
