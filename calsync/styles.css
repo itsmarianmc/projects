@@ -1881,7 +1881,7 @@ body.modal-open {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	background: #5865F2;
+	background: var(--accent);
 	color: #fff;
 	border: none;
 	border-radius: 12px;
