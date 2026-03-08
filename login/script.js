@@ -270,30 +270,16 @@ async function show2FASetupOffer() {
 	showView('viewSetup2FA');
 	hideAlert('setup2faAlert');
 
-	const { data, error } = await _supabase.auth.mfa.enroll({
-		factorType: 'totp',
-		issuer: APP.name,
-	});
+	document.getElementById('qrCodeContainer').style.display = 'none';
+	document.getElementById('totpSecret').style.display      = 'none';
 
-	const already2FAExists = error && (
-		error.status === 422 ||
-		error.message?.toLowerCase().includes('already') ||
-		error.message?.toLowerCase().includes('exists') ||
-		error.message?.toLowerCase().includes('unprocessable')
-	);
+	const { data: existingFactors } = await _supabase.auth.mfa.listFactors();
+	const existingTotp = existingFactors?.totp?.find(f => f.status === 'verified');
 
-	if (already2FAExists) {
-		const { data: factors } = await _supabase.auth.mfa.listFactors();
-		const existing = factors?.totp?.[0];
-		if (!existing) {
-			showAlert('setup2faAlert', '2FA seems active but no factor was found. Please contact support.');
-			return;
-		}
-		_setupFactorId = existing.id;
+	if (existingTotp) {
+		_setupFactorId = existingTotp.id;
 		_setup2FAMode  = 'test';
 
-		document.getElementById('qrCodeContainer').style.display = 'none';
-		document.getElementById('totpSecret').style.display      = 'none';
 		document.querySelector('#viewSetup2FA .view-title').innerHTML =
 			'Manage 2FA <span class="mfa-badge">Active</span>';
 		document.querySelector('#viewSetup2FA .view-subtitle').textContent =
@@ -311,11 +297,20 @@ async function show2FASetupOffer() {
 			setupBtn.parentNode.insertBefore(disableBtn, setupBtn.nextSibling);
 		}
 
-		const otpInputs = document.querySelectorAll('#otpSetupWrap input');
-		otpInputs.forEach(i => i.value = '');
+		document.querySelectorAll('#otpSetupWrap input').forEach(i => i.value = '');
 		showAlert('setup2faAlert', '2FA is already set up. You can test your code here.', 'info');
 		return;
 	}
+
+	const unverified = existingFactors?.totp?.filter(f => f.status !== 'verified') || [];
+	for (const f of unverified) {
+		await _supabase.auth.mfa.unenroll({ factorId: f.id });
+	}
+
+	const { data, error } = await _supabase.auth.mfa.enroll({
+		factorType: 'totp',
+		issuer: APP.name,
+	});
 
 	if (error) { showAlert('setup2faAlert', error.message); return; }
 
