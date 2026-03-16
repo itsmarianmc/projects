@@ -14,8 +14,6 @@ const settingsHandleZone = document.getElementById('settingsHandleZone');
 
 const calcFields = { gender: 'female', activity: 'sedentary', goalType: 'maintain' };
 
-function getGoal() { return goalKcal; }
-
 function setGoal(kcal) {
 	goalKcal = kcal;
 	GOAL = kcal;
@@ -516,3 +514,31 @@ function isAIReady() {
 window.isAIReady = isAIReady;
 
 updateGoalDisplay();
+
+(function() {
+	const MACRO_KEYS = { protein: 'calsync_goal_protein', carbs: 'calsync_goal_carbs', fat: 'calsync_goal_fat' };
+	function loadMacroGoals() {
+		Object.entries(MACRO_KEYS).forEach(([macro, key]) => {
+			const inp = document.getElementById('macroGoalInput_' + macro);
+			if (inp) inp.value = localStorage.getItem(key) || '';
+		});
+		if (typeof updateUI === 'function') updateUI();
+	}
+	function saveMacroGoal(macro) {
+		const inp = document.getElementById('macroGoalInput_' + macro);
+		if (!inp) return;
+		const val = parseInt(inp.value) || 0;
+		if (val < 0 || val > 2000) { showToast('Enter a value between 0 and 2000g'); return; }
+		localStorage.setItem(MACRO_KEYS[macro], String(val));
+		if (typeof updateUI === 'function') updateUI();
+		showToast(val ? `🎯 ${macro.charAt(0).toUpperCase() + macro.slice(1)} goal: ${val}g` : `${macro.charAt(0).toUpperCase() + macro.slice(1)} goal cleared`);
+	}
+	['protein', 'carbs', 'fat'].forEach(macro => {
+		const btn = document.getElementById('macroGoalBtn_' + macro);
+		const inp = document.getElementById('macroGoalInput_' + macro);
+		if (btn) btn.addEventListener('click', () => saveMacroGoal(macro));
+		if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') saveMacroGoal(macro); });
+	});
+	document.addEventListener('DOMContentLoaded', loadMacroGoals);
+	loadMacroGoals();
+})();

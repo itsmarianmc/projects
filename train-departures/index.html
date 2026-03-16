@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+	<title>DB Departures</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="cookiebanner.css">
+	<link rel="stylesheet" href="styles.css">
+    <!-- Google tag (gtag.js) -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2E9SPPVJFL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2E9SPPVJFL');
+    </script>
+</head>
+<body>
+	<div id="apiConfigOverlay" class="hidden">
+		<div class="api-config-box">
+			<div class="api-config-logo">
+				<div class="logo-mark">DB</div>
+				<h2>Departure<span>Board</span></h2>
+			</div>
+			<div class="api-config-label">Configure API Endpoint</div>
+			<p class="api-config-desc">
+				Enter the URL of your <code>hafas-rest-api</code> server.<br>
+				Example: <code>https://v6.db.transport.rest/</code>
+			</p>
+			<div class="api-input-wrap">
+				<input type="text" id="apiEndpointInput" placeholder="https://v6.db.transport.rest/" autocomplete="off" spellcheck="false" />
+			</div>
+			<div class="api-error" id="apiError">Please enter a valid URL (e.g. http://host:port)</div>
+			<div class="api-config-actions">
+				<button class="btn-api-cancel hidden" id="btnApiCancel" onclick="closeApiConfig()">Cancel</button>
+				<button class="btn-api-save" id="btnApiSave" onclick="saveApiEndpoint()">Connect →</button>
+			</div>
+			<div class="api-hint">
+				<strong>Required:</strong> A running <a href="https://github.com/derhuerst/hafas-rest-api" target="_blank" style="color:var(--accent)">hafas-rest-api</a> server on your network.<br>
+				The setting is saved locally in your browser.
+			</div>
+		</div>
+	</div>
+	<div id="trackBanner">
+		<div class="track-inner">
+			<div class="track-status-dot" id="trackDot"></div>
+			<div class="track-pill" id="trackPill"></div>
+			<div class="track-dir" id="trackDir"></div>
+			<div class="track-arriving" id="trackArriving"></div>
+			<button class="track-open" onclick="openTrackedTrip()">Details</button>
+			<button class="track-close" onclick="stopTracking()">✕ Stop</button>
+		</div>
+	</div>
+	<div id="tripPanel" onclick="handlePanelBackdrop(event)">
+		<div class="panel-sheet" id="panelSheet">
+			<div class="panel-header" id="panelHeader">
+				<div class="panel-line-pill" id="panelPill"></div>
+				<div class="panel-title">
+					<div class="panel-direction" id="panelDirection"></div>
+					<div class="panel-origin" id="panelOrigin"></div>
+				</div>
+				<button class="panel-close" onclick="closePanel()">✕</button>
+			</div>
+			<div class="panel-body" id="panelBody">
+				<div class="state-box">
+					<div class="loader"></div>
+					<p>Loading trip details…</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="mainContent">
+		<div class="container">
+			<header>
+				<div class="header-inner">
+					<div class="logo-mark">DB</div>
+					<div class="header-text">
+						<h1>Departure<span>Board</span></h1>
+						<div class="api-indicator" onclick="openApiConfig()" title="Change API endpoint">
+							<span class="dot"></span>
+							<span class="api-url-text" id="apiUrlText">No endpoint set</span>
+							<span style="opacity:.5">✎</span>
+						</div>
+					</div>
+				</div>
+			</header>
+			<section class="search-section">
+				<div class="search-wrap">
+					<span class="search-icon">🔍</span>
+					<input type="text" id="searchInput" placeholder="Search station…" autocomplete="off" />
+					<div class="suggestions" id="suggestions"></div>
+				</div>
+			</section>
+			<div class="controls-bar" id="controlsBar" style="display:none">
+				<button class="filter-btn f-all active" data-filter="all"><span class="dot"></span>All</button>
+				<button class="filter-btn f-re" data-filter="re"><span class="dot"></span>RE / RB</button>
+				<button class="filter-btn f-s" data-filter="s"><span class="dot"></span>S-Bahn</button>
+				<button class="filter-btn f-ic" data-filter="ic"><span class="dot"></span>IC / ICE</button>
+				<button class="filter-btn f-bus" data-filter="bus"><span class="dot"></span>Bus</button>
+				<button class="filter-btn f-tram" data-filter="tram"><span class="dot"></span>Tram</button>
+				<button class="filter-btn f-taxi" data-filter="taxi"><span class="dot"></span>Taxi/RUF</button>
+				<div class="spacer"></div>
+				<button class="refresh-btn" id="refreshBtn">
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+						<path d="M23 4v6h-6M1 20v-6h6" />
+						<path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+					</svg>
+					Refresh
+				</button>
+			</div>
+			<div class="stats-row" id="statsRow"></div>
+			<section class="departures-section">
+				<div id="departuresContainer">
+					<div class="state-box">
+						<div class="icon">🚄</div>
+						<h3>Search for a station</h3>
+						<p>Enter a station name to see live departures.</p>
+					</div>
+				</div>
+			</section>
+			<div class="last-update" id="lastUpdate"></div>
+		</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="cookie-banner hidden" id="cookieBanner">
+        <div class="cookie-header flex-column">
+            <div class="cookie-header cookie-header-bottom flex-row">
+            <div class="cookie-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 -960 960 960" width="28" fill="#e8c44a">
+                <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-75 29-147t81-128.5q52-56.5 125-91T475-881q21 0 43 2t45 7q-9 45 6 85t45 66.5q30 26.5 71.5 36.5t85.5-5q-26 59 7.5 113t99.5 56q1 11 1.5 20.5t.5 20.5q0 82-31.5 154.5t-85.5 127q-54 54.5-127 86T480-80Zm-60-480q25 0 42.5-17.5T480-620q0-25-17.5-42.5T420-680q-25 0-42.5 17.5T360-620q0 25 17.5 42.5T420-560Zm-80 200q25 0 42.5-17.5T400-420q0-25-17.5-42.5T340-480q-25 0-42.5 17.5T280-420q0 25 17.5 42.5T340-360Zm260 40q17 0 28.5-11.5T640-360q0-17-11.5-28.5T600-400q-17 0-28.5 11.5T560-360q0 17 11.5 28.5T600-320ZM480-160q122 0 216.5-84T800-458q-50-22-78.5-60T683-603q-77-11-132-66t-68-132q-80-2-140.5 29t-101 79.5Q201-644 180.5-587T160-480q0 133 93.5 226.5T480-160Zm0-324Z"/>
+                </svg>
+            </div>
+            <div><h2 class="cookie-title">This site uses cookies</h2></div>
+            </div>
+            <div>
+            <p class="cookie-description">
+                This website uses cookies to ensure basic functionality, enhance your experience, and gather anonymized usage statistics.
+                By clicking "Accept all," you agree to the use of all cookies. You can manage your preferences at any time.
+            </p>
+            </div>
+        </div>
+        <div class="cookie-buttons">
+            <button class="cookie-btn btn-primary" id="accept-all">
+            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
+            Accept all
+            </button>
+            <button class="cookie-btn btn-secondary" id="change-settings">
+            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="currentColor"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
+            Manage settings
+            </button>
+        </div>
+    </div>
+    <div class="settings-panel" id="settings-panel">
+        <div class="settings-header">
+            <h2 class="settings-title">Cookie Settings</h2>
+            <button class="close-btn" id="close-settings">✕</button>
+        </div>
+        <div class="settings-content">
+            <div class="cookie-category">
+            <div class="category-header">
+                <div class="category-icon" style="background:rgba(61,220,132,.12)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 -960 960 960" width="26" fill="#3ddc84"><path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q97-30 162-118.5T718-480H480v-315l-240 90v207q0 7 2 18h238v316Z"/></svg>
+                </div>
+                <h3 class="category-title">Necessary Cookies</h3>
+                <div class="toggle-container">
+                <label class="toggle-switch"><input type="checkbox" checked disabled><span class="slider"></span></label>
+                </div>
+            </div>
+            <p class="category-description">These cookies are required for the website to function and cannot be disabled. They handle security and basic navigation.</p>
+            </div>
+            <div class="cookie-category">
+            <div class="category-header">
+                <div class="category-icon" style="background:rgba(77,166,255,.12)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 -960 960 960" width="26" fill="#4da6ff"><path d="M80-120v-80h800v80H80Zm40-120v-280h120v280H120Zm200 0v-480h120v480H320Zm200 0v-360h120v360H520Zm200 0v-600h120v600H720Z"/></svg>
+                </div>
+                <h3 class="category-title">Statistics & Analytics</h3>
+                <div class="toggle-container">
+                <label class="toggle-switch"><input type="checkbox" id="analytics-toggle"><span class="slider"></span></label>
+                </div>
+            </div>
+            <p class="category-description">These cookies collect anonymized data about how visitors use the site — which pages are popular, how they navigate, and general traffic patterns.</p>
+            </div>
+            <div class="cookie-category">
+            <div class="category-header">
+                <div class="category-icon" style="background:rgba(232,196,74,.12)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 0 24 24" width="26" fill="#e8c44a"><path d="m17.5 17.5-2.498.993L17.5 19.5l1 2.5 1-2.5 2.5-1.007-2.5-.993-1-2.514-1 2.514Zm1-15.5-1 2.5-2.498 1.007L17.5 6.5l1 2.514 1-2.514 2.5-.993L19.5 4.5l-1-2.5ZM7.714 9.714 10 4l2.286 5.714L18 12l-5.714 2.286L10 20l-2.286-5.714L2 12Zm.77.77L4.693 12l3.79 1.516L10 17.307l1.516-3.79L15.307 12l-3.79-1.516L10 6.693l-1.516 3.79Z"/></svg>
+                </div>
+                <h3 class="category-title">Preferences & Personalization</h3>
+                <div class="toggle-container">
+                <label class="toggle-switch"><input type="checkbox" id="preferences-toggle"><span class="slider"></span></label>
+                </div>
+            </div>
+            <p class="category-description">These cookies remember your choices (language, region, layout preferences) to provide a more personalized experience on return visits.</p>
+            </div>
+            <div class="cookie-category">
+            <div class="category-header">
+                <div class="category-icon" style="background:rgba(167,139,250,.12)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 -960 960 960" width="26" fill="#a78bfa"><path d="M440-183v-274L200-596v274l240 139Zm80 0 240-139v-274L520-457v274Zm-40-343 237-137-237-137-237 137 237 137ZM160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11L160-252Zm320-228Z"/></svg>
+                </div>
+                <h3 class="category-title">Third-Party Content</h3>
+                <div class="toggle-container">
+                <label class="toggle-switch"><input type="checkbox" id="thirdparty-toggle"><span class="slider"></span></label>
+                </div>
+            </div>
+            <p class="category-description">Set by third-party services to enable embedded content like maps, videos, or social feeds. These providers may use the data for targeted advertising.</p>
+            </div>
+            <div class="cookie-category cookie-category-bottom">
+            <div class="category-header">
+                <div class="category-icon" style="background:rgba(255,77,77,.12)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 -960 960 960" width="26" fill="#ff4d4d"><path d="M200-280h560v-80H200v80Zm0-160h560v-80H200v80Zm0-160h400v-80H200v80Zm-40 440q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/></svg>
+                </div>
+                <h3 class="category-title">Marketing & Advertising</h3>
+                <div class="toggle-container">
+                <label class="toggle-switch"><input type="checkbox" id="marketing-toggle"><span class="slider"></span></label>
+                </div>
+            </div>
+            <p class="category-description">Used to show relevant ads on other websites, limit how often ads appear, and measure the effectiveness of advertising campaigns.</p>
+            </div>
+        </div>
+        <div class="settings-footer">
+            <button class="btn-save" id="save-settings">
+            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="currentColor"><path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/></svg>
+            Save settings
+            </button>
+        </div>
+    </div>
+	<script src="cookiebanner.js"></script>
+	<script src="script.js"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
 	<title>CalSync - Calorie Tracker</title>
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css" />
+	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/fonts/font-awesome-6.7.2/css/all.css" />
 	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/colors.css">
 	<link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/variables.css">
 	<link rel="stylesheet" href="cookie-banner.css">
@@ -127,6 +127,29 @@
 			<div class="stat-icon"><i class="fa-solid fa-stopwatch"></i></div>
 			<div class="stat-value" id="statLast">-</div>
 			<div class="stat-label">Last</div>
+		</div>
+	</div>
+	<div class="macro-goals-section" id="macroGoalsSection">
+		<div id="macroGoalRow_protein" class="macro-goal-row hidden">
+			<div class="macro-goal-header">
+				<span class="macro-goal-name" style="color:#30D158"><i class="fa-solid fa-dumbbell"></i> Protein</span>
+				<span class="macro-goal-label-val" id="macroBarLabel_protein">0 / 0g</span>
+			</div>
+			<div class="macro-goal-track"><div class="macro-goal-fill" id="macroBar_protein" style="background:#30D158"></div></div>
+		</div>
+		<div id="macroGoalRow_carbs" class="macro-goal-row hidden">
+			<div class="macro-goal-header">
+				<span class="macro-goal-name" style="color:#FFD60A"><i class="fa-solid fa-wheat-awn"></i> Carbs</span>
+				<span class="macro-goal-label-val" id="macroBarLabel_carbs">0 / 0g</span>
+			</div>
+			<div class="macro-goal-track"><div class="macro-goal-fill" id="macroBar_carbs" style="background:#FFD60A"></div></div>
+		</div>
+		<div id="macroGoalRow_fat" class="macro-goal-row hidden">
+			<div class="macro-goal-header">
+				<span class="macro-goal-name" style="color:#FF6B35"><i class="fa-solid fa-droplet"></i> Fat</span>
+				<span class="macro-goal-label-val" id="macroBarLabel_fat">0 / 0g</span>
+			</div>
+			<div class="macro-goal-track"><div class="macro-goal-fill" id="macroBar_fat" style="background:#FF6B35"></div></div>
 		</div>
 	</div>
 	<div class="log-section" id="logSection">
@@ -511,6 +534,36 @@
 									<button class="option-btn active" id="manualGoalBtn" style="border-radius:var(--radius-sm);padding:13.5px 16px;">Set</button>
 								</div>
 							</div>
+						</div>
+					</div>
+					<div class="settings-section">
+						<div class="settings-section-title">
+							<svg height="20" viewBox="0 -960 960 960" width="20" fill="#ffffff"><path d="M80-600v-80h800v80H80Zm0 160v-80h800v80H80Zm0 160v-80h800v80H80Z"/></svg>
+							Macro Goals
+						</div>
+						<div class="settings-section-body">
+							<div class="form-row">
+								<label class="form-label" style="color:#30D158"><i class="fa-solid fa-dumbbell" style="margin-right:6px"></i>Protein goal (g/day)</label>
+								<div class="flex-container gap-10px">
+									<input class="form-input" id="macroGoalInput_protein" type="number" min="0" max="500" placeholder="e.g. 150" inputmode="numeric" />
+									<button class="option-btn active" id="macroGoalBtn_protein" style="border-radius:var(--radius-sm);padding:13.5px 16px;">Set</button>
+								</div>
+							</div>
+							<div class="form-row">
+								<label class="form-label" style="color:#FFD60A"><i class="fa-solid fa-wheat-awn" style="margin-right:6px"></i>Carbs goal (g/day)</label>
+								<div class="flex-container gap-10px">
+									<input class="form-input" id="macroGoalInput_carbs" type="number" min="0" max="1000" placeholder="e.g. 250" inputmode="numeric" />
+									<button class="option-btn active" id="macroGoalBtn_carbs" style="border-radius:var(--radius-sm);padding:13.5px 16px;">Set</button>
+								</div>
+							</div>
+							<div class="form-row">
+								<label class="form-label" style="color:#FF6B35"><i class="fa-solid fa-droplet" style="margin-right:6px"></i>Fat goal (g/day)</label>
+								<div class="flex-container gap-10px">
+									<input class="form-input" id="macroGoalInput_fat" type="number" min="0" max="500" placeholder="e.g. 70" inputmode="numeric" />
+									<button class="option-btn active" id="macroGoalBtn_fat" style="border-radius:var(--radius-sm);padding:13.5px 16px;">Set</button>
+								</div>
+							</div>
+							<p class="form-helper" style="margin-top:4px;"><i class="fa-solid fa-circle-info"></i> Set to 0 to hide. Goals appear as progress bars on the home screen.</p>
 						</div>
 					</div>
 					<div class="settings-section">

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chore Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="loading" class="loader">Loading…</div>
+    <div id="auth-screen" class="hidden">
+        <div class="auth-card">
+            <h1 class="auth-title">Chore Tracker</h1>
+            <p class="auth-subtitle" id="auth-subtitle">Welcome back!</p>
+            <form id="auth-form" class="form">
+                <input type="email" id="email" placeholder="Email" required autocomplete="email">
+                <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                <input type="text" id="name" placeholder="Your name" class="hidden" autocomplete="name">
+                <div id="auth-msg" class="msg-box"></div>
+                <button type="submit" class="btn btn-primary" id="submit-btn">Log in</button>
+                <button type="button" class="btn btn-secondary" id="toggle-mode">No account yet? Sign up</button>
+            </form>
+        </div>
+    </div>
+    <div id="verify-screen" class="hidden">
+        <div class="verify-card">
+            <span class="verify-icon">📬</span>
+            <h2 class="verify-title">Confirm your email</h2>
+            <p class="verify-text">We've sent a confirmation link to:</p>
+            <div class="verify-email" id="verify-email-display">—</div>
+            <p class="verify-text">Click the link in the email. You can then log in.<br><br>If you haven't received an email, please check your spam folder.</p>
+            <div id="verify-msg" class="msg-box" style="margin-bottom:20px;"></div>
+            <button id="resend-btn" class="btn btn-teal" style="width:100%;margin-bottom:12px;">Resend link</button>
+            <button id="back-to-login-btn" class="btn btn-secondary" style="width:100%;">← Back to login</button>
+        </div>
+    </div>
+    <div id="mfa-screen" class="hidden">
+        <div class="auth-card">
+            <h1 class="auth-title" style="font-size:42px;padding-bottom:8px;">2FA</h1>
+            <p class="auth-subtitle">Two-Factor Authentication</p>
+            <div class="form">
+                <p class="mfa-hint">Enter the 6-digit code from your authenticator app.</p>
+                <input type="text" id="mfa-code" class="code-input" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+                <div id="mfa-msg" class="msg-box"></div>
+                <button id="mfa-submit-btn" class="btn btn-primary">Verify</button>
+                <button id="mfa-cancel-btn" class="btn btn-secondary">Cancel &amp; Log out</button>
+            </div>
+        </div>
+    </div>
+    <div id="app" class="container hidden">
+        <div class="header">
+            <h1 class="title">Chore Tracker</h1>
+            <div class="header-actions">
+                <button class="icon-btn" id="profile-btn">👤 Profile</button>
+                <button class="icon-btn" id="logout-btn">Logout</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="section">
+                <h2 class="section-title">This Month</h2>
+                <div class="chart-container">
+                    <svg width="220" height="220" class="chart-svg">
+                        <circle stroke="rgba(255,255,255,0.05)" fill="transparent" stroke-width="28" r="96" cx="110" cy="110"/>
+                        <circle id="partner-circle" stroke="var(--teal)" fill="transparent" stroke-width="28" r="96" cx="110" cy="110"
+                            stroke-dasharray="603 603" stroke-dashoffset="603" stroke-linecap="round"
+                            style="transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1);"/>
+                        <circle id="my-circle" stroke="var(--coral)" fill="transparent" stroke-width="28" r="96" cx="110" cy="110"
+                            stroke-dasharray="603 603" stroke-dashoffset="603" stroke-linecap="round"
+                            style="transform:rotate(-90deg);transform-origin:50% 50%;transition:all 1.2s cubic-bezier(0.16,1,0.3,1);"/>
+                    </svg>
+                    <div class="chart-center">
+                        <div class="chart-percentage" id="percentage">50%</div>
+                        <div class="chart-label">your share</div>
+                    </div>
+                </div>
+                <div class="quote" id="quote">Perfectly balanced! 🤝</div>
+                <div class="stats">
+                    <div class="stat-item"><span class="stat-label" id="my-name">You</span><span class="stat-value" id="my-count">0</span></div>
+                    <div class="stat-item"><span class="stat-label" id="partner-name">Partner</span><span class="stat-value" id="partner-count">0</span></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Quick Add</h2>
+                <div class="chore-grid">
+                    <button class="chore-btn" data-chore="toilet_paper"><span class="chore-icon">🧻</span><span class="chore-label">Restocked<br>toilet paper</span></button>
+                    <button class="chore-btn" data-chore="dishwasher"><span class="chore-icon">🍽️</span><span class="chore-label">Unloaded<br>dishwasher</span></button>
+                    <button class="chore-btn" data-chore="soap"><span class="chore-icon">🧼</span><span class="chore-label">Restocked<br>soap</span></button>
+                    <button class="chore-btn" data-chore="table"><span class="chore-icon">🍴</span><span class="chore-label">Set/cleared<br>the table</span></button>
+                </div>
+                <h2 class="section-title" style="margin-top:48px;">Recent Activity</h2>
+                <div class="chore-list" id="chore-list"></div>
+            </div>
+        </div>
+    </div>
+    <div id="profile-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Profile</h2>
+                <button class="modal-close" id="profile-modal-close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-block">
+                    <div class="block-heading">Account</div>
+                    <div class="profile-row">
+                        <div class="profile-info"><span class="info-label">Name</span><span class="info-value" id="profile-name-display">—</span></div>
+                    </div>
+                    <div class="profile-row">
+                        <div class="profile-info"><span class="info-label">Email</span><span class="info-value" id="profile-email-display">—</span></div>
+                        <span class="badge badge-green">✓ Confirmed</span>
+                    </div>
+                </div>
+                <div class="profile-block">
+                    <div class="block-heading">Change Password</div>
+                    <input type="password" id="new-password" placeholder="New password (min. 8 characters)" autocomplete="new-password">
+                    <input type="password" id="confirm-password" placeholder="Repeat password" autocomplete="new-password">
+                    <div id="pw-msg" class="modal-msg"></div>
+                    <button id="change-pw-btn" class="btn btn-teal btn-sm">Update password</button>
+                </div>
+                <div class="profile-block">
+                    <div class="block-heading">Two-Factor Authentication (TOTP)</div>
+                    <div class="profile-row">
+                        <div class="profile-info"><span class="info-label">Status</span><span class="info-value" id="totp-status-text">Loading…</span></div>
+                        <span class="badge" id="totp-badge">—</span>
+                    </div>
+                    <div id="totp-msg" class="modal-msg"></div>
+                    <div id="totp-setup-area" class="hidden" style="display:flex;flex-direction:column;gap:16px;">
+                        <p class="totp-hint">Scan the QR code with Google Authenticator, Authy, or similar. Or enter the secret key manually.</p>
+                        <div class="totp-qr-wrapper"><img id="totp-qr-img" src="" alt="QR Code"></div>
+                        <div class="totp-secret" id="totp-secret-display">—</div>
+                        <p class="totp-hint">Confirm the setup with your current 6-digit code:</p>
+                        <input type="text" id="totp-code-input" class="code-input" placeholder="000000" maxlength="6" inputmode="numeric">
+                        <div class="btn-row">
+                            <button id="totp-confirm-btn" class="btn btn-teal btn-sm">✓ Activate</button>
+                            <button id="totp-cancel-btn" class="btn btn-secondary btn-sm">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="totp-action-btns">
+                        <button id="totp-enable-btn" class="btn btn-teal btn-sm hidden">Enable 2FA</button>
+                        <button id="totp-disable-btn" class="btn btn-danger btn-sm hidden">Disable 2FA</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
