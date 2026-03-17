@@ -21,6 +21,7 @@
 	--bus: #ff8c42;
 	--tram: #a78bfa;
 	--taxi: #2dd4bf;
+	--ferry: #06b6d4;
 	--radius: 12px;
 	--radius-sm: 8px;
 }
@@ -47,6 +48,10 @@ body::before {
 	background-size: 40px 40px;
 	pointer-events: none;
 	z-index: 0
+}
+
+.linkout {
+	color: var(--text-muted);
 }
 
 /* TRACKING BANNER */
@@ -385,6 +390,10 @@ header {
 
 .filter-btn.f-taxi.active {
 	color: var(--taxi)
+}
+
+.filter-btn.f-ferry.active {
+	color: var(--ferry)
 }
 
 .spacer {
@@ -1176,7 +1185,6 @@ header {
 	animation: spin .8s linear infinite
 }
 
-/* STATUS BAR */
 .last-update {
 	font-family: 'DM Mono', monospace;
 	font-size: 11px;
@@ -1472,7 +1480,6 @@ header {
 	white-space: nowrap
 }
 
-/* RESPONSIVE */
 @media(max-width:600px) {
 	.dep-card {
 		grid-template-columns: auto 1fr auto

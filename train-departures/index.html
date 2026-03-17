@@ -103,6 +103,7 @@
 				<button class="filter-btn f-bus" data-filter="bus"><span class="dot"></span>Bus</button>
 				<button class="filter-btn f-tram" data-filter="tram"><span class="dot"></span>Tram</button>
 				<button class="filter-btn f-taxi" data-filter="taxi"><span class="dot"></span>Taxi/RUF</button>
+				<button class="filter-btn f-ferry" data-filter="ferry"><span class="dot"></span>Fähre</button>
 				<div class="spacer"></div>
 				<button class="refresh-btn" id="refreshBtn">
 					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -119,10 +120,32 @@
 						<div class="icon">🚄</div>
 						<h3>Search for a station</h3>
 						<p>Enter a station name to see live departures.</p>
+						<p>
+							<strong>Disclaimer:</strong> This service is an independent project developed with AI assistance 
+							and relies on the third-party 
+							<a class="linkout" href="https://v6.db.transport.rest/" target="_blank">v6.db.transport.rest</a> API. 
+							This is not an official product of Deutsche Bahn (DB). 
+							Data accuracy, completeness, or real-time availability cannot be guaranteed. 
+							For time-sensitive travel and official updates, please always consult the 
+							official <strong>DB Navigator</strong> app or <strong>bahn.de</strong>.
+						</p>
 					</div>
 				</div>
 			</section>
-			<div class="last-update" id="lastUpdate"></div>
+			<div class="last-update">
+				<p>
+					<strong>Disclaimer:</strong> This service is an independent project developed with AI assistance 
+					and relies on the third-party 
+					<a class="linkout" href="https://v6.db.transport.rest/" target="_blank">v6.db.transport.rest</a> API. 
+					This is not an official product of Deutsche Bahn (DB). 
+					Data accuracy, completeness, or real-time availability cannot be guaranteed. 
+					For time-sensitive travel and official updates, please always consult the 
+					official <strong>DB Navigator</strong> app or <strong>bahn.de</strong>.
+				</p>
+				<br>
+				<span class="live-dot"></span>
+				<span id="lastUpdate"></span>
+			</div>
 		</div>
 	</div>
     <div id="overlay"></div>

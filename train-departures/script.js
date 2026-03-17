@@ -86,6 +86,13 @@ function getLineInfo(dep) {
 	const p = dep.line?.product || '',
 		n = dep.line?.name || '',
 		m = dep.line?.mode || '';
+	if (p === 'ferry' || m === 'watercraft' || n.toLowerCase().includes('schiff') || n.toLowerCase().includes('fähre')) return {
+		color: '#06b6d4',
+		group: 'ferry',
+		icon: '⛴️',
+		label: 'Fähre',
+		textLight: true
+	};
 	if (p === 'taxi' || m === 'taxi') return {
 		color: '#2dd4bf',
 		group: 'taxi',
@@ -269,7 +276,7 @@ const PRODUCT_TO_FILTER = {
 	bus:             'bus',
 	tram:            'tram',
 	taxi:            'taxi',
-	ferry:           null,
+	ferry:           'ferry',
 	subway:          null,
 };
 
@@ -306,7 +313,7 @@ async function loadDepartures() {
 			renderAll();
 		} else patchDepartures(fresh);
 		isFirstLoad = false;
-		document.getElementById('lastUpdate').classList.add('visible');
+		document.querySelector('.last-update').classList.add('visible');
 		startCountdown();
 		if (trackedTripId) {
 			const upd = fresh.find(d => d.tripId === trackedTripId);
@@ -390,7 +397,8 @@ function renderStats(deps) {
 		ic: 0,
 		bus: 0,
 		tram: 0,
-		taxi: 0
+		taxi: 0,
+		ferry: 0
 	};
 	let delayed = 0;
 	deps.forEach(d => {
@@ -409,6 +417,7 @@ function renderStats(deps) {
 		has('ic') ? `<div class="stat-card" style="--c:var(--train-ic)"><div class="stat-num">${c.ic}</div><div class="stat-label">IC / ICE</div></div>` : '',
 		(has('bus') || has('tram')) ? `<div class="stat-card" style="--c:var(--bus)"><div class="stat-num">${c.bus + c.tram}</div><div class="stat-label">${has('bus') && has('tram') ? 'Bus / Tram' : has('bus') ? 'Bus' : 'Tram'}</div></div>` : '',
 		has('taxi') ? `<div class="stat-card" style="--c:var(--taxi)"><div class="stat-num">${c.taxi}</div><div class="stat-label">Taxi / RUF</div></div>` : '',
+		has('ferry') ? `<div class="stat-card" style="--c:var(--ferry)"><div class="stat-num">${c.ferry}</div><div class="stat-label">Fähre</div></div>` : '',
 		delayed > 0 ? `<div class="stat-card" style="--c:var(--red)"><div class="stat-num">${delayed}</div><div class="stat-label">Delayed</div></div>` : '',
 	];
 
@@ -459,6 +468,12 @@ function renderDepartures(deps) {
 			color: 'var(--taxi)',
 			items: []
 		},
+		ferry: {
+			label: 'Fähre',
+			icon: '⛴️',
+			color: 'var(--ferry)',
+			items: []
+		},
 	};
 	deps.forEach(d => {
 		const i = getLineInfo(d);
@@ -467,7 +482,7 @@ function renderDepartures(deps) {
 			info: i
 		});
 	});
-	const order = currentFilter === 'all' ? ['ic', 're', 's', 'bus', 'tram', 'taxi'] : [currentFilter];
+	const order = currentFilter === 'all' ? ['ic', 're', 's', 'bus', 'tram', 'taxi', 'ferry'] : [currentFilter];
 	let html = '';
 	order.forEach(k => {
 		const g = groups[k];
@@ -560,6 +575,7 @@ function vehicleLabel(info) {
 	if (g === 'bus') return 'bus';
 	if (g === 'tram') return 'tram';
 	if (g === 'taxi') return 'taxi';
+	if (g === 'ferry') return 'Fähre';
 	return 'train';
 }
 
@@ -604,7 +620,7 @@ function renderPanel(trip, dep, info) {
 	const curStop = stops[currentIdx]?.stop?.name || '—';
 	const firstStop = stops[0]?.stop?.name || '';
 	const lastStop = stops[stops.length - 1]?.stop?.name || '';
-	const trainIcon = info.group === 'bus' ? '🚌' : info.group === 'tram' ? '🚊' : info.group === 's' ? '🚆' : '🚄';
+	const trainIcon = info.group === 'bus' ? '🚌' : info.group === 'tram' ? '🚊' : info.group === 's' ? '🚆' : info.group === 'ferry' ? '⛴️' : '🚄';
 
 	const existingFill = document.querySelector('.progress-bar-fill');
 	if (_panelRendered && existingFill && document.querySelector('.stops-list')) {
@@ -868,14 +884,15 @@ function startCountdown() {
 
 function tickCountdown() {
 	const el = document.getElementById('lastUpdate');
-	if (!el.classList.contains('visible')) return;
+	const secEl = document.querySelector('.last-update')
+	if (!secEl.classList.contains('visible')) return;
 	const secs = Math.max(0, Math.round((nextRefreshAt - Date.now()) / 1000));
 	const now = new Date().toLocaleTimeString('en-GB', {
 		hour: '2-digit',
 		minute: '2-digit',
 		second: '2-digit'
 	});
-	el.innerHTML = `<span class="live-dot"></span>Updated: ${now} &nbsp;·&nbsp; <span class="countdown-text">Refresh in <strong>${secs}s</strong></span>`;
+	el.innerHTML = `</span>Updated: ${now} &nbsp;·&nbsp; <span class="countdown-text">Refresh in <strong>${secs}s</strong></span>`;
 }
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
