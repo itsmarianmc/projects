@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<title>Music Metadata Tool | Album Selector</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-[#0a0c10] text-gray-200 antialiased">
+	<main class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+		<div class="text-center mb-10">
+			<h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent tracking-tight">
+				Music Metadata Tool
+			</h1>
+			<p class="text-gray-400 mt-2 text-sm md:text-base">Search • Select Album • Export JSON</p>
+		</div>
+		<div class="glass-card rounded-2xl p-6 shadow-xl mb-8 border border-gray-800">
+			<div class="flex flex-col md:flex-row gap-4 items-end">
+				<div class="flex-1 w-full">
+					<label class="block text-sm font-medium text-indigo-300 mb-1">Song Title *</label>
+					<input type="text" id="songTitle" placeholder="Title" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+				</div>
+				<div class="flex-1 w-full">
+					<label class="block text-sm font-medium text-indigo-300 mb-1">Artist (optional)</label>
+					<input type="text" id="artistName" placeholder="Artist" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+				</div>
+				<button id="searchBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-200 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+					🔍 Search
+				</button>
+			</div>
+			<div class="text-xs text-gray-500 mt-3 flex justify-between items-center">
+				<span>Powered by MusicBrainz + Cover Art Archive</span>
+				<span id="userAgentHint" class="font-mono text-[11px] text-gray-600"></span>
+			</div>
+		</div>
+		<div id="albumSelectionArea" class="mb-8 hidden">
+			<h2 class="text-xl font-semibold mb-4">Select Album (May take some time to load)</h2>
+			<div id="albumGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"></div>
+		</div>
+		<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+			<div class="lg:col-span-1">
+				<div class="glass-card rounded-2xl overflow-hidden border border-gray-800 sticky top-6">
+					<div class="p-4 border-b border-gray-800">
+						<h2 class="text-xl font-semibold">Cover Art</h2>
+					</div>
+					<div class="p-6 flex justify-center">
+						<div class="relative w-full max-w-xs mx-auto">
+							<img id="coverImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 24 24' fill='none' stroke='%234b5563'%3E%3Crect x='2' y='3' width='20' height='16' rx='2'%3E%3C/svg%3E" alt="Cover" class="w-full rounded-2xl shadow-2xl border border-gray-700 bg-gray-800 object-cover aspect-square">
+						</div>
+					</div>
+					<div class="px-6 pb-6 text-center text-sm text-gray-400">
+						<span id="coverStatus">Loading cover...</span>
+					</div>
+				</div>
+			</div>
+			<div class="lg:col-span-2">
+				<div class="glass-card rounded-2xl border border-gray-800 overflow-hidden">
+					<div class="flex flex-wrap justify-between items-center p-4 border-b border-gray-800 bg-[#0e1117]">
+						<h2 class="text-xl font-semibold">Metadata (JSON)</h2>
+						<button id="downloadBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-medium px-5 py-2 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed">
+							Download JSON
+						</button>
+					</div>
+					<div class="p-5 bg-[#0b0e13]">
+						<div class="rounded-xl overflow-auto max-h-[500px]">
+							<pre id="jsonCodeBlock" class="language-json p-4 text-sm"><code class="language-json">{
+  "message": "Search for a song..."
+}</code></pre>
+						</div>
+					</div>
+					<div class="p-3 border-t border-gray-800 text-xs text-gray-500 bg-[#0a0d12] flex justify-between">
+						<span>MBID (Recording) | Cover via Release-Group / Release</span>
+						<span id="recordInfo" class="font-mono"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="errorToast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-red-900/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm shadow-xl hidden transition-all duration-300 z-50 border border-red-700">
+			⚠️ <span id="errorMsg">Error</span>
+		</div>
+	</main>
+	<script src="script.js"></script>
+</body>
+</html>

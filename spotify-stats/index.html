@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Spotify Stats</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="styles.css">
+	<!-- META -->
+	<meta charset="UTF-8">
+	<meta name="author" content="Marian">
+	<meta name="description" content="View your Spotify stats: top artists, top tracks, recently played, and listening habits. Connect your Spotify account to see your music data.">
+	<meta name="keywords" content="Spotify, stats, music, listening habits, top artists, top tracks, recently played, Spotify API">
+	<meta name="referrer" content="no-referrer">
+	<meta name="robots" content="index, follow">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta property="og:title" content="Spotify Stats - Your Music Data">
+	<meta property="og:description" content="View your Spotify stats: top artists, top tracks, recently played, and listening habits. Connect your Spotify account to see your music data.">
+	<meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%231DB954'/%3E%3Cpath d='M17.5 16.25c-.2 0-.35-.05-.5-.15-2.75-1.65-6.2-2-10.25-1.1-.2.05-.45-.1-.5-.3-.05-.2.1-.45.3-.5 4.35-.95 8.1-.55 11.1 1.25.2.1.25.4.15.6-.1.15-.2.2-.3.2zm1.5-2.85c-.25 0-.45-.1-.6-.2-3.1-1.9-7.8-2.45-11.45-1.35-.25.05-.5-.1-.55-.35-.05-.25.1-.5.35-.55 4.15-1.2 9.3-.6 12.8 1.55.2.15.3.4.15.65-.1.2-.4.25-.7.25zm.15-2.9c-3.65-2.2-9.7-2.4-13.2-1.3-.3.1-.6-.1-.7-.4-.1-.3.1-.6.4-.7 4-.2 10.5.1 14.6 1.55.25.1.4.4.3.65-.1.3-.4.45-.7.45l.6.75z' fill='%23000'/%3E%3C/svg%3E">
+	<meta property="og:url" content="">
+	<meta property="og:type" content="website">
+</head>
+<body>
+	<div id="login-screen">
+		<div class="login-glow"></div>
+		<div class="login-logo">
+			<svg viewBox="0 0 24 24" fill="none">
+				<circle cx="12" cy="12" r="12" fill="#1DB954" />
+				<path d="M17.5 16.25c-.2 0-.35-.05-.5-.15-2.75-1.65-6.2-2-10.25-1.1-.2.05-.45-.1-.5-.3-.05-.2.1-.45.3-.5 4.35-.95 8.1-.55 11.1 1.25.2.1.25.4.15.6-.1.15-.2.2-.3.2zm1.5-2.85c-.25 0-.45-.1-.6-.2-3.1-1.9-7.8-2.45-11.45-1.35-.25.05-.5-.1-.55-.35-.05-.25.1-.5.35-.55 4.15-1.2 9.3-.6 12.8 1.55.2.15.3.4.15.65-.1.2-.4.25-.7.25zm.15-2.9c-3.65-2.2-9.7-2.4-13.2-1.3-.3.1-.6-.1-.7-.4-.1-.3.1-.6.4-.7 4-.2 10.5.1 14.6 1.55.25.1.4.4.3.65-.1.3-.4.45-.7.45l.6.75z" fill="#000" />
+			</svg>
+			Stats
+		</div>
+		<div>
+			<h1 class="login-title">Your music.<br><span>Your data.</span></h1>
+			<p class="login-sub" style="margin:1rem auto 0;">Connect your Spotify account and see exactly what you listen to most, when, and how often.</p>
+		</div>
+		<div class="features-grid">
+			<div class="feature-card">
+				<div class="icon">🎤</div><strong>Top Artists</strong><span>4 weeks, 6 months, all time</span>
+			</div>
+			<div class="feature-card">
+				<div class="icon">🎵</div><strong>Top Tracks</strong><span>Your most played songs</span>
+			</div>
+			<div class="feature-card">
+				<div class="icon">🕐</div><strong>Recent Streams</strong><span>Up to 50 recently played tracks</span>
+			</div>
+		</div>
+		<button class="btn-login" onclick="login()">
+			<svg viewBox="0 0 24 24" fill="currentColor">
+				<path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.371-.721.49-1.101.24-3.021-1.858-6.832-2.278-11.322-1.247-.43.099-.859-.16-.958-.591-.1-.43.16-.859.592-.958 4.911-1.11 9.13-.64 12.511 1.44.38.249.49.731.24 1.116h.038zm1.44-3.3c-.301.42-.841.6-1.262.3-3.469-2.16-8.759-2.79-12.869-1.51-.489.12-.999-.149-1.129-.639-.12-.489.15-.999.64-1.129 4.71-1.44 10.56-.75 14.52 1.74.42.3.599.84.3 1.26v-.022zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+			</svg>
+			Connect with Spotify
+		</button>
+		<p id="error-login" class="error-msg" style="display:none;max-width:480px;"></p>
+	</div>
+	<div id="loading-screen">
+		<div class="loader"></div>
+		<p class="loading-text">Loading data...</p>
+	</div>
+	<div id="app">
+		<nav class="nav">
+			<div class="nav-logo">Stats<span class="nav-logo-dot">.</span></div>
+			<div class="nav-user">
+				<img id="nav-avatar" class="nav-avatar" src="" alt="" />
+				<span id="nav-name" class="nav-name"></span>
+				<button class="btn-logout" onclick="logout()">Log out</button>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="profile-hero">
+				<img id="profile-avatar" class="profile-avatar" src="" alt="" />
+				<div class="profile-info">
+					<h1 id="profile-name"></h1>
+					<div class="profile-meta">
+						<div class="meta-pill">👥 <strong id="followers">—</strong> Followers</div>
+						<div class="meta-pill">🌍 <strong id="country">—</strong></div>
+						<div class="meta-pill">✨ <strong id="plan">—</strong></div>
+					</div>
+				</div>
+			</div>
+			<div class="stats-row" id="stats-row"></div>
+			<div style="display:flex;justify-content:flex-end;margin-bottom:2rem;">
+				<div class="time-tabs">
+					<button class="time-tab active" onclick="switchRange('short_term',this)">4 weeks</button>
+					<button class="time-tab" onclick="switchRange('medium_term',this)">6 months</button>
+					<button class="time-tab" onclick="switchRange('long_term',this)">All time</button>
+				</div>
+			</div>
+			<div class="section">
+				<div class="section-header">
+					<div>
+						<div class="section-title">Listening Data</div>
+						<div class="section-label">Top Artists</div>
+					</div>
+				</div>
+				<div id="artists-grid" class="artists-grid"></div>
+			</div>
+			<div class="section">
+				<div class="section-header">
+					<div>
+						<div class="section-title">Listening Data</div>
+						<div class="section-label">Top Tracks</div>
+					</div>
+				</div>
+				<div id="tracks-list" class="tracks-list"></div>
+			</div>
+			<div class="grid-split">
+				<div class="section" style="margin-bottom:0;">
+					<div class="section-header">
+						<div>
+							<div class="section-title">Taste</div>
+							<div class="section-label">Top Genres</div>
+						</div>
+					</div>
+					<div id="genres-list" class="genres-list"></div>
+				</div>
+				<div class="section" style="margin-bottom:0;">
+					<div class="section-header">
+						<div>
+							<div class="section-title">History</div>
+							<div class="section-label">Recently played</div>
+						</div>
+						<button class="btn-view-all" onclick="openStreamsPopup()">
+							<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+							</svg>
+							Show all
+						</button>
+					</div>
+					<div id="recent-list" class="recent-list"></div>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">
+			Built with the <span>Spotify Web API</span> · Your data stays with you
+		</footer>
+	</div>
+	<div class="popup-overlay" id="streams-popup" onclick="closeOnOverlay(event)">
+		<div class="popup">
+			<div class="popup-header">
+				<div>
+					<div class="popup-title">All Recent Streams</div>
+					<div class="popup-sub" id="popup-sub">The last 50 played tracks</div>
+				</div>
+				<button class="popup-close" onclick="closeStreamsPopup()">✕</button>
+			</div>
+			<div class="popup-body" id="popup-body">
+				<div class="popup-loader">
+					<div class="loader"></div><span>Loading...</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>

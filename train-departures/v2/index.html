@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DB Abfahrtstafel</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+	<!-- META -->
+	<meta name="author" content="Marian">
+	<meta name="description" content="Live departures for Deutsche Bahn stations and public transport. Real-time train, S-Bahn, bus, tram, and ferry departures with delay information, platform details, and journey tracking.">
+	<meta name="keywords" content="DB, Deutsche Bahn, departures, train times, real-time, S-Bahn, ICE, IC, RE, RB, bus, tram, ferry, public transport, hafas">
+	<meta name="referrer" content="no-referrer">
+	<meta name="robots" content="index, follow">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta property="og:title" content="DB Departures - Live Train & Public Transport Departures">
+	<meta property="og:description" content="Live departures for Deutsche Bahn stations and public transport. Real-time train, S-Bahn, bus, tram, and ferry departures with delay information, platform details, and journey tracking.">
+	<meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23e8c44a'/%3E%3Ctext x='12' y='18' font-size='14' text-anchor='middle' fill='%23000' font-family='monospace'%3EDB%3C/text%3E%3C/svg%3E">
+	<meta property="og:url" content="">
+	<meta property="og:type" content="website">
+</head>
+<body>
+	<div id="scanlines"></div>
+	<div id="header">
+		<div id="logo-area">
+			<div class="db-logo">DB</div>
+			<div id="station-label">Frankfurt(Main)Hbf</div>
+		</div>
+		<div id="search-area">
+			<input id="search-input" type="text" placeholder="Bahnhof suchen..." autocomplete="off" spellcheck="false">
+			<div id="autocomplete-list"></div>
+		</div>
+		<div id="clock-area">
+			<div id="clock">00:00:00</div>
+			<div id="clock-date"></div>
+			<div id="refresh-indicator">
+				<div class="refresh-dot"></div>
+				<span id="refresh-text">Live</span>
+			</div>
+		</div>
+	</div>
+	<div id="col-header">
+		<div>Zug</div>
+		<div class="ch-time">Abfahrt</div>
+		<div class="ch-dest">Ziel / Halte</div>
+		<div class="ch-delay">Delay</div>
+		<div class="ch-track">Gleis</div>
+	</div>
+	<div id="departures">
+		<div id="status-bar">
+			<div class="spinner"></div>
+			<span>Verbinde mit DB-API…</span>
+		</div>
+	</div>
+	<div id="footer-bar">
+		<span><span class="legend-dot" style="background:var(--db-green)"></span> Pünktlich</span>
+		<span><span class="legend-dot" style="background:var(--db-yellow)"></span> +1-9 Min</span>
+		<span><span class="legend-dot" style="background:var(--db-orange)"></span> +10-19 Min</span>
+		<span><span class="legend-dot" style="background:var(--db-red)"></span> +20 Min / Ausfall</span>
+		<span style="margin-left:auto">Auto-Refresh alle 30s &nbsp;|&nbsp; DB Abfahrtstafel</span>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>

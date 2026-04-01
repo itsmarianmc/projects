@@ -1,0 +1,44 @@
+body {
+	background-color: #0a0c10;
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+}
+
+button,
+input {
+	transition: all 0.2s ease;
+}
+
+pre[class*="language-"] {
+	border-radius: 1rem;
+	margin: 0;
+	font-size: 0.85rem;
+	background: #0f1217;
+}
+
+.glass-card {
+	background: rgba(18, 22, 28, 0.8);
+	backdrop-filter: blur(2px);
+	border: 1px solid #2d3748;
+}
+
+.album-card {
+	transition: transform 0.2s, border-color 0.2s;
+	cursor: pointer;
+}
+
+.album-card:hover {
+	transform: translateY(-2px);
+	border-color: #6366f1;
+}
+
+.album-card.selected {
+	border-color: #10b981;
+	background: rgba(16, 185, 129, 0.1);
+}
+
+.cover-thumb {
+	width: 80px;
+	height: 80px;
+	object-fit: cover;
+	border-radius: 0.5rem;
+}
