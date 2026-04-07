@@ -2,12 +2,13 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="https://itsmarian-static.is-a.dev/logos/logo.png">
+    <link rel="icon" type="image/png" href="https://itsmarian.dev/assets/favicon.webp">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects by itsmarian</title>
-    <link rel="stylesheet" href="https://itsmarian-static.is-a.dev/fonts/font-awesome-6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/variables.css">
-    <link rel="stylesheet" href="https://itsmarian-static.is-a.dev/global/style.css">
+    <link rel="stylesheet" href="https://static.itsmarian.dev/fonts/font-awesome-6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://static.itsmarian.dev/global/cookiebanner/styles.css">
+    <link rel="stylesheet" href="https://static.itsmarian.dev/global/variables.css">
+    <link rel="stylesheet" href="https://static.itsmarian.dev/global/styles.css">
     <link rel="stylesheet" href="/assets/pages/index/style.css">
     <!-- META -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,16 +28,32 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-2E9SPPVJFL');
     </script>
 </head>
-<body>
-    <div class="container">
-        <div class="section-header">
+<body class="acceptsgridoverlay">
+    <div class="grid-overlay"></div>
+    <header></header>
+    <main class="container">
+        <section class="section-header">
             <h1 class="section-title">My Projects</h1>
-            <p class="section-subtitle">A selection of all the projects I make and contribute to. The code is public and can be viewed on GitHub*.</p>
+            <p class="section-subtitle">A selection of all the projects I make and contribute to. The code is public and can be viewed on GitHub.</p>
+        </section>
+        <div class="search-wrap">
+            <i class="fas fa-magnifying-glass search-icon"></i>
+            <input type="text" id="search-input" class="search-input" placeholder="Search projects or #hashtag…" autocomplete="off" spellcheck="false">
+            <button class="search-clear" id="search-clear" aria-label="Clear search">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        <div class="active-filter" id="active-filter" style="display:none;">
+            <i class="fas fa-hashtag" style="font-size:10px; opacity:0.7;"></i>
+            <span id="active-filter-label"></span>
+            <button class="active-filter-remove" id="active-filter-remove" aria-label="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p class="results-meta" id="results-meta"></p>
         <div class="projects-grid">
             <div class="project-card" p-hash="blocks, game, puzzle" p-name="BlockBlast">
                 <div class="project-card__header">
@@ -51,65 +68,73 @@
                     <p>Block Blast is a relaxing puzzle game where you try to connect rows of blocks by placing them to fill a row. Try to make room for each piece so that you don't run out of space, otherwise the game is over.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-blocks" class="hashtag">
-                        <span>#blocks</span>
-                    </a>
-                    <a href="/?q=h-game" class="hashtag">
-                        <span>#game</span>
-                    </a>
-                    <a href="/?q=h-puzzle" class="hashtag">
-                        <span>#puzzle</span>
-                    </a>
+                    <a href="/?q=h-blocks" class="hashtag"><span>#blocks</span></a>
+                    <a href="/?q=h-game" class="hashtag"><span>#game</span></a>
+                    <a href="/?q=h-puzzle" class="hashtag"><span>#puzzle</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=ffeE" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/blockblast/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-X9gQ" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/blockblast" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
             </div>
-            <div class="project-card" p-hash="addon, tool, productivity" p-name="CookieBannerBlocker">
+            <div class="project-card" p-hash="productivity, tracker, lifestyle" p-name="CalSync">
                 <div class="project-card__header">
                     <h2>
                         <div class="card-icon">
-                            <i class="fas fa-cookie"></i>
+                            <i class="fas fa-lemon"></i>
                         </div>
-                        CookieBannerBlocker
+                        CalSync
                     </h2>
                 </div>
                 <div class="project-card__content">
-                    <p>Block cookie consent notices on every website and enjoy a cleaner, faster, distraction-free web experience.</p>
+                    <p>Track your daily calories, protein, carbs and fat with CalSync. Log food by name, barcode or AI photo detection. Sync your data across devices - free and easy.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="https://projects.itsmarian.is-a.dev/?q=h-addon" class="hashtag">
-                        <span>#addon</span>
-                    </a>
-                    <a href="https://projects.itsmarian.is-a.dev/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="https://projects.itsmarian.is-a.dev/?q=h-productivity" class="hashtag">
-                        <span>#productivity</span>
-                    </a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                    <a href="/?q=h-tracker" class="hashtag"><span>#tracker</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="https://projects.itsmarian.is-a.dev/?red-id=3d0m" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/calsync/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="https://projects.itsmarian.is-a.dev/?red-id=GtHb-do30" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"></path>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/calsync" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="productivity, tracker, lifestyle" p-name="Chore Tracker">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        Chore Tracker
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>Track your daily chores and tasks with Chore Tracker and compare the progress with another person to see who's doing their part and who isn't!</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                    <a href="/?q=h-tracker" class="hashtag"><span>#tracker</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/chores/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/chores" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -127,27 +152,45 @@
                     <p>CodeMatic is a modern, secure and simple code formatter that formats your code with the click of a button. No advertising, no tracking, no premium!</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-coding" class="hashtag">
-                        <span>#coding</span>
-                    </a>
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="/?q=h-webdevelopement" class="hashtag">
-                        <span>#webdevelopement</span>
-                    </a>
+                    <a href="/?q=h-coding" class="hashtag"><span>#coding</span></a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-webdevelopement" class="hashtag"><span>#webdevelopement</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=o1kC" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/codematic/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-aP4b" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/codematic" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="addon, tool, productivity" p-name="CookieBannerBlocker">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-cookie"></i>
+                        </div>
+                        CookieBannerBlocker
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>Block cookie consent notices on every website and enjoy a cleaner, faster, distraction-free web experience.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-addon" class="hashtag"><span>#addon</span></a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="https://cookiebannerblocker.itsmarian.dev/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/cookiebannerblocker" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -165,32 +208,50 @@
                     <p>Cookie clicker is a very simple game where you get a cookie by pressing on a cookie! From this you can get upgrades, robots and other automations. If you have enough cookies, you can reset your progress to gain prestige and continue playing with a higher number of cookies per click.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-game" class="hashtag">
-                        <span>#game</span>
-                    </a>
-                    <a href="/?q=h-multiplayer" class="hashtag">
-                        <span>#multiplayer</span>
-                    </a>
-                    <a href="/?q=h-cookieclicker" class="hashtag">
-                        <span>#cookieclicker</span>
-                    </a>
+                    <a href="/?q=h-game" class="hashtag"><span>#game</span></a>
+                    <a href="/?q=h-multiplayer" class="hashtag"><span>#multiplayer</span></a>
+                    <a href="/?q=h-cookieclicker" class="hashtag"><span>#cookieclicker</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=7UKe" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/cookieclicker/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-Z7rK" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/cookieclicker" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
             </div>
-            <div class="project-card" p-hash="drinktracker, tracker, lifestyle" p-name="HydroTrack">
+            <div class="project-card" p-hash="productivity, tracker, lifestyle" p-name="DropSync">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-droplet"></i>
+                        </div>
+                        DropSync
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>Track your daily water and drink intake with DropSync. Set personal hydration goals, log beverages, and sync your data across devices.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                    <a href="/?q=h-tracker" class="hashtag"><span>#tracker</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/dropsync/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/dropsync" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="education, chemistry, lifestyle" p-name="Elementarium">
                 <div class="project-card__header">
                     <h2>
                         <div class="card-icon">
@@ -203,27 +264,17 @@
                     <p>Elementarium is a modern, interactive science experience that makes learning about chemical elements fun and intuitive. Explore, discover, and engage with the periodic table like never before.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-education" class="hashtag">
-                        <span>#education</span>
-                    </a>
-                    <a href="/?q=h-chemistry" class="hashtag">
-                        <span>#chemistry</span>
-                    </a>
-                    <a href="/?q=h-lifestyle" class="hashtag">
-                        <span>#lifestyle</span>
-                    </a>
+                    <a href="/?q=h-education" class="hashtag"><span>#education</span></a>
+                    <a href="/?q=h-chemistry" class="hashtag"><span>#chemistry</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=lEk0" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/elementarium/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-d2Lm" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/elementarium" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-40H160v40Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -232,7 +283,7 @@
                 <div class="project-card__header">
                     <h2>
                         <div class="card-icon">
-                            <i class="fas fa-vial"></i>
+                            <i class="fas fa-layer-group"></i>
                         </div>
                         Flashcard Master
                     </h2>
@@ -241,27 +292,45 @@
                     <p>Flashcard Master is a simple and effective flashcard app to help you learn and memorize information quickly. Create, manage, and study your flashcards with ease.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-education" class="hashtag">
-                        <span>#education</span>
-                    </a>
-                    <a href="/?q=h-learning" class="hashtag">
-                        <span>#learning</span>
-                    </a>
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
+                    <a href="/?q=h-education" class="hashtag"><span>#education</span></a>
+                    <a href="/?q=h-learning" class="hashtag"><span>#learning</span></a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=293m" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/flashcard-master/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-28sd" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/flashcard-master" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="organization, tracker, lifestyle" p-name="Gym Buddy">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        Gym Buddy
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>GYM Buddy Workout Plan - Plan your workout times together with your buddy. Simple, fast, and reliable./p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-organization" class="hashtag"><span>#organization</span></a>
+                    <a href="/?q=h-tracker" class="hashtag"><span>#tracker</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/hydrotrack/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/hydrotrack" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -279,27 +348,17 @@
                     <p>HydroTrack is a simple, reliable and safe drink tracker. You can easily set your goal and see your daily progress in a circle bar and watch your history. HydroTrack helps you to stay hydrated and follow a healthier lifestyle, for free and with a modern look.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-drinktracker" class="hashtag">
-                        <span>#drinktracker</span>
-                    </a>
-                    <a href="/?q=h-tracker" class="hashtag">
-                        <span>#tracker</span>
-                    </a>
-                    <a href="/?q=h-lifestyle" class="hashtag">
-                        <span>#lifestyle</span>
-                    </a>
+                    <a href="/?q=h-drinktracker" class="hashtag"><span>#drinktracker</span></a>
+                    <a href="/?q=h-tracker" class="hashtag"><span>#tracker</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=sryr" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/hydrotrack/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-Bq0f" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/hydrotrack" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -314,30 +373,20 @@
                     </h2>
                 </div>
                 <div class="project-card__content">
-                    <p>The aim of “Find The Impostor is to expose a secret impostor in the group. All players are given a secret role: most are normal players, but one or more participants are impostors. A random word is chosen and each player must name a word for the word. The impostor must try to guess the word, while the innocents try to guess the impostor.</p>
+                    <p>The aim of "Find The Impostor" is to expose a secret impostor in the group. All players are given a secret role: most are normal players, but one or more participants are impostors. A random word is chosen and each player must name a word for it. The impostor must try to guess the word, while the innocents try to guess the impostor.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-game" class="hashtag">
-                        <span>#game</span>
-                    </a>
-                    <a href="/?q=h-groupgame" class="hashtag">
-                        <span>#groupgame</span>
-                    </a>
-                    <a href="/?q=h-multiplayer" class="hashtag">
-                        <span>#multiplayer</span>
-                    </a>
+                    <a href="/?q=h-game" class="hashtag"><span>#game</span></a>
+                    <a href="/?q=h-groupgame" class="hashtag"><span>#groupgame</span></a>
+                    <a href="/?q=h-multiplayer" class="hashtag"><span>#multiplayer</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=5sRR" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/impostor/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-E1xW" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/impostor" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -355,27 +404,17 @@
                     <p>Many useful functions inspired by the iOS 'Clock' app. There is a world clock that displays different times around the world live. A stopwatch with a start/stop, delete and lap system, all with an appealing and modern UI.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="/?q=h-watch" class="hashtag">
-                        <span>#watch</span>
-                    </a>
-                    <a href="/?q=h-timer" class="hashtag">
-                        <span>#timer</span>
-                    </a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-watch" class="hashtag"><span>#watch</span></a>
+                    <a href="/?q=h-timer" class="hashtag"><span>#timer</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=P7co" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/ios-clock-tools/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-mY9C" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/ios-clock-tools" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -393,32 +432,22 @@
                     <p>Just a dice roller (JADR) is a simple dice roller which gives the result as a number to use it in other projects!</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="/?q=h-game" class="hashtag">
-                        <span>#game</span>
-                    </a>
-                    <a href="/?q=h-gaming-asset" class="hashtag">
-                        <span>#gaming-asset</span>
-                    </a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-game" class="hashtag"><span>#game</span></a>
+                    <a href="/?q=h-gaming-asset" class="hashtag"><span>#gaming-asset</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=23d3" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/jadr/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-ep30" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/jadr" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
             </div>
-            <div class="project-card" p-hash="vencord, discordtheme, css" p-name="N'Track">
+            <div class="project-card" p-hash="vencord, discordtheme, css" p-name="MacOS Controls">
                 <div class="project-card__header">
                     <h2>
                         <div class="card-icon">
@@ -431,21 +460,13 @@
                     <p>Replaces the standard Windows "Close", "Minimize" and "Maximize" buttons with the MacOS buttons and their logos.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-vencord" class="hashtag">
-                        <span>#vencord</span>
-                    </a>
-                    <a href="/?q=h-discordtheme" class="hashtag">
-                        <span>#discordtheme</span>
-                    </a>
-                    <a href="/?q=h-css" class="hashtag">
-                        <span>#css</span>
-                    </a>
+                    <a href="/?q=h-vencord" class="hashtag"><span>#vencord</span></a>
+                    <a href="/?q=h-discordtheme" class="hashtag"><span>#discordtheme</span></a>
+                    <a href="/?q=h-css" class="hashtag"><span>#css</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=GtHb-MdAn" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/MacOS-Controls" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
                 </div>
@@ -463,32 +484,50 @@
                     <p>A minimalist and fast note-taking app that focuses on productivity and organization.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-tools" class="hashtag">
-                        <span>#tools</span>
-                    </a>
-                    <a href="/?q=h-productivity" class="hashtag">
-                        <span>#productivity</span>
-                    </a>
-                    <a href="/?q=h-minimalistic" class="hashtag">
-                        <span>#minimalistic</span>
-                    </a>
+                    <a href="/?q=h-tools" class="hashtag"><span>#tools</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                    <a href="/?q=h-minimalistic" class="hashtag"><span>#minimalistic</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=h84n" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/memoflow/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-3k32" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/memoflow" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
             </div>
-            <div class="project-card" p-hash="vencord, discordtheme, css" p-name="N'Track">
+            <div class="project-card" p-hash="tools, productivity, local-files" p-name="Metafetch Pro">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
+                        Metafetch Pro
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>A simple tool to fetch and download metadata for your favourite songs. Made for the meta-mp3-applier repository to apply metadata to your favourite mp3 tracks.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-tools" class="hashtag"><span>#tools</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                    <a href="/?q=h-local-files" class="hashtag"><span>#local-files</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/metafetch-pro/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/metafetch-pro" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="vencord, discordtheme, css" p-name="Modern Animations">
                 <div class="project-card__header">
                     <h2>
                         <div class="card-icon">
@@ -501,22 +540,42 @@
                     <p>More modern, better and smoother animations that make your Discord client more enjoyable to use.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-vencord" class="hashtag">
-                        <span>#vencord</span>
-                    </a>
-                    <a href="/?q=h-discordtheme" class="hashtag">
-                        <span>#discordtheme</span>
-                    </a>
-                    <a href="/?q=h-css" class="hashtag">
-                        <span>#css</span>
-                    </a>
+                    <a href="/?q=h-vencord" class="hashtag"><span>#vencord</span></a>
+                    <a href="/?q=h-discordtheme" class="hashtag"><span>#discordtheme</span></a>
+                    <a href="/?q=h-css" class="hashtag"><span>#css</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=GtHb-MdAn" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/ModernAnimations" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="productivity, music, obs" p-name="Now Playing">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        Now Playing
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>Display the currently playing song from your Spotify account in your OBS overlay using a clean and minimalistic layout. Oriented on DeeJay TV, v3 out now!</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                    <a href="/?q=h-music" class="hashtag"><span>#music</span></a>
+                    <a href="/?q=h-obs" class="hashtag"><span>#obs</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/now-playing/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/now-playing" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
                     </a>
                 </div>
             </div>
@@ -533,27 +592,17 @@
                     <p>N'Track is a simple, modern, reliable and completely free grade tracker to give you a better overview of your grades and show you which subjects you should try harder in.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-gradetracker" class="hashtag">
-                        <span>#gradetracker</span>
-                    </a>
-                    <a href="/?q=h-tracker" class="hashtag">
-                        <span>#tracker</span>
-                    </a>
-                    <a href="/?q=h-education" class="hashtag">
-                        <span>#education</span>
-                    </a>
+                    <a href="/?q=h-gradetracker" class="hashtag"><span>#gradetracker</span></a>
+                    <a href="/?q=h-tracker" class="hashtag"><span>#tracker</span></a>
+                    <a href="/?q=h-education" class="hashtag"><span>#education</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=GgYZ" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/ntrack/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-Vb7p" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/ntrack" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -571,22 +620,42 @@
                     <p>Projekt City is a unique and expansive Minecraft project that operates without funding and is entirely free to play for everyone. Our mission is to develop an easily navigable Minecraft world for everyone, while paying a lot of attention to details and flawless work.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-minecraft" class="hashtag">
-                        <span>#minecraft</span>
-                    </a>
-                    <a href="/?q=h-game" class="hashtag">
-                        <span>#game</span>
-                    </a>
-                    <a href="/?q=h-multiplayer" class="hashtag">
-                        <span>#multiplayer</span>
-                    </a>
+                    <a href="/?q=h-minecraft" class="hashtag"><span>#minecraft</span></a>
+                    <a href="/?q=h-game" class="hashtag"><span>#game</span></a>
+                    <a href="/?q=h-multiplayer" class="hashtag"><span>#multiplayer</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="https://projektcity.github.io/?utm_src=projects.itsmarian.is-a.dev_project-link&utm_medium=itsmarian" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="https://projektcity.com/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="game, stats, sports" p-name="Rocket League Tracker">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        Rocket League Tracker
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>Rocket League Tracker is a simple tool for tracking your Rocket League performance and statistics across different game modes and seasons using two simple buttons.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-game" class="hashtag"><span>#game</span></a>
+                    <a href="/?q=h-stats" class="hashtag"><span>#stats</span></a>
+                    <a href="/?q=h-sports" class="hashtag"><span>#sports</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/rocket-league-tracker/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/rocket-league-tracker" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
                     </a>
                 </div>
             </div>
@@ -603,27 +672,45 @@
                     <p>Royal Match is a fun and engaging match-3 puzzle game where players swap and match colorful candies to progress through levels and earn rewards. The game continues infinitely, offering new challenges and exciting gameplay mechanics.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-game" class="hashtag">
-                        <span>#game</span>
-                    </a>
-                    <a href="/?q=h-match3" class="hashtag">
-                        <span>#match3</span>
-                    </a>
-                    <a href="/?q=h-puzzle" class="hashtag">
-                        <span>#puzzle</span>
-                    </a>
+                    <a href="/?q=h-game" class="hashtag"><span>#game</span></a>
+                    <a href="/?q=h-match3" class="hashtag"><span>#match3</span></a>
+                    <a href="/?q=h-puzzle" class="hashtag"><span>#puzzle</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=Z118" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/royalmatch/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-T4qA" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/royalmatch" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="tool, lifestyle, productivity" p-name="Simple Clock Display">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        Simple Clock Display
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>Replaces the boring standard time with a lively written-out version.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/simple-clock-display/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/royalmatch" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -641,27 +728,17 @@
                     <p>Your All-in-One Shopping List App: Organize your shopping lists effortlessly with cloud sync, real-time collaboration, and smart categorization. Never forget an item again!</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="/?q=h-lifestyle" class="hashtag">
-                        <span>#lifestyle</span>
-                    </a>
-                    <a href="/?q=h-productivity" class="hashtag">
-                        <span>#productivity</span>
-                    </a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-lifestyle" class="hashtag"><span>#lifestyle</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=dn48" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="https://shoply.itsmarian.dev/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-2ore" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/shoply" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
@@ -679,32 +756,22 @@
                     <p>Replaces the boring standard time with a lively written-out version.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="/?q=h-entertainment" class="hashtag">
-                        <span>#entertainment</span>
-                    </a>
-                    <a href="/?q=h-productivity" class="hashtag">
-                        <span>#productivity</span>
-                    </a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-entertainment" class="hashtag"><span>#entertainment</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=gk49" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/simple-clock-display/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-1her" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/simple-clock-display" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
             </div>
-            <div class="project-card" p-hash="tool, watch, timer" p-name="SonicBoom">
+            <div class="project-card" p-hash="tool, music, audio" p-name="SonicBloom">
                 <div class="project-card__header">
                     <h2>
                         <div class="card-icon">
@@ -717,32 +784,106 @@
                     <p>Bloom with your music! 🌸 SonicBloom brings your personal music collection to life—safely stored on your device. Organize tracks, create perfect playlists, and immerse yourself in your sound experience whenever you want. Your music, your rules.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="/?q=h-music" class="hashtag">
-                        <span>#music</span>
-                    </a>
-                    <a href="/?q=h-audio" class="hashtag">
-                        <span>#audio</span>
-                    </a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-music" class="hashtag"><span>#music</span></a>
+                    <a href="/?q=h-audio" class="hashtag"><span>#audio</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=D58R" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/sonicbloom/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-Rj6n" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/sonicbloom" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
             </div>
-            <div class="project-card" p-hash="tool, entertainment, productivity" p-name="Word Clock">
+            <div class="project-card" p-hash="tracking, music, productivity" p-name="Spotify Stats">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fab fa-spotify"></i>
+                        </div>
+                        Spotify Stats
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>View your Spotify stats: top artists, top tracks, recently played, and listening habits. Connect your Spotify account to see your music data.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-tracking" class="hashtag"><span>#tracking</span></a>
+                    <a href="/?q=h-music" class="hashtag"><span>#music</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/spotify-stats/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/spotify-stats" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="api, tracking, productivity" p-name="Train Departures">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-train"></i>
+                        </div>
+                        Train Departures
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>Live departures for Deutsche Bahn stations and public transport. Real-time train, S-Bahn, bus, tram, and ferry departures with delay information, platform details, and journey api.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-api" class="hashtag"><span>#tracking</span></a>
+                    <a href="/?q=h-tracking" class="hashtag"><span>#tracking</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/spotify-stats/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/spotify-stats" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="tool, api, tracking" p-name="Weather">
+                <div class="project-card__header">
+                    <h2>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        Weather
+                    </h2>
+                </div>
+                <div class="project-card__content">
+                    <p>A weather app that provides real-time forecasts and detailed information using the Open Meteo API, hosted on my own infrastructure.</p>
+                </div>
+                <div class="project-card__hashtags">
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-api" class="hashtag"><span>#api</span></a>
+                    <a href="/?q=h-tracking" class="hashtag"><span>#tracking</span></a>
+                </div>
+                <div class="project-card__links">
+                    <a href="/weather/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
+                        <span>View Project</span>
+                    </a>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/word-clock" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
+                        <span>View Source Code</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card" p-hash="tracking, entertainment, productivity" p-name="Word Clock">
                 <div class="project-card__header">
                     <h2>
                         <div class="card-icon">
@@ -755,211 +896,33 @@
                     <p>An innovative word clock that displays the time and can highlight special events.</p>
                 </div>
                 <div class="project-card__hashtags">
-                    <a href="/?q=h-tool" class="hashtag">
-                        <span>#tool</span>
-                    </a>
-                    <a href="/?q=h-entertainment" class="hashtag">
-                        <span>#entertainment</span>
-                    </a>
-                    <a href="/?q=h-productivity" class="hashtag">
-                        <span>#productivity</span>
-                    </a>
+                    <a href="/?q=h-tool" class="hashtag"><span>#tool</span></a>
+                    <a href="/?q=h-entertainment" class="hashtag"><span>#entertainment</span></a>
+                    <a href="/?q=h-productivity" class="hashtag"><span>#productivity</span></a>
                 </div>
                 <div class="project-card__links">
-                    <a href="/?red-id=39dm" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
-                        </svg>
+                    <a href="/word-clock/" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/></svg>
                         <span>View Project</span>
                     </a>
-                    <a href="/?red-id=GtHb-pRct-d4eS-3dme" class="project-card__link ripple-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/>
-                        </svg>
+                    <a href="https://github.com/itsmarianmc/projects/tree/main/word-clock" class="project-card__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z"/></svg>
                         <span>View Source Code</span>
                     </a>
                 </div>
             </div>
-        </div>
-    </div>
-    <footer>
-        <div>
-            <a>*Please note: Some of the projects presented here are open source and their code is publicly available. Nevertheless, some components or entire projects may remain proprietary and be protected by copyright. Detailed information on licensing, usage rights and the availability of the source code for each project can be found in the LICENSE or in the copyright notice in the respective project files (at the bottom of the respective index page).</a>
-            <br>
-            <a>Unauthorized use, duplication or distribution of copyrighted code is strictly prohibited without the express permission of the copyright holder.</a>
-            <br>
-            <a class="linkout nodecoration" href="https://github.com/itsmarianmc/projects/blob/main/LICENSE" target="_blank">For further information view the LICENSE-file</a>
-            <br>
-            <a>If the main file does not contain the copyright notice, the code is proprietary and cannot be used without permission.</a>
-        </div>
-        <div>
-            <a class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/privacy" target="_blank">Privacy Policy</a>
-            <a>•</a>
-            <a class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/terms" target="_blank">Terms of Use</a>
-        </div>
-        <div>
-            <a class="linkout nodecoration" id="settingsPannelOpener">Change Cookie Preferences</a>
-            <a>•</a>
-            <a class="linkout nodecoration" href="https://status.itsmarian.is-a.dev/">Service status</a>
-            <a>•</a>
-            <a class="linkout nodecoration" id="scrollBarSwitcher">Show ScrollBar</a>
-        </div>
-        <div>
-            <a>&copy; 2025 itsmarian.is-a.dev | All rights reserved!</a>
-            <br>
-            <a>Made with <span class="heart">&hearts;</span> by itsmarian in <span>GERMANY</span></a>
-        </div>
-    </footer>
-    <div class="cookie-banner">
-        <div class="cookie-header flex-column">
-            <div class="cookie-header cookie-header-bottom flex-row">
-                <div class="cookie-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#fff">
-                        <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-75 29-147t81-128.5q52-56.5 125-91T475-881q21 0 43 2t45 7q-9 45 6 85t45 66.5q30 26.5 71.5 36.5t85.5-5q-26 59 7.5 113t99.5 56q1 11 1.5 20.5t.5 20.5q0 82-31.5 154.5t-85.5 127q-54 54.5-127 86T480-80Zm-60-480q25 0 42.5-17.5T480-620q0-25-17.5-42.5T420-680q-25 0-42.5 17.5T360-620q0 25 17.5 42.5T420-560Zm-80 200q25 0 42.5-17.5T400-420q0-25-17.5-42.5T340-480q-25 0-42.5 17.5T280-420q0 25 17.5 42.5T340-360Zm260 40q17 0 28.5-11.5T640-360q0-17-11.5-28.5T600-400q-17 0-28.5 11.5T560-360q0 17 11.5 28.5T600-320ZM480-160q122 0 216.5-84T800-458q-50-22-78.5-60T683-603q-77-11-132-66t-68-132q-80-2-140.5 29t-101 79.5Q201-644 180.5-587T160-480q0 133 93.5 226.5T480-160Zm0-324Z"/>
-                    </svg>
+            <div class="empty-state" id="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-magnifying-glass"></i>
                 </div>
-                <div>
-                    <h2 class="cookie-title">This site uses cookies</h2>
-                </div>
-            </div>
-            <div>
-                <p class="cookie-description">
-                    <a>This website uses cookies and similar technologies to ensure its basic functionality, enhance your user experience, analyze how it is used, gather anonymized statistics on website traffic and usage patterns, remember your preferences such as language or region, and provide enhanced features and to offer embedded content like videos, maps, or social media feeds.</a>
-                    <br>
-                    <a>By clicking “Accept,” you agree to the use of all cookies. You can change your settings at any time. By using my services, you agree to the</a>
-                    <a class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/cookies">Cookie Policy</a><a>, the</a>
-                    <a class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/privacy">Privacy Policy</a>
-                    <a>and the</a>
-                    <a class="linkout nodecoration" href="https://itsmarian.is-a.dev/legal/terms">Terms of Use</a><a>.</a>
-                </p>
+                <p class="empty-title">No projects found</p>
+                <p class="empty-sub">Try a different search term or browse all projects by clearing the search.</p>
             </div>
         </div>
-        <div class="cookie-buttons">
-            <button class="cookie-btn btn-primary" id="accept-all">
-                <i class="fas fa-check-circle"></i>
-                Accept all
-            </button>
-            <button class="cookie-btn btn-secondary ripple-btn" id="change-settings">
-                <i class="fas fa-cog"></i>
-                Change settings
-            </button>
-        </div>
-    </div>
-    <div class="settings-panel" id="settings-panel">
-        <div class="settings-header">
-            <h2 class="settings-title">Cookie-Settings</h2>
-            <button class="close-btn" id="close-settings">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="settings-content">
-            <div class="cookie-category">
-                <div class="category-header">
-                    <div class="category-icon" style="background: rgba(52, 211, 153, 0.15);">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#34d399">
-                            <path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q97-30 162-118.5T718-480H480v-315l-240 90v207q0 7 2 18h238v316Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="category-title">Necessary Cookies</h3>
-                    </div>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" checked disabled>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <p class="category-description">These cookies are necessary for the basic functions of the website and cannot be disabled. They ensure security functions and enable navigation on the website.</p>
-            </div>
-            <div class="cookie-category">
-                <div class="category-header">
-                    <div class="category-icon" style="background: rgba(96, 165, 250, 0.15);">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#60a5fa">
-                            <path d="M80-120v-80h800v80H80Zm40-120v-280h120v280H120Zm200 0v-480h120v480H320Zm200 0v-360h120v360H520Zm200 0v-600h120v600H720Z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="category-title">Statistics and Analytics</h3>
-                    </div>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="analytics-toggle">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <p class="category-description">These cookies collect information about how visitors use our website. They help us understand which pages are most popular and how visitors navigate the website. All data collected is anonymized.</p>
-            </div>
-            <div class="cookie-category">
-                <div class="category-header">
-                    <div class="category-icon" style="background: rgba(251, 191, 36, 0.15);">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 24 24" width="30" fill="#fbbf24">
-                            <path d="m17.5 17.5-2.498.993L17.5 19.5l1 2.5 1-2.5 2.5-1.007-2.5-.993-1-2.514-1 2.514Zm1-15.5-1 2.5-2.498 1.007L17.5 6.5l1 2.514 1-2.514 2.5-.993L19.5 4.5l-1-2.5ZM7.714 9.714 10 4l2.286 5.714L18 12l-5.714 2.286L10 20l-2.286-5.714L2 12Zm.77.77L4.693 12l3.79 1.516L10 17.307l1.516-3.79L15.307 12l-3.79-1.516L10 6.693l-1.516 3.79Z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="category-title">Preferences and Personalization</h3>
-                    </div>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="preferences-toggle">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <p class="category-description">These cookies enable the website to remember choices you have made (such as your username, language, or region) and provide enhanced, more personal features.</p>
-            </div>
-            <div class="cookie-category">
-                <div class="category-header">
-                    <div class="category-icon" style="background: rgba(139, 92, 246, 0.15);">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#8b5cf6">
-                            <path d="M440-183v-274L200-596v274l240 139Zm80 0 240-139v-274L520-457v274Zm-40-343 237-137-237-137-237 137 237 137ZM160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11L160-252Zm320-228Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="category-title">Third-Party Content</h3>
-                    </div>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="thirdparty-toggle">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <p class="category-description">These cookies are set by third-party services that we use to provide additional features, such as embedded videos, maps, or social media content. Third-party providers may also use these cookies to deliver personalized advertising.</p>
-            </div>
-            <div class="cookie-category cookie-category-bottom">
-                <div class="category-header">
-                    <div class="category-icon" style="background: rgba(236, 72, 153, 0.15);">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30" fill="#ec4899">
-                            <path d="M200-280h560v-80H200v80Zm0-160h560v-80H200v80Zm0-160h400v-80H200v80Zm-40 440q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="category-title">Marketing and Advertising</h3>
-                    </div>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="marketing-toggle">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <p class="category-description">These cookies are used to show visitors relevant advertising on other websites. They are also used to limit the frequency of ad display and measure the effectiveness of advertising campaigns.</p>
-            </div>
-        </div>
-        <div class="settings-footer">
-            <button class="btn-save" id="save-settings">
-                <i class="fas fa-save"></i>
-                Save settings
-            </button>
-        </div>
-    </div>
-    <div class="overlay" id="overlay"></div>
-    <script src="https://itsmarian-static.is-a.dev/global/cookie-banner.js"></script>
-    <script src="https://itsmarian-static.is-a.dev/global/basic.min.js"></script>
-    <script src="https://itsmarian-static.is-a.dev/global/cursor.js"></script>
+    </main>
+    <footer></footer>
+    <script src="https://static.itsmarian.dev/global/cookiebanner/script.js"></script>
+    <script src="https://static.itsmarian.dev/global/hf.js"></script>
     <script src="/assets/pages/index/script.js"></script>
     <script src="/assets/search.js"></script>
 </body>

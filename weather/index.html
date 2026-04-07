@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>Wetter</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+	<div class="loading-overlay" id="loadingOverlay">
+		<div class="loading-inner">
+			<div class="loading-spinner"></div>
+			<p class="loading-text">WETTERDATEN LADEN</p>
+		</div>
+	</div>
+
+	<div class="settings-overlay" id="settingsOverlay"></div>
+
+	<div class="settings-panel" id="settingsPanel">
+		<div class="settings-inner">
+			<div class="settings-header">
+				<h2 class="settings-title">Einstellungen</h2>
+				<button id="closeSettings" class="icon-btn">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+
+			<div class="settings-section">
+				<p class="section-label">Standort</p>
+				<div class="field-group">
+					<div class="field">
+						<label class="field-label">Breitengrad</label>
+						<input type="number" id="latInput" placeholder="z.B. 43.194" step="0.001">
+					</div>
+					<div class="field">
+						<label class="field-label">Längengrad</label>
+						<input type="number" id="lonInput" placeholder="z.B. -78.687" step="0.001">
+					</div>
+					<div class="field">
+						<label class="field-label">Ortsname (optional)</label>
+						<input type="text" id="nameInput" placeholder="z.B. Mannheim, DE">
+					</div>
+					<button class="btn-primary" id="applyLocation">
+						<i class="fa-solid fa-location-dot"></i> Standort übernehmen
+					</button>
+					<button class="btn-secondary" id="geoLocateBtn">
+						<i class="fa-solid fa-crosshairs"></i> Mein Standort
+					</button>
+				</div>
+			</div>
+
+			<div class="settings-section">
+				<p class="section-label">Daten</p>
+				<button class="btn-secondary" id="refreshBtn">
+					<i class="fa-solid fa-arrows-rotate"></i> Aktualisieren
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="app">
+
+		<header class="app-header">
+			<div class="location-block">
+				<h1 id="locationName" class="location-name">Laden…</h1>
+				<p id="locationCoords" class="location-coords"></p>
+			</div>
+			<div class="header-actions">
+				<button class="icon-btn" id="headerRefreshBtn">
+					<i class="fa-solid fa-arrows-rotate"></i>
+				</button>
+				<button id="burgerBtn" class="icon-btn burger-btn">
+					<span class="burger-line"></span>
+					<span class="burger-line short"></span>
+					<span class="burger-line"></span>
+				</button>
+			</div>
+		</header>
+
+		<section class="hero-section">
+			<div id="heroIcon" class="hero-icon"></div>
+			<div id="heroTemp" class="hero-temp">--</div>
+			<p id="heroDesc" class="hero-desc">---</p>
+			<p id="heroFeels" class="hero-feels">Gefühlt --</p>
+			<p id="heroHighLow" class="hero-highlow">H:-- T:--</p>
+			<p id="heroTime" class="hero-time"></p>
+		</section>
+
+		<section class="card hourly-card">
+			<div id="hourlyRow" class="hourly-scroll"></div>
+		</section>
+
+		<div class="detail-grid">
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-wind card-icon"></i>
+					<span class="card-label">Wind</span>
+				</div>
+				<div class="card-value" id="detWind">--</div>
+				<div class="card-sub" id="detWindDir">--</div>
+			</div>
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-droplet card-icon"></i>
+					<span class="card-label">Luftfeuchtigkeit</span>
+				</div>
+				<div class="card-value" id="detHumidity">--</div>
+				<div class="card-sub">Relative Feuchte</div>
+			</div>
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-sun card-icon"></i>
+					<span class="card-label">UV-Index</span>
+				</div>
+				<div class="card-value" id="detUV">--</div>
+				<div class="card-sub" id="detUVLabel">--</div>
+			</div>
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-cloud-rain card-icon"></i>
+					<span class="card-label">Niederschlag</span>
+				</div>
+				<div class="card-value" id="detPrecip">--</div>
+				<div class="card-sub" id="detPrecipProb">--</div>
+			</div>
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-cloud card-icon"></i>
+					<span class="card-label">Bewölkung</span>
+				</div>
+				<div class="card-value" id="detCloud">--</div>
+				<div class="card-sub">Bedeckungsgrad</div>
+			</div>
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-gauge card-icon"></i>
+					<span class="card-label">Luftdruck</span>
+				</div>
+				<div class="card-value" id="detPressure">--</div>
+				<div class="card-sub">Bodennah</div>
+			</div>
+		</div>
+
+		<div class="card forecast-card">
+			<div class="card-header">
+				<i class="fa-solid fa-calendar-days card-icon"></i>
+				<span class="card-label">7-Tage-Vorhersage</span>
+			</div>
+			<div id="forecastList"></div>
+		</div>
+
+		<div class="detail-grid">
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-sun card-icon sun-rise"></i>
+					<span class="card-label">Sonnenaufgang</span>
+				</div>
+				<div class="card-value" id="detSunrise">--:--</div>
+			</div>
+			<div class="card detail-card">
+				<div class="card-header">
+					<i class="fa-solid fa-sun card-icon sun-set"></i>
+					<span class="card-label">Sonnenuntergang</span>
+				</div>
+				<div class="card-value" id="detSunset">--:--</div>
+			</div>
+		</div>
+
+		<p class="footer-text">Powered by Open-Meteo · <span id="lastUpdate"></span></p>
+
+	</div>
+
+	<script src="script.js"></script>
+</body>
+
+</html>

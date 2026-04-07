@@ -134,6 +134,7 @@ body {
 	right: -10px;
 	top: calc(var(--slash-height) / 1.8);
 	user-select: none;
+	transition: all 0.3s ease-in-out;
 }
 
 .line-slash span {
